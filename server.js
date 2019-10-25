@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 const todoRoutes = express.Router();
 const path = require("path")
 
-const PORT = process.env.PORT || 4000;
+const users = require("./routes/api/users");
+
+const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";
 
 let Todo = require('./todo.model');
@@ -14,7 +16,6 @@ let Todo = require('./todo.model');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client", "build")))
-
 
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });
 
@@ -65,11 +66,16 @@ todoRoutes.route('/add').post(function(req, res) {
             res.status(400).send('adding new todo failed');
         });
 });
+todoRoutes.route('/register').post(function(req, res) {
+    console.log("test")
+});
 app.use('/todos', todoRoutes);
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
+
+app.use("/api/users", users);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
