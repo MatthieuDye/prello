@@ -16,8 +16,8 @@ export const createTeamSuccessAction = team => ({
 export const createTeam = teamData => dispatch => {
   axios
     .post("/api/team/creation", teamData)
-    //.then(res =>  dispatch(createTeamSuccessAction(res.data.team)))
-    .then(res => console.log(res.data.team))
+    .then(res =>  dispatch(createTeamSuccessAction(res.data.team)))
+    //.then(res => console.log(res.data.team))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,

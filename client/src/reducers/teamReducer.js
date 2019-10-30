@@ -1,21 +1,23 @@
 import * as types from '../actions/types';
 
-export const initialState = {
-    profile: undefined,
-    user: undefined,
+const initialState = {
+    isAuthenticated: false,
+    user: {teams:[]},
+    loading: false
 };
 
 const teamReducer = (state = initialState, action) => {
+
 
     switch (action.type) {
         case types.CREATE_TEAM_SUCCESS: {
             return {
                 ...state,
-                profile: {
-                    ...state.profile,
-                    teams: state.profile.teams.concat(action.payload.team)
+                user: {
+                    ...state.user,
+                    teams: state.user.teams.concat(action.payload.team)
                 }
-            }
+            };
         }
 
         default:

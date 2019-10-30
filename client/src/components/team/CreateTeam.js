@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createTeam } from "../../actions/teamActions";
-import {registerUser} from "../../actions/authActions";
+
 
 
 
@@ -25,8 +25,6 @@ class CreateTeam extends Component {
     onSubmit = e => {
         e.preventDefault();
 
-        console.log(this.state.teamName);
-
         const teamData = {
             name: this.state.teamName,
             urlAvatar: this.state.urlAvatar,
@@ -34,7 +32,6 @@ class CreateTeam extends Component {
         };
 
         this.props.createTeam(teamData);
-        console.log("bonjour")
     };
 
     render() {

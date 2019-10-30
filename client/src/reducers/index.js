@@ -7,5 +7,5 @@ import teamReducer from "./teamReducer";
 export default combineReducers({
   auth: authReducer,
   errors: errorReducer,
-  team: teamReducer
+  teams: teamReducer
 });
