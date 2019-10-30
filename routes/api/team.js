@@ -32,7 +32,7 @@ router.post("/creation", (req, res) => {
             });
             newTeam
                 .save()
-                .then(user => res.json(user))
+                .then(team => res.status(201).send({ message: 'Team successfully created', team: team }))
                 .catch(err => console.log(err));
         }
     });

@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { createTeam } from "../../actions/teamActions";
+import {registerUser} from "../../actions/authActions";
 
-export default  class Create extends Component {
+
+
+class CreateTeam extends Component {
 
     constructor(props) {
         super(props);
@@ -19,20 +25,23 @@ export default  class Create extends Component {
     onSubmit = e => {
         e.preventDefault();
 
+        console.log(this.state.teamName);
+
         const teamData = {
             name: this.state.teamName,
             urlAvatar: this.state.urlAvatar,
             description: this.state.description
         };
 
-        this.props.loginUser(teamData);
+        this.props.createTeam(teamData);
+        console.log("bonjour")
     };
 
     render() {
         return (
             <div style={{marginTop: 10}}>
                 <h3>Create a Team</h3>
-                <form>
+                <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Team Name:  </label>
                         <input
@@ -65,10 +74,24 @@ export default  class Create extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <input type="submit" value="Register Business" className="btn btn-primary"/>
+                        <input type="submit" value="Create the team" className="btn btn-primary"/>
                     </div>
                 </form>
             </div>
         )
     }
 }
+
+CreateTeam.propTypes = {
+    createTeam: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+});
+
+export default connect(
+    mapStateToProps,
+    { createTeam }
+)(CreateTeam);
