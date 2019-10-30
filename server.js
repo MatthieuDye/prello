@@ -23,6 +23,9 @@ const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 })
+
+app.use("/api/users", users);
+
 todoRoutes.route('/').get(function(req, res) {
     Todo.find(function(err, todos) {
         if (err) {
@@ -74,8 +77,6 @@ app.use('/todos', todoRoutes);
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
-
-app.use("/api/users", users);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);

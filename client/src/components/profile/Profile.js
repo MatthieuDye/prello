@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { updateUser } from "../../actions/userActions";
+import { getUserById, updateUser } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
@@ -20,6 +20,9 @@ class Profile extends Component {
     /*if (this.props.auth.isAuthenticated) {
       this.props.history.push("/profile");
     }*/
+    //const { user } = getUserById(this.props.auth.user.id)
+    console.log(this.props.auth.user.id)
+    console.log(getUserById(this.props.auth.user.id))
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,7 +56,7 @@ class Profile extends Component {
     const { errors } = this.state;
     const { user } = this.props.auth;
 
-    //console.log(getUserById(user.id))
+    console.log(getUserById(this.props.auth.user.id))
 
     return (
       <div className="container">
@@ -121,7 +124,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  //updateUser: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };

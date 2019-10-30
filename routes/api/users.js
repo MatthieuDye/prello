@@ -108,25 +108,40 @@ router.post("/login", (req, res) => {
   });
 });
 
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+
+  User.findOne({ "_id": ObjectID(id) }, (err, result) => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: result });
+  })
+});
+
 router.post("/:id", (req, res) => {
   const { id, update } = req.body
 
   // Form validation
-  const {errors, isValid} = validateUpdateUserInput(update);
+  const { errors, isValid } = validateUpdateUserInput(update);
 
   // Check validation
   if (!isValid) {
-      return res.status(400).json(errors);
+    return res.status(400).json(errors);
   }
 
-  User.updateOne(
-    {"_id":ObjectID(id)},
-    { $set: { "name": update.name,"email": update.email }},
-    (err) => {
-      if (err) return res.json({ success: false, error: err });
-      return res.json({ success: true });
+  User.findOne({ email: update.email }).then(user => {
+    if (user) {
+      return res.status(400).json({ email: "Email already exists" });
+    } else {
+      User.updateOne(
+        { "_id": ObjectID(id) },
+        { $set: { "name": update.name, "email": update.email } },
+        (err) => {
+          if (err) return res.json({ success: false, error: err });
+          return res.json({ success: true });
+        }
+      );
     }
-  );
+  });
 });
 
 module.exports = router;
