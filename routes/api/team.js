@@ -29,6 +29,8 @@ router.post("/creation", (req, res) => {
                 name: req.body.name,
                 urlAvatar: req.body.urlAvatar,
                 description: req.body.description,
+                admins: [req.body.userId],
+                members: [req.body.userId]
             });
             newTeam
                 .save()

@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { GET_ERRORS, CREATE_TEAM_SUCCESS } from "./types";
 
 
@@ -13,11 +12,11 @@ export const createTeamSuccessAction = team => ({
 });
 
 
-export const createTeam = teamData => dispatch => {
+export const createTeam = (teamData, history) => dispatch => {
   axios
     .post("/api/team/creation", teamData)
-    .then(res =>  dispatch(createTeamSuccessAction(res.data.team)))
-    //.then(res => console.log(res.data.team))
+    .then(res => dispatch(createTeamSuccessAction(res.data.team)))
+    .then(() => history.push("/dashboard"))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,

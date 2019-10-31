@@ -28,10 +28,11 @@ class CreateTeam extends Component {
         const teamData = {
             name: this.state.teamName,
             urlAvatar: this.state.urlAvatar,
-            description: this.state.description
+            description: this.state.description,
+            userId: this.props.auth.user.id
         };
 
-        this.props.createTeam(teamData);
+        this.props.createTeam(teamData,  this.props.history);
     };
 
     render() {
