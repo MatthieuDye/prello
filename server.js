@@ -1,3 +1,4 @@
+// Dependencies
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -14,6 +15,11 @@ let Todo = require('./todo.model');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client", "build")))
+
+const boardsRouter = require('./routes/BoardsRoutes');
+const listsRouter = require('./routes/ListsRoutes');
+const cardsRouter = require('./routes/CardsRoutes');
+const labelsRouter = require('./routes/LabelsRoutes');
 
 
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });
@@ -66,6 +72,14 @@ todoRoutes.route('/add').post(function(req, res) {
         });
 });
 app.use('/todos', todoRoutes);
+app.use('/api/boards', boardsRouter);
+app.use('/api/lists', listsRouter);
+app.use('/api/cards', cardsRouter);
+app.use('/api/labels', labelsRouter);
+app.use('/api/*', function(req, res) {
+    res.status(404).json({message : 'Resource not found on this server'});
+});
+
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
