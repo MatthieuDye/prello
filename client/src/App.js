@@ -15,6 +15,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
+import CreateTeam from "./components/team/CreateTeam";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -30,7 +31,7 @@ if (localStorage.jwtToken) {
     if (decoded.exp < currentTime) {
       // Logout user
       store.dispatch(logoutUser());
-  
+
       // Redirect to login
       window.location.href = "./login";
     }
@@ -45,7 +46,7 @@ class App extends Component {
                     <nav className="navbar navbar-expand-lg navbar-light bg-light">
                         <a href="https://codingthesmartway.com">
                         </a>
-                        <Link to="/" className="navbar-brand">MERN-Stack Todo App</Link>
+                        <Link to="/" className="navbar-brand">Prello</Link>
                         <div className="collpase navbar-collapse">
                             <ul className="navbar-nav mr-auto">
                                 <li className="navbar-item">
@@ -56,6 +57,9 @@ class App extends Component {
                                 </li>
                                 <li className="navbar-item">
                                     <Link to="/login" className="nav-link">Login</Link>
+                                </li>
+                                <li>
+                                    <Link to="/team/create" className="nav-link">Create a Team</Link>
                                 </li>
                             </ul>
                         </div>
@@ -68,6 +72,7 @@ class App extends Component {
                     <Route exact path="/register" component={Register} />
                     <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute exact path="/team/create" component={CreateTeam}/>
             </Switch>
                 </div>
             </Router>
