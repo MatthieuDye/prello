@@ -15,11 +15,8 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
-<<<<<<< HEAD
 import CreateTeam from "./components/team/CreateTeam";
-=======
 import Profile from "./components/profile/Profile"
->>>>>>> 0f2f197d92dc0ec920f39a69f8a1d66236d8cc31
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -54,7 +51,7 @@ class App extends Component {
                         <div className="collpase navbar-collapse">
                             <ul className="navbar-nav mr-auto">
                                 <li className="navbar-item">
-                                    <Link to="/" className="nav-link">Todos</Link>
+                                    <Link to="/" className="nav-link">Boards</Link>
                                 </li>
                                 <li className="navbar-item">
                                     <Link to="/create" className="nav-link">Create Todo</Link>

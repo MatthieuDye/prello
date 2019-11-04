@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 //const passport = require("passport");
-var ObjectID = require('mongodb').ObjectID;
+const ObjectID = require('mongodb').ObjectID;
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -17,6 +17,7 @@ const User = require("../../models/User");
 // @route POST api/users/register
 // @desc Register user
 // @access Public
+
 router.post("/register", (req, res) => {
   // Form validation
 
@@ -118,7 +119,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post("/:id", (req, res) => {
-  const { id, update } = req.body
+  const { id, update } = req.body;
 
   // Form validation
   const { errors, isValid } = validateUpdateUserInput(update);

@@ -1,36 +1,37 @@
-let express = require('express');
-let router = express.Router();
-let Board = require('./../models/Board');
-let Label = require('./../models/Label');
-let List = require('./../models/List');
-let debug = require('debug')('app:board');
-let boardAccess = require('./../middlewares/BoardMiddleware');
+const express = require('express');
+const router = express.Router();
+const Board = require('./../models/Board');
+const Label = require('./../models/Label');
+const List = require('./../models/List');
+const boardAccess = require('./../middlewares/BoardMiddleware');
 
 /**
  * Create a board
  * @route POST /boards
  * @group board - Operations about boards
- * @param {NewBoard.model} board.body.required - board's information.
+ * @param board.body.required - board's information.
  * @returns {Board.model} 201 - Board created
  * @returns {Error}  400 - bad request, one of fields is invalid
  * @returns {Error}  401 - Unauthorized, invalid credentials
  * @returns {Error}  default - Unexpected error
  * @security JWT
  */
-router.post('/', function(req, res) {
 
-    let newBoard = new Board(req.body);
+router.post('/create', function(req, res) {
 
-    newBoard.createOrUpdateMember(req.user._id, "admin", true);
+    const newBoard = new Board({
+       name : "test"
+    });
 
-    newBoard.validate(function (err) {
-        if (err) return res.status(400).json({message : err});
+    // newBoard.setOwner(req.user._id);
+
+    // newBoard.validate(function (err) {
+       // if (err) return res.status(400).json({message : err});
         newBoard.save(function (err) {
             if (err) {
-                debug('POST boards/ error : ' + err);
                 return res.status(400).json({message : err});
             }
-        });
+        //});
     });
 });
 
@@ -71,7 +72,6 @@ router.get('/:id', function(req, res) {
  * @returns {Error}  401 - Unauthorized, invalid credentials
  * @returns {Error}  404 - Not found, board is not found
  * @returns {Error}  default - Unexpected error
- * @security JWT
  */
 router.put('/:id', function(req, res) {
 
@@ -98,7 +98,7 @@ router.put('/:id', function(req, res) {
  * @route POST /boards/{id}/lists
  * @group board - Operations about boards
  * @param {string} id.path.required - board's id.
- * @param {ListNew.model} list.body.required - list's information
+ * @param list.body.required - list's information
  * @returns {List.model} 200 - List object
  * @returns {Error}  401 - Unauthorized, invalid credentials
  * @returns {Error}  404 - Not found, board is not found

@@ -8,13 +8,13 @@ const webdriver = require("selenium-webdriver");
 require("geckodriver");
 const describe = require("mocha").describe;
 const it = require("mocha").it;
-//const chrome = require("selenium-webdriver/chrome");
-//const path = require("chromedriver").path;
+const chrome = require("selenium-webdriver/chrome");
+const path = require("chromedriver").path;
 
-/*
+
 const service = new chrome.ServiceBuilder(path).build();
 chrome.setDefaultService(service);
-*/
+
 
 // Application Server
 const serverUri = "http://localhost:3000/";
@@ -46,7 +46,6 @@ var browser = new webdriver.Builder()
  * @return {[type]} [description]
  */
 async function logTitle() {
-    browser.wait(until.urlIs(serverUri))
     return await new Promise((resolve) => {
         browser.getTitle().then(function (title) {
             resolve(title);

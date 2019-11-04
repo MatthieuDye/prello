@@ -33,6 +33,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "unicode-match-property-ecmascript": "^1.0.4",
-    "validator": "^11.1.0"
+    "validator": "^11.1.0",
+    "mongodb": "latest"
   }
 }

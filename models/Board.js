@@ -1,10 +1,10 @@
-let mongoose = require('mongoose');
-let List = require('./List');
-let idValidator = require('mongoose-id-validator');
+const mongoose = require('mongoose');
+const Subscriber = require('./Subscriber');
+const isNullOrUndefined = require("mongoose");
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let boardSchema = new Schema({
+const boardSchema = new Schema({
         name: {
             required  : true,
             minlength : 3,
@@ -16,20 +16,25 @@ let boardSchema = new Schema({
             type      : String,
             maxlength : 1000,
         },
+        subscribers: {
+            required : true,
+            type     : [Subscriber],
+            default  : []
+        },
         closed : {
             required : true,
             type : Boolean,
             default : false
         },
-
         prefs: {
             background : {
-                required  : true,
+                required  : false,
                 default   : "#FFFFFF",
                 type      : String,
                 match     : [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please, provide a color code in hexa format (#000000).']
             }
         },
+
         labelNames: {
             green : {
                 type : String,
@@ -78,23 +83,20 @@ let boardSchema = new Schema({
         versionKey: false
     });
 
-boardSchema.plugin(idValidator);
+boardSchema.methods.setOwner = function(idUser) {
+    let actualOwner = this.subscribers.find(sub => sub.idUser.equals(idUser));
+    if (!isNullOrUndefined(actualOwner)) {
+        return actualOwner;
+    } else {
+        actualOwner = {
+            idOwner: idUser,
+            subscriberType: 'owner'
+        };
+        this._owner.push(actualOwner);
+        return actualOwner;
+    }
+};
 
-/*
-boardSchema.virtual('labels', {
-    ref: 'Label', // The model to use
-    localField: '_id', // Find people where `localField`
-    foreignField: 'idBoard' // is equal to `foreignField`
-});
-
- */
-
-
-
-
-
-//boardSchema.plugin(uniqueValidator);
-
-let Board = mongoose.model('Board', boardSchema);
+const Board = mongoose.model('Board', boardSchema);
 
 module.exports = Board;
