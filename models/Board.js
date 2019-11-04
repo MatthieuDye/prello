@@ -80,12 +80,14 @@ let boardSchema = new Schema({
 
 boardSchema.plugin(idValidator);
 
-
+/*
 boardSchema.virtual('labels', {
     ref: 'Label', // The model to use
     localField: '_id', // Find people where `localField`
     foreignField: 'idBoard' // is equal to `foreignField`
 });
+
+ */
 
 
 

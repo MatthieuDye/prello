@@ -42,13 +42,6 @@ let cardSchema = new Schema({
             }],
             default : []
         },
-        idMembers : {
-            type : [{
-                type : mongoose.Schema.ObjectId,
-                ref : 'Board.memberships'
-            }],
-            default : []
-        },
         closed : {
             type : Boolean,
             required : true,
@@ -74,11 +67,6 @@ cardSchema.virtual('comments', {
     foreignField: 'idCard', // is equal to `foreignField`
     options: { sort: { date: 1 }}
 });
-
-
-cardSchema.methods.createOrUpdateMember = function(memberId) {
-    if(!this.idMembers.find( mId => mId.equals(memberId))) this.idMembers.push(memberId);
-};
 
 let Card = mongoose.model('Card', cardSchema);
 
