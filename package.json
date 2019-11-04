@@ -32,7 +32,6 @@
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-
     "unicode-match-property-ecmascript": "^1.0.4",
     "validator": "^11.1.0"
   }

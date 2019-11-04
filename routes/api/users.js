@@ -4,10 +4,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 //const passport = require("passport");
+var ObjectID = require('mongodb').ObjectID;
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
+const validateUpdateUserInput = require("../../validation/updateUser");
 
 // Load User model
 const User = require("../../models/User");
@@ -103,6 +105,42 @@ router.post("/login", (req, res) => {
           .json({ passwordincorrect: "Password incorrect" });
       }
     });
+  });
+});
+
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+
+  User.findOne({ "_id": ObjectID(id) }, (err, result) => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: result });
+  })
+});
+
+router.post("/:id", (req, res) => {
+  const { id, update } = req.body
+
+  // Form validation
+  const { errors, isValid } = validateUpdateUserInput(update);
+
+  // Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  User.findOne({ email: update.email }).then(user => {
+    if (user) {
+      return res.status(400).json({ email: "Email already exists" });
+    } else {
+      User.updateOne(
+        { "_id": ObjectID(id) },
+        { $set: { "name": update.name, "email": update.email } },
+        (err) => {
+          if (err) return res.json({ success: false, error: err });
+          return res.json({ success: true });
+        }
+      );
+    }
   });
 });
 
