@@ -5,6 +5,7 @@
 
 # dependencies
 /node_modules
+/client/node_modules
 /.pnp
 .pnp.js
 
@@ -25,6 +26,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# client
-/client/node_modules

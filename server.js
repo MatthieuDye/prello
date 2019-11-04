@@ -7,7 +7,9 @@ const mongoose = require('mongoose');
 const todoRoutes = express.Router();
 const path = require("path")
 
-const PORT = process.env.PORT || 4000;
+const users = require("./routes/api/users");
+
+const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";
 
 let Todo = require('./todo.model');
@@ -20,7 +22,6 @@ const boardsRouter = require('./routes/BoardsRoutes');
 const listsRouter = require('./routes/ListsRoutes');
 const cardsRouter = require('./routes/CardsRoutes');
 const labelsRouter = require('./routes/LabelsRoutes');
-
 
 mongoose.connect(process.env.MONGODB_URI ||'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });
 
@@ -71,6 +72,9 @@ todoRoutes.route('/add').post(function(req, res) {
             res.status(400).send('adding new todo failed');
         });
 });
+todoRoutes.route('/register').post(function(req, res) {
+    console.log("test")
+});
 app.use('/todos', todoRoutes);
 app.use('/api/boards', boardsRouter);
 app.use('/api/lists', listsRouter);
@@ -84,6 +88,8 @@ app.use('/api/*', function(req, res) {
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
+
+app.use("/api/users", users);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
