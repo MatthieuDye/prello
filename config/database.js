@@ -8,5 +8,5 @@ mongoose.set('useFindAndModify', false);
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 mongoose.connection.once('connected', () => {
-    debug('Mongoose conected at ' + process.env.DB_URL + ' - ' + process.env.DB_NAME)
+    debug('Mongoose connected at ' + process.env.DB_URL + ' - ' + process.env.DB_NAME)
 });
