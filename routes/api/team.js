@@ -7,6 +7,7 @@ const validateCreateTeamInput = require("../../validation/createTeam");
 
 // Load Team model
 const Team = require("../../models/Team");
+const TeamMember = require('../../models/TeamMember');
 
 // @route POST api/team/creation
 // @desc Create the team
@@ -25,12 +26,12 @@ router.post("/creation", (req, res) => {
         if (team) {
             return res.status(400).json({teamName: "This team Name already exists"});
         } else {
+
+
             const newTeam = new Team({
                 name: req.body.name,
-                urlAvatar: req.body.urlAvatar,
                 description: req.body.description,
-                admins: [req.body.userId],
-                members: [req.body.userId]
+                members: [{idUser: req.body.userId, isAdmin: true}],
             });
             newTeam
                 .save()

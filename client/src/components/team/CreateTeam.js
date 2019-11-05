@@ -13,7 +13,6 @@ class CreateTeam extends Component {
 
         this.state = {
             teamName: '',
-            urlAvatar: '',
             description: ''
         }
     }
@@ -27,7 +26,6 @@ class CreateTeam extends Component {
 
         const teamData = {
             name: this.state.teamName,
-            urlAvatar: this.state.urlAvatar,
             description: this.state.description,
             userId: this.props.auth.user.id
         };
@@ -49,16 +47,6 @@ class CreateTeam extends Component {
                             type="text"
                             className="form-control"
                             required={true}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label> Url of the avatar: </label>
-                        <input
-                            onChange={this.onChange}
-                            value = {this.state.urlAvatar}
-                            id="urlAvatar"
-                            type="text"
-                            className="form-control"
                         />
                     </div>
                     <div className="form-group">
