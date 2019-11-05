@@ -17,7 +17,7 @@ class Dashboard extends Component {
         <div className="row">
           <div className="landing-copy col s12 center-align">
             <h4>
-              <b>Hello</b> {user.name.split(" ")[0]}
+              <b>Hello</b> {user.userName.split(" ")[0]}
               <p className="flow-text grey-text text-darken-1">
                 You are logged into Prello
               </p>

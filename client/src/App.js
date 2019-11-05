@@ -58,6 +58,9 @@ class App extends Component {
                                 <li className="navbar-item">
                                     <Link to="/login" className="nav-link">Login</Link>
                                 </li>
+                                <li className="navbar-item">
+                                    <Link to="/profile/:id" className="nav-link">My profile</Link>
+                                </li>
                             </ul>
                         </div>
                     </nav>

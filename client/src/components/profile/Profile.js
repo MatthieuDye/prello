@@ -3,13 +3,15 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getUserById, updateUser } from "../../actions/userActions";
+import { updateUser } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
+      firstName: "",
+      lastName: "",
+      userName: "",
       email: "",
       errors: {}
     };
@@ -21,8 +23,7 @@ class Profile extends Component {
       this.props.history.push("/profile");
     }*/
     //const { user } = getUserById(this.props.auth.user.id)
-    console.log(this.props.auth.user.id)
-    console.log(getUserById(this.props.auth.user.id))
+    this.setState({userName: this.props.auth.user.userName, email: this.props.auth.user.email})
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,12 +42,16 @@ class Profile extends Component {
     e.preventDefault();
 
     const updatedUser = {
-      name: this.state.name,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      userName: this.state.userName,
       email: this.state.email
     };
 
     console.log(`Form submitted:`);
-    console.log(`User name: ${this.state.name}`);
+    console.log(`User fisrt name: ${this.state.firstName}`);
+    console.log(`User last name: ${this.state.lastName}`);
+    console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
 
     this.props.updateUser(this.props.auth.user.id, updatedUser);
@@ -55,8 +60,6 @@ class Profile extends Component {
   render() {
     const { errors } = this.state;
     const { user } = this.props.auth;
-
-    console.log(getUserById(this.props.auth.user.id))
 
     return (
       <div className="container">
@@ -75,16 +78,16 @@ class Profile extends Component {
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
-                  value={this.state.name}
-                  error={errors.name}
-                  id="name"
+                  value={this.state.userName}
+                  error={errors.userName}
+                  id="userName"
                   type="text"
                   className={classnames("", {
-                    invalid: errors.name
+                    invalid: errors.userName
                   })}
                 />
-                <label htmlFor="name">Name</label>
-                <span className="red-text">{errors.name}</span>
+                <label htmlFor="userName">User Name</label>
+                <span className="red-text">{errors.userName}</span>
               </div>
               <div className="input-field col s12">
                 <input

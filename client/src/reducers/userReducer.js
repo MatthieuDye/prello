@@ -1,6 +1,21 @@
-import { UPDATE_USER_PROFILE } from "../actions/types";
+import { UPDATE_USER_PROFILE } from '../actions/types';
 
-const userReducer = (state = [], action) => {
+export const initialState = {
+    user: undefined,
+};
+
+const userReducer = (state = initialState, action) => {
+
+    switch (action.type) {
+        case types.UPDATE_USER_PROFILE: {
+            return {
+                ...state
+            }
+        }
+
+        default:
+            return state;
+    }
 
 };
-export default userReducer(); 
+export default userReducer;
