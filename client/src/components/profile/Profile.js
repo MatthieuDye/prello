@@ -18,12 +18,13 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Profile page, should redirect them to dashboard
-    /*if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/profile");
-    }*/
-    //const { user } = getUserById(this.props.auth.user.id)
-    this.setState({userName: this.props.auth.user.userName, email: this.props.auth.user.email})
+    //Retrieve all data from the state
+    this.setState({
+      firstName: this.props.auth.user.firstName,
+      lastName: this.props.auth.user.lastName,
+      userName: this.props.auth.user.userName,
+      email: this.props.auth.user.email,
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -49,12 +50,12 @@ class Profile extends Component {
     };
 
     console.log(`Form submitted:`);
-    console.log(`User fisrt name: ${this.state.firstName}`);
+    console.log(`User first name: ${this.state.firstName}`);
     console.log(`User last name: ${this.state.lastName}`);
     console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
 
-    this.props.updateUser(this.props.auth.user.id, updatedUser);
+    this.props.updateUser(this.props.auth.user.id, updatedUser, this.props.history);
   };
 
   render() {
@@ -75,6 +76,37 @@ class Profile extends Component {
               </h4>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
+
+            <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.firstName}
+                  error={errors.firstName}
+                  id="firstName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.firstName
+                  })}
+                />
+                <label htmlFor="firstName">First Name</label>
+                <span className="red-text">{errors.firstName}</span>
+              </div>
+              
+              <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.lastName}
+                  error={errors.lastName}
+                  id="lastName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.lastName
+                  })}
+                />
+                <label htmlFor="lastName">Last Name</label>
+                <span className="red-text">{errors.lastName}</span>
+              </div>
+              
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -89,6 +121,7 @@ class Profile extends Component {
                 <label htmlFor="userName">User Name</label>
                 <span className="red-text">{errors.userName}</span>
               </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}

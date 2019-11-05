@@ -10,13 +10,13 @@ export const updateUserSuccessAction = user => ({
 });
 
 // Update User
-export const updateUser = (userId, userData) => dispatch => {
+export const updateUser = (userId, userData, history) => dispatch => {
   axios
     .post("/api/users/" + userId, {
         id: userId,
         update: userData
     })
-    .then(res => res.data)
+    .then(res => history.push("/dashboard"))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,

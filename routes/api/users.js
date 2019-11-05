@@ -131,18 +131,31 @@ router.post("/:id", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  User.findOne({ email: update.email }).then(user => {
+  User.findOne({ email: update.email, _id: { $ne: Object(id) } }).then(user => {
     if (user) {
       return res.status(400).json({ email: "Email already exists" });
     } else {
-      User.updateOne(
-        { "_id": ObjectID(id) },
-        { $set: { "name": update.name, "email": update.email } },
-        (err) => {
-          if (err) return res.json({ success: false, error: err });
-          return res.json({ success: true });
+      User.findOne({ userName: update.userName, _id: { $ne: Object(id) } }).then(user => {
+        if (user) {
+          return res.status(400).json({ userName: "Username already exists" });
+        } else {
+          User.updateOne(
+            { "_id": ObjectID(id) },
+            {
+              $set: {
+                "firstName": update.firstName,
+                "lastName": update.lastName,
+                "userName": update.userName,
+                "email": update.email
+              }
+            },
+            (err) => {
+              if (err) return res.json({ success: false, error: err });
+              return res.json({ success: true });
+            }
+          );
         }
-      );
+      });
     }
   });
 });
