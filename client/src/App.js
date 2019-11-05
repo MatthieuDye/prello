@@ -16,6 +16,7 @@ import Register from "./components/auth/Register";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateTeam from "./components/team/CreateTeam";
+import MyTeams from "./components/team/MyTeams";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -61,6 +62,9 @@ class App extends Component {
                                 <li>
                                     <Link to="/team/create" className="nav-link">Create a Team</Link>
                                 </li>
+                                <li>
+                                    <Link to="/team" className="nav-link">My Teams</Link>
+                                </li>
                             </ul>
                         </div>
                     </nav>
@@ -73,6 +77,7 @@ class App extends Component {
                     <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute exact path="/team/create" component={CreateTeam}/>
+              <PrivateRoute exact path="/team" component={MyTeams}/>
             </Switch>
                 </div>
             </Router>
