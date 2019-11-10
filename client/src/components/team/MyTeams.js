@@ -1,26 +1,31 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
+import React, {Component} from 'react';
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
-
-
+import {ListGroup, ListGroupItem} from 'reactstrap';
 
 
 class MyTeams extends Component {
 
-    constructor(props) {
-        super(props);
-
-    }
+    redirectionTeam = (id) => {
+        this.props.history.push(`/team/addMembers/${id}`);
+    };
 
     render() {
         return (
             <div style={{marginTop: 10}}>
                 <h3>My Teams</h3>
-                <div className="teamsList">
-                    {this.props.teams.map(({id, name, description}) => (
-                        <div className="fosfo" key={id}> {name} : {description} </div>
+                <ListGroup>
+                    {this.props.teams.map(({_id, name, description}) => (
+
+
+                        <ListGroupItem key={_id} className="ListMenu" tag="a" onClick={() => this.redirectionTeam(_id)}
+                                       action>{name} : {description}
+
+                        </ListGroupItem>
+
                     ))}
-                </div>
+
+                </ListGroup>
             </div>
         )
     }

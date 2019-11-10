@@ -7,7 +7,6 @@ const validateCreateTeamInput = require("../../validation/createTeam");
 
 // Load Team model
 const Team = require("../../models/Team");
-const TeamMember = require('../../models/TeamMember');
 
 // @route POST api/team/creation
 // @desc Create the team
