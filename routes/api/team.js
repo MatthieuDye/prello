@@ -34,10 +34,34 @@ router.post("/creation", (req, res) => {
             });
             newTeam
                 .save()
-                .then(team => res.status(201).send({ message: 'Team successfully created', team: team }))
+                .then(team => res.status(201).send({message: 'Team successfully created', team: team}))
                 .catch(err => console.log(err));
         }
     });
+});
+
+router.put("/addmember/:teamId/:memberId", (req, res) => {
+
+    //TODO : if user in not a admin of the team : 403
+
+    const team = Team.findById(req.params.teamId);
+    if (!team) {
+        return res.status(404).json({teamName: "This team does not exists"});
+    }
+
+
+    Team
+        .updateOne({_id: req.params.teamId}, {
+            $addToSet: {
+                members: {
+                    idUser: req.params.memberId,
+                    isAdmin: req.body.isAdmin
+                }
+            }
+        })
+        .then(team => res.status(201).send({message: 'User successfully added to the team'}))
+        .catch(err => console.log(err));
+
 });
 
 module.exports = router;

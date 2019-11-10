@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {ListGroup, ListGroupItem} from 'reactstrap';
+import {ListGroup, ListGroupItem} from 'react-bootstrap';
 
 
 class MyTeams extends Component {
@@ -18,8 +18,14 @@ class MyTeams extends Component {
                     {this.props.teams.map(({_id, name, description}) => (
 
 
-                        <ListGroupItem key={_id} className="ListMenu" tag="a" onClick={() => this.redirectionTeam(_id)}
-                                       action>{name} : {description}
+                        <ListGroupItem
+                            key={_id}
+                            className="ListMenu"
+                            onClick={() => this.redirectionTeam(_id)}
+                            action
+                        >
+
+                            <h3>{name}</h3>
 
                         </ListGroupItem>
 
