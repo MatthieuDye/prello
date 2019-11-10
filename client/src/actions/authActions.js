@@ -2,7 +2,7 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
 
-import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
+import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING, SAVE_USER } from "./types";
 
 // Register User
 export const registerUser = (userData, history) => dispatch => {
@@ -33,6 +33,8 @@ export const loginUser = userData => dispatch => {
       const decoded = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decoded));
+      // Save user
+      dispatch(saveUser(decoded));
     })
     .catch(err =>
       dispatch({
@@ -54,6 +56,14 @@ export const setCurrentUser = decoded => {
 export const setUserLoading = () => {
   return {
     type: USER_LOADING
+  };
+};
+
+// Save user
+export const saveUser = userData => {
+  return {
+    type: SAVE_USER,
+    payload: userData
   };
 };
 

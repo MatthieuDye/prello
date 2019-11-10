@@ -20,10 +20,10 @@ class Profile extends Component {
   componentDidMount() {
     //Retrieve all data from the state
     this.setState({
-      firstName: this.props.auth.user.firstName,
-      lastName: this.props.auth.user.lastName,
-      userName: this.props.auth.user.userName,
-      email: this.props.auth.user.email,
+      firstName: this.props.user.user.firstName,
+      lastName: this.props.user.user.lastName,
+      userName: this.props.user.user.userName,
+      email: this.props.user.user.email,
     })
   }
 
@@ -60,7 +60,7 @@ class Profile extends Component {
 
   render() {
     const { errors } = this.state;
-    const { user } = this.props.auth;
+    const { user } = this.props.user;
 
     return (
       <div className="container">
@@ -162,12 +162,14 @@ class Profile extends Component {
 Profile.propTypes = {
   updateUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
+  user: state.auth
 });
 
 export default connect(
