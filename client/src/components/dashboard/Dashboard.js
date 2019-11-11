@@ -10,7 +10,8 @@ class Dashboard extends Component {
   };
 
   render() {
-    const { user } = this.props.auth;
+    const { user } = this.props.user;
+    console.log(user)
 
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
@@ -49,7 +50,7 @@ Dashboard.propTypes = {
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  user: state.user.auth
+  user: state.auth
 });
 
 export default connect(

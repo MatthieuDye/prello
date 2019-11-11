@@ -46,6 +46,8 @@ export const loginUser = userData => dispatch => {
 
 // Set logged in user
 export const setCurrentUser = decoded => {
+  console.log("DECODED")
+  console.log(decoded)
   return {
     type: SET_CURRENT_USER,
     payload: decoded
@@ -61,6 +63,7 @@ export const setUserLoading = () => {
 
 // Save user
 export const saveUser = userData => {
+  console.log(userData)
   return {
     type: SAVE_USER,
     payload: userData

@@ -32,8 +32,6 @@ export const updateUser = (userId, userData, history) => dispatch => {
 
 // Update user profile
 export const updateUserProfile = userData => {
-  console.log("UPDATE USER PROFILE")
-  console.log(userData)
   return {
     type: UPDATE_USER_PROFILE,
     payload: userData

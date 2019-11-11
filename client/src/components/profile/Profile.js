@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { updateUser } from "../../actions/userActions";
+import { updateUser, updateUserProfile } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
@@ -20,10 +20,10 @@ class Profile extends Component {
   componentDidMount() {
     //Retrieve all data from the state
     this.setState({
-      firstName: this.props.user.user.firstName,
-      lastName: this.props.user.user.lastName,
-      userName: this.props.user.user.userName,
-      email: this.props.user.user.email,
+      firstName: this.props.user.firstName,
+      lastName: this.props.user.lastName,
+      userName: this.props.user.userName,
+      email: this.props.user.email,
     })
   }
 
@@ -169,10 +169,10 @@ Profile.propTypes = {
 const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors,
-  user: state.auth
+  user: state.user
 });
 
 export default connect(
   mapStateToProps,
-  { updateUser }
+  { updateUser, updateUserProfile }
 )(withRouter(Profile));
