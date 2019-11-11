@@ -100,7 +100,7 @@ router.delete("/removemember/:teamId/:memberId", (req, res) => {
 
 });
 
-router.delete("delete/:teamId", (req, res) => {
+router.delete("/delete/:teamId", (req, res) => {
 
     //TODO : if user in not a admin of the team : 403
 
