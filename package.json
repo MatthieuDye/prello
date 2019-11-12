@@ -4,7 +4,7 @@
   "description": "",
   "main": "client\\src\\index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test mocha --recursive ./tests/api.test",
     "start": "nodemon server.js",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
@@ -26,5 +26,10 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "validator": "^11.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "react-autocomplete": "^1.8.1",
+    "supertest": "^4.0.2"
   }
 }

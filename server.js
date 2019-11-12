@@ -7,6 +7,7 @@ const todoRoutes = express.Router();
 const path = require("path")
 
 const users = require("./routes/api/users");
+const team = require("./routes/api/team");
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";
@@ -77,6 +78,9 @@ app.use('/todos', todoRoutes);
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
+
+app.use("/api/users", users);
+app.use("/api/team", team);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
