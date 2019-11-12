@@ -4,7 +4,7 @@
   "description": "",
   "main": "client\\src\\index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --recursive ./tests/api.test",
+    "test": "mocha --timeout=10000 --recursive --exit",
     "start": "nodemon server.js",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.2",
     "mongoose": "^5.7.6",
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "react-autocomplete": "^1.8.1",
+    "request": "^2.88.0",
     "supertest": "^4.0.2"
   }
 }

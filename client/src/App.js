@@ -8,9 +8,6 @@ import {setCurrentUser, logoutUser} from "./actions/authActions";
 import {Provider} from "react-redux";
 import store from "./store";
 
-import CreateTodo from "./components/create-todo.component";
-import EditTodo from "./components/edit-todo.component";
-import TodosList from "./components/todos-list.component";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import PrivateRoute from "./components/private-route/PrivateRoute";
@@ -53,15 +50,6 @@ class App extends Component {
                             <div className="collpase navbar-collapse">
                                 <ul className="navbar-nav mr-auto">
                                     <li className="navbar-item">
-                                        <Link to="/" className="nav-link">Todos</Link>
-                                    </li>
-                                    <li className="navbar-item">
-                                        <Link to="/create" className="nav-link">Create Todo</Link>
-                                    </li>
-                                    <li className="navbar-item">
-                                        <Link to="/login" className="nav-link">Login</Link>
-                                    </li>
-                                    <li className="navbar-item">
                                     <Link to="/profile/:id" className="nav-link">My profile</Link>
                                 </li>
                                     <li>
@@ -74,9 +62,6 @@ class App extends Component {
                             </div>
                         </nav>
                         <br/>
-                        <Route path="/" exact component={TodosList}/>
-                        <Route path="/edit/:id" component={EditTodo}/>
-                        <Route path="/create" component={CreateTodo}/>
                         <Route path="/login" component={Login}/>
                         <Route exact path="/register" component={Register}/>
                         <Switch>
