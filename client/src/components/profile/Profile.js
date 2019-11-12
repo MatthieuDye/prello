@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { updateUser, updateUserProfile } from "../../actions/userActions";
+import { updateUser } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
@@ -60,7 +60,6 @@ class Profile extends Component {
 
   render() {
     const { errors } = this.state;
-    const { user } = this.props.user;
 
     return (
       <div className="container">
@@ -174,5 +173,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { updateUser, updateUserProfile }
+  { updateUser }
 )(withRouter(Profile));

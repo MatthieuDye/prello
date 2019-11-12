@@ -4,21 +4,21 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
 class Dashboard extends Component {
+
   onLogoutClick = e => {
     e.preventDefault();
     this.props.logoutUser();
   };
 
   render() {
-    const { user } = this.props.user;
-    console.log(user)
+    const { userName } = this.props.user;
 
     return (
       <div style={{ height: "75vh" }} className="container valign-wrapper">
         <div className="row">
           <div className="landing-copy col s12 center-align">
             <h4>
-              <b>Hello</b> {user.userName.split(" ")[0]}
+              <b>Hello</b> {userName.split(" ")[0]}
               <p className="flow-text grey-text text-darken-1">
                 You are logged into Prello
               </p>
@@ -44,13 +44,13 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
+  //auth: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  user: state.auth
+  //auth: state.auth,
+  user: state.user
 });
 
 export default connect(
