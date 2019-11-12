@@ -58,6 +58,9 @@ class App extends Component {
                                     <li>
                                         <Link to="/team" className="nav-link">My Teams</Link>
                                     </li>
+                                    <li>
+                                        <Link to="/login" className="nav-link">Login</Link>
+                                    </li>
                                 </ul>
                             </div>
                         </nav>

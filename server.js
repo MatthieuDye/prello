@@ -4,14 +4,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require("path")
-
-const users = require("./routes/api/users");
-const team = require("./routes/api/team");
+const mapRoutes = require("express-routes-mapper");
+const auth = require("./config/policies/authPolicy");
+const config = require("./config/");
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
+app.options("*", cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client", "build")))
 
@@ -21,11 +22,16 @@ const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 });
-app.get('/', function (req, res) {
-    res.send('Hello World')
-  })
-app.use("/api/users", users);
-app.use("/api/team", team);
+
+// Secure private routes with JWT authentication only
+app.all("/api/private/*", (req, res, next) => auth(req, res, next));
+
+const mappedPublicRoutes = mapRoutes(config.publicRoutes, "controllers/");
+const mappedPrivateRoutes = mapRoutes(config.privateRoutes, "controllers/");
+
+// Express routes
+app.use("/api/public/", mappedPublicRoutes);
+app.use("/api/private/", mappedPrivateRoutes);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);

@@ -5,7 +5,7 @@ import { GET_ERRORS, UPDATE_USER_PROFILE } from "./types";
 // Update User
 export const updateUser = (userId, userData, history) => dispatch => {
   axios
-    .post("/api/users/" + userId, {
+    .post("/api/private/user/" + userId, {
         id: userId,
         update: userData
     })
