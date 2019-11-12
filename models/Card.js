@@ -42,7 +42,7 @@ let cardSchema = new Schema({
             }],
             default : []
         },
-        closed : {
+        archived : {
             type : Boolean,
             required : true,
             default : false

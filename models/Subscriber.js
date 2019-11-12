@@ -11,7 +11,7 @@ let subscriberSchema = new Schema({
         },
         subscriberType: {
             type: String,
-            enum: ['normal', 'owner', 'observer'],
+            enum: ['normal', 'owner', 'observer', 'admin'],
             required : true,
             default : ['observer']
         }

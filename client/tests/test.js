@@ -70,7 +70,7 @@ describe("Home Page", function() {
     it("Should load the home page and get title", function() {
         return new Promise((resolve, reject) => {
             browser
-                .get(serverUri)
+                .get('https://www.google.com/search?sxsrf=ACYBGNRsgl7YkU6edS44OkrNugZJe-5a0Q%3A1572882354358&ei=skfAXd7OFa6GjLsPl66iKA&q=tatyova+cedh&oq=tatyova+cedh&gs_l=psy-ab.3..35i304i39l2j0i13i30l8.3275755.3278325..3278633...0.0..0.168.1090.11j1......0....1..gws-wiz.......0i131j0i67j0j35i39j0i10j0i10i203j0i203j0i22i30j0i22i10i30.tGkWmAv42-c&ved=0ahUKEwje74Sw89DlAhUuA2MBHReXCAUQ4dUDCAs&uact=5')
                 .then(logTitle)
                 .then(title => {
                     assert.strictEqual(title, appTitle);
