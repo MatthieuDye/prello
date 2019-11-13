@@ -11,9 +11,9 @@ let memberSchema = new Schema({
         },
         subscriberType: {
             type: String,
-            enum: ['normal', 'owner', 'observer', 'admin'],
+            enum: ['normal', 'admin'],
             required : true,
-            default : ['observer']
+            default : ['normal']
         }
     },
     {
@@ -37,14 +37,6 @@ memberSchema.methods.isAdmin = function(){
  */
 memberSchema.methods.isNormal = function(){
     return this.subscriberType === 'normal';
-};
-
-/**
- * Check if the user is observer user
- * @returns {boolean} true if observer or false else
- */
-memberSchema.methods.isObserver = function(){
-    return this.subscriberType === 'observer';
 };
 
 module.exports = memberSchema;

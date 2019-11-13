@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Member = require('./Member');
+const BoardMember = require('./BoardMember');
 const isNullOrUndefined = require("mongoose");
 const idValidator = require('mongoose-id-validator');
 
@@ -31,7 +31,7 @@ const boardSchema = new Schema({
         },
         members: {
             required : true,
-            type     : [Member],
+            type     : [BoardMember],
             default  : []
         },
         team : {
