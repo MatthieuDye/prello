@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const cors = require("cors");
-var ObjectID = require('mongodb').ObjectID;
 
 // Load models
 const Board = require("../models/Board");
@@ -64,16 +63,18 @@ const BoardController = () => {
      * @security JWT
      */
     const getBoard = async (req, res) => {
-        /*req.query._id = req.params.id;
 
-        Board.findById(req.query._id)
-            .populate('memberships.idMember', '_id username firstName lastName')
-            .populate('labels')
-            .exec(function (err, board) {
-                if (err) debug('GET boards/:id error : ' + err);
-                if (!board) return res.status(404).json({ message: 'Board not found' });
-                return res.status(200).json(board);
-            }).then();*/
+        const id = req.params.id
+        
+        Board.findOne({ _id: Object(id) }).then(board => {
+            if(board){
+                return res.status(400).json(board)
+            }else{
+                return res.status(404).json({ boardNotFound: "Board not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ error: err });
+          });
     }
 
     /**
@@ -90,22 +91,22 @@ const BoardController = () => {
      * @returns {Error}  default - Unexpected error
      */
     const updateBoard = async (req, res) => {
-       /* let board = req.board;
-
-        (req.query.name) ? board.name = req.query.name : null;
-        (req.query.desc) ? board.desc = req.query.desc : null;
-        (req.query.closed) ? board.closed = req.query.closed : null;
-
-        board.validate(function (err) {
-            if (err) return res.status(400).json({ message: err });
-            board.save(function (err) {
-                if (err) {
-                    debug('PUT board/:id error : ' + err);
-                    return res.status(500).json({ message: 'Unexpected internal error' });
-                }
-                return res.status(200).json({ message: 'Board updated successfully' });
-            });
-        });*/
+        /* let board = req.board;
+ 
+         (req.query.name) ? board.name = req.query.name : null;
+         (req.query.desc) ? board.desc = req.query.desc : null;
+         (req.query.closed) ? board.closed = req.query.closed : null;
+ 
+         board.validate(function (err) {
+             if (err) return res.status(400).json({ message: err });
+             board.save(function (err) {
+                 if (err) {
+                     debug('PUT board/:id error : ' + err);
+                     return res.status(500).json({ message: 'Unexpected internal error' });
+                 }
+                 return res.status(200).json({ message: 'Board updated successfully' });
+             });
+         });*/
     }
 
     /**
@@ -156,21 +157,21 @@ const BoardController = () => {
      * @security JWT
      */
     const getLists = async (req, res) => {
-      /*  req.query.idBoard = req.board._id;
-        let openCard = false;
-        if (req.query.cards) {
-            if (req.query.cards === 'open') openCard = true;
-            delete req.query.cards;
-        }
-        let query = List.find(req.query);
-        if (openCard) query.populate('cards');
-        query.exec(function (err, lists) {
-            if (err) {
-                debug('GET boards/:id/lists error : ' + err)
-                return res.status(500).json({ message: 'Unexpected internal error' });
-            }
-            return res.status(200).json(lists)
-        }).then();*/
+        /*  req.query.idBoard = req.board._id;
+          let openCard = false;
+          if (req.query.cards) {
+              if (req.query.cards === 'open') openCard = true;
+              delete req.query.cards;
+          }
+          let query = List.find(req.query);
+          if (openCard) query.populate('cards');
+          query.exec(function (err, lists) {
+              if (err) {
+                  debug('GET boards/:id/lists error : ' + err)
+                  return res.status(500).json({ message: 'Unexpected internal error' });
+              }
+              return res.status(200).json(lists)
+          }).then();*/
     }
 
     /**
