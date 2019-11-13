@@ -170,10 +170,11 @@ const UserController = () => {
   };
 
   const googleAuth =  (req, res)  => {
+    console.log("google auth");
      passport.authenticate("google", {
       scope: [
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/userinfo.email"
+        "profile",
+        "email"
       ]
     })
   };
@@ -183,7 +184,7 @@ const UserController = () => {
     passport.authenticate("google"),
         (req, res) => {
       console.log("zefsqdf");
-          res.redirect("/profile");
+          res.redirect("/");
         }
     };
 

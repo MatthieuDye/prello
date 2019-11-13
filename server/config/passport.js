@@ -1,6 +1,14 @@
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const User = require('../models/User');
 
 module.exports = (passport) => {
+
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+    passport.deserializeUser(function(user, done) {
+        done(null, user);
+    });
 
     passport.use(
         new GoogleStrategy(
@@ -10,23 +18,25 @@ module.exports = (passport) => {
                 callbackURL: process.env.GOOGLE_REDIRECT_URL,
                 passReqToCallback: true
             },
-            (accessToken, refreshToken, profile, done) => {
+            (req, accessToken, refreshToken, profile, done) => {
                 console.log(profile);
-                //     User.findOne({ googleId: profile.id }).then(existingUser => {
-                //         //         if (existingUser) {
-                //         //             done(null, existingUser);
-                //         //         } else {
-                //         //             new User({
-                //         //                 //googleId: profile.id,
-                //         //                 userName: pr
-                //         //                 firstName: profile.displayName,
-                //         //                 email: profile.emails[0].value,
-                //         //
-                //         //             })
-                //         //                 .save()
-                //         //                 .then(user => done(null, user));
-                //         //         }
-                //         //     });
+                User.findOne({email: profile.emails[0].value}).then(existingUser => {
+                    if (existingUser) {
+                        done(null, existingUser);
+                    } else {
+                        new User({
+
+                            userName:  profile.displayName,
+                            lastName: profile.name.familyName,
+                            firstName: profile.name.givenName,
+                            email: profile.emails[0].value,
+                            password: "test34560"
+
+                        })
+                            .save()
+                            .then(user => done(null, user));
+                    }
+                });
 
             }
         )
