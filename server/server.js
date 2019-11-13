@@ -1,3 +1,12 @@
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+
+const swaggerDocument = YAML.load('./swagger/swagger.yaml');
+
+// Morgan (logs)
+const morgan = require('morgan');
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -31,6 +40,12 @@ const connection = mongoose.connection;
 connection.once('open', function () {
     console.log("MongoDB database connection established successfully");
 });
+
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Morgan (logs)
+app.use(morgan('combined'));
 
 // Secure private routes with JWT authentication only
 app.all("/api/private/*", (req, res, next) => auth(req, res, next));

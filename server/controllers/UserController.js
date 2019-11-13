@@ -75,7 +75,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(422).json({error: "Email or password invalid"});
     }
 
     const email = req.body.email;
@@ -109,7 +109,7 @@ const UserController = () => {
               expiresIn: 3600 // 1 hour in seconds
             },
             (err, token) => {
-              res.json({
+              res.status(201).json({
                 success: true,
                 token: "Bearer " + token
               });
@@ -117,8 +117,8 @@ const UserController = () => {
           );
         } else {
           return res
-            .status(400)
-            .json({ passwordincorrect: "Password incorrect" });
+            .status(404)
+            .json({ passwordincorrect: "Incorrect email or password" });
         }
       });
     });

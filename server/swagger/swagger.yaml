@@ -1,0 +1,73 @@
+openapi: 3.0.2
+info:
+  version: "1.0.0"
+  title: "Prello"
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/public/login:
+    post:
+      summary: Log to the application
+      tags:
+        - users
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '201':
+          description: Login successfull
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        '422':
+          description: Email or password empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: User not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    token:
+      description: "JWT authorization"
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
+  security:
+    - token: ''
+  schemas:
+    Error:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    Token:
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    UserCredentials:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string   
