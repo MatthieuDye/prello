@@ -2,28 +2,29 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
+import { updateUser } from "../../actions/userActions";
 
-class Register extends Component {
+class Profile extends Component {
   constructor() {
     super();
     this.state = {
       firstName: "",
       lastName: "",
-      name: "",
+      userName: "",
       email: "",
-      password: "",
-      password2: "",
       errors: {}
     };
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
-    }
+    //Retrieve all data from the state
+    this.setState({
+      firstName: this.props.user.firstName,
+      lastName: this.props.user.lastName,
+      userName: this.props.user.userName,
+      email: this.props.user.email,
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,13 +42,11 @@ class Register extends Component {
   onSubmit = e => {
     e.preventDefault();
 
-    const newUser = {
+    const updatedUser = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       userName: this.state.userName,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2
+      email: this.state.email
     };
 
     console.log(`Form submitted:`);
@@ -55,10 +54,8 @@ class Register extends Component {
     console.log(`User last name: ${this.state.lastName}`);
     console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
-    console.log(`User password: ${this.state.password}`);
-    console.log(`User password 2: ${this.state.password2}`);
 
-    this.props.registerUser(newUser, this.props.history);
+    this.props.updateUser(this.props.auth.user.id, updatedUser, this.props.history);
   };
 
   render() {
@@ -74,11 +71,8 @@ class Register extends Component {
             </Link>
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
               <h4>
-                <b>Register</b> below
+                <b>Manage your profile</b>
               </h4>
-              <p className="grey-text text-darken-1">
-                Already have an account? <Link to="/login">Log in</Link>
-              </p>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
 
@@ -93,11 +87,11 @@ class Register extends Component {
                     invalid: errors.firstName
                   })}
                 />
-                <label htmlFor="name">First Name</label>
+                <label htmlFor="firstName">First Name</label>
                 <span className="red-text">{errors.firstName}</span>
-                </div>
-
-                <div className="input-field col s12">
+              </div>
+              
+              <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
                   value={this.state.lastName}
@@ -108,10 +102,10 @@ class Register extends Component {
                     invalid: errors.lastName
                   })}
                 />
-                <label htmlFor="name">Last Name</label>
+                <label htmlFor="lastName">Last Name</label>
                 <span className="red-text">{errors.lastName}</span>
-                </div>
-
+              </div>
+              
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -123,7 +117,7 @@ class Register extends Component {
                     invalid: errors.userName
                   })}
                 />
-                <label htmlFor="name">User Name</label>
+                <label htmlFor="userName">User Name</label>
                 <span className="red-text">{errors.userName}</span>
               </div>
 
@@ -141,36 +135,6 @@ class Register extends Component {
                 <label htmlFor="email">Email</label>
                 <span className="red-text">{errors.email}</span>
               </div>
-
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.password}
-                  error={errors.password}
-                  id="password"
-                  type="password"
-                  className={classnames("", {
-                    invalid: errors.password
-                  })}
-                />
-                <label htmlFor="password">Password</label>
-                <span className="red-text">{errors.password}</span>
-              </div>
-
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.password2}
-                  error={errors.password2}
-                  id="password2"
-                  type="password"
-                  className={classnames("", {
-                    invalid: errors.password2
-                  })}
-                />
-                <label htmlFor="password2">Confirm Password</label>
-                <span className="red-text">{errors.password2}</span>
-              </div>
               
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <button
@@ -183,7 +147,7 @@ class Register extends Component {
                   type="submit"
                   className="btn btn-large waves-effect waves-light hoverable blue accent-3"
                 >
-                  Sign up
+                  Save
                 </button>
               </div>
             </form>
@@ -194,18 +158,20 @@ class Register extends Component {
   }
 }
 
-Register.propTypes = {
-  registerUser: PropTypes.func.isRequired,
+Profile.propTypes = {
+  updateUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
+  user: state.user
 });
 
 export default connect(
   mapStateToProps,
-  { registerUser }
-)(withRouter(Register));
+  { updateUser }
+)(withRouter(Profile));
