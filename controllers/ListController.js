@@ -3,8 +3,6 @@ const router = express.Router();
 const cors = require("cors");
 let debug = require('debug')('app:lists');
 
-let listAccess = require('../middlewares/ListMiddleware');
-
 // Load models
 let List = require('../models/List');
 

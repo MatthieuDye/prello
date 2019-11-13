@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const cors = require("cors");
 
-let LabelAccess = require('../middlewares/LabelMiddleware');
-
 // Load models
 let Label = require('../models/Label');
 

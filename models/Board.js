@@ -18,12 +18,6 @@ const boardSchema = new Schema({
             type: Boolean,
             default: false
         },
-        visibility: {
-            required: true,
-            type: String,
-            enum: ['private', 'team', 'organization', 'public'],
-            default : ['private']
-        },
         desc: {
             required  : false,
             type      : String,

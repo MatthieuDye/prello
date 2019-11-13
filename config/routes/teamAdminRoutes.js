@@ -1,9 +1,9 @@
 const teamAdminRoutes = {
 
     //Team
-    'PUT /team/addmember/:teamId/:memberId': 'TeamController.addMember',
-    'DELETE /team/removemember/:teamId/:memberId': 'TeamController.deleteMember',
-    'DELETE /team/delete/:teamId': 'TeamController.deleteTeam',
+    'PUT /addmember/:teamId/:memberId': 'TeamController.addMember',
+    'DELETE /removemember/:teamId/:memberId': 'TeamController.deleteMember',
+    'DELETE /delete/:teamId': 'TeamController.deleteTeam',
     
 };
 

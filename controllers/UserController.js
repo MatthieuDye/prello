@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const keys = require("../config/database/keys");
 const cors = require("cors");
 
-//const passport = require("passport");
 var ObjectID = require('mongodb').ObjectID;
 
 // Load input validation

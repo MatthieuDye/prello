@@ -48,7 +48,7 @@ const BoardController = () => {
     const getBoard = async (req, res) => {
         req.query._id = req.params.id;
 
-        Board.findById(req.query)
+        Board.findById(req.query._id)
             .populate('memberships.idMember', '_id username firstName lastName')
             .populate('labels')
             .exec(function (err, board) {

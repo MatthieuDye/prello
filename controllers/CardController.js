@@ -3,7 +3,6 @@ const router = express.Router();
 const cors = require("cors");
 
 let debug = require('debug')('app:card');
-let CardAccess = require('../middlewares/CardMiddleware');
 let mongoose = require('mongoose');
 
 // Load models
