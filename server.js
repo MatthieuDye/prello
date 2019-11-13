@@ -7,6 +7,7 @@ const path = require("path")
 const mapRoutes = require("express-routes-mapper");
 const auth = require("./config/policies/authPolicy");
 const config = require("./config/");
+require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";

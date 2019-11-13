@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
+import {Button} from "react-bootstrap";
 import classnames from "classnames";
+import GoogleButton from 'react-google-button'
+import Row from "react-bootstrap/Row";
 
 class Login extends Component {
   constructor() {
@@ -104,6 +107,7 @@ class Login extends Component {
                 </span>
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                <Row>
                 <button
                   style={{
                     width: "150px",
@@ -116,6 +120,11 @@ class Login extends Component {
                 >
                   Login
                 </button>
+
+                <GoogleButton
+                    onClick={() => { console.log('Google button clicked') }}
+                />
+                </Row>
               </div>
             </form>
           </div>
