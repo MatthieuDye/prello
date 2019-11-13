@@ -4,9 +4,6 @@ const privateRoutes = {
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
-    'PUT /team/addmember/:teamId/:memberId': 'TeamController.addMember',
-    'DELETE /team/removemember/:teamId/:memberId': 'TeamController.deleteMember',
-    'DELETE /team/delete/:teamId': 'TeamController.deleteTeam',
     
     //Board
     'POST /board/create': 'BoardController.createBoard',
