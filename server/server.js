@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -9,7 +10,6 @@ const auth = require("./config/policies/authPolicy");
 const config = require("./config/");
 
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
 app.options("*", cors());

@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
 const cors = require("cors");
 
 //const passport = require("passport");
@@ -103,10 +102,12 @@ const UserController = () => {
             email: user.email
           };
 
+          console.log(process.env.SECRET_TOKEN)
+
           // Sign token
           jwt.sign(
             payload,
-            keys.secretOrKey,
+            process.env.SECRET_TOKEN,
             {
               expiresIn: 3600 // 1 hour in seconds
             },
