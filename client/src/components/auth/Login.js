@@ -121,9 +121,7 @@ class Login extends Component {
                   Login
                 </button>
 
-                <GoogleButton
-                    onClick={() => { console.log('Google button clicked') }}
-                />
+                  <a href= "http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
                 </Row>
               </div>
             </form>

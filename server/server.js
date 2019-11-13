@@ -7,6 +7,7 @@ const path = require("path")
 const mapRoutes = require("express-routes-mapper");
 const auth = require("./config/policies/authPolicy");
 const config = require("./config");
+const passport = require("passport");
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
@@ -24,8 +25,13 @@ connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 });
 
+// Passport config
+require("./config/passport")(passport);
+
 // Secure private routes with JWT authentication only
 app.all("/api/private/*", (req, res, next) => auth(req, res, next));
+
+
 
 const mappedPublicRoutes = mapRoutes(config.publicRoutes, "controllers/");
 const mappedPrivateRoutes = mapRoutes(config.privateRoutes, "controllers/");

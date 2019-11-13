@@ -4,7 +4,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
 const cors = require("cors");
-const { google } = require('googleapis');
+const qs = require('query-string');
+const passport = require("passport");
+
 
 //const passport = require("passport");
 var ObjectID = require('mongodb').ObjectID;
@@ -167,46 +169,24 @@ const UserController = () => {
     });
   };
 
-  const googleAuth = async (req, res) => {
-
-    const auth = new google.auth.OAuth2(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        process.env.GOOGLE_REDIRECT_URL
-    );
-
-    const defaultScope = [
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ];
-
-    const url = auth.generateAuthUrl({
-      access_type: 'offline',
-      prompt: 'consent',
-      scope: defaultScope
-    });
-
-
-    return res.status(201).json({ url: url });
-
+  const googleAuth =  (req, res)  => {
+     passport.authenticate("google", {
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/userinfo.email"
+      ]
+    })
   };
 
   const googleAuthCallback = async (req, res) => {
 
-    const data = await auth.getToken(code);
-    const tokens = data.tokens;
-    const auth = createConnection();
-    auth.setCredentials(tokens);
-    const plus = getGooglePlusApi(auth);
-    const me = await plus.people.get({ userId: 'me' });
-    const userGoogleId = me.data.id;
-    const userGoogleEmail = me.data.emails && me.data.emails.length && me.data.emails[0].value;
-    return {
-      id: userGoogleId,
-      email: userGoogleEmail,
-      tokens: tokens,
+    passport.authenticate("google"),
+        (req, res) => {
+      console.log("zefsqdf");
+          res.redirect("/profile");
+        }
     };
-  };
+
 
 
   return {
