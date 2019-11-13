@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const path = require("path")
 const mapRoutes = require("express-routes-mapper");
 const auth = require("./config/policies/authPolicy");
-const config = require("./config/");
+const config = require("./config");
 require('dotenv').config();
 
 const PORT = process.env.PORT || 5000;
