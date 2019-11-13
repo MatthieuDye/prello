@@ -18,7 +18,7 @@ const boardSchema = new Schema({
             type: Boolean,
             default: false
         },
-        desc: {
+        description: {
             required  : false,
             type      : String,
             maxlength : 1000,

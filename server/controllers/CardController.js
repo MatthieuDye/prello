@@ -26,7 +26,7 @@ const CardController = () => {
      * @security JWT
      */
     const createCard = async (req, res) => {
-        let newCard = new Card(req.body);
+        /*let newCard = new Card(req.body);
 
         newCard.validate(function (err) {
             if (err) return res.status(400).json({ message: err });
@@ -37,7 +37,7 @@ const CardController = () => {
                 }
                 return res.status(201).json(newCard);
             });
-        });
+        });*/
     }
 
     /**
@@ -54,7 +54,7 @@ const CardController = () => {
      * @security JWT
      */
     const getCard = async (req, res) => {
-        let openChecklist = false;
+        /*let openChecklist = false;
         let openComment = false;
         if (req.query.checklist) {
             if (req.query.checklist === 'open') openChecklist = true;
@@ -91,7 +91,7 @@ const CardController = () => {
             if (err) debug('GET cards/:id error : ' + err);
             if (!card) return res.status(404).json({ message: 'Card not found' });
 
-        });
+        });*/
     }
 
     /**
@@ -106,11 +106,11 @@ const CardController = () => {
      * @security JWT
      */
     const deleteCard = async (req, res) => {
-        req.card.remove();
+       /* req.card.remove();
         req.card.save((err) => {
             if (err) return res.status(500).json({ message: 'Unexpected internal error' })
             return res.status(200).json({ message: 'Card successfully deleted' })
-        });
+        });*/
     }
 
     /**
@@ -133,7 +133,7 @@ const CardController = () => {
      * @security JWT
      */
     const updateCard = async (req, res) => {
-        let card = req.card;
+       /* let card = req.card;
 
         (req.query.name) ? card.name = req.query.name : null;
         (req.query.desc) ? card.desc = req.query.desc : null;
@@ -152,7 +152,7 @@ const CardController = () => {
                 }
                 return res.status(200).json({ message: 'Card updated successfully' });
             });
-        });
+        });*/
     }
 
     /**
@@ -170,7 +170,7 @@ const CardController = () => {
      * @security JWT
      */
     const addLabel = async (req, res) => {
-        Label.findById(req.query.value, function (err, label) {
+       /* Label.findById(req.query.value, function (err, label) {
             if (err) debug('card/:id/idLabels error : ' + err);
             if (!label) return res.status(404).json({ message: 'Label not found' });
             if (!label.idBoard.equals(req.card.idBoard)) return res.status(400).json({ message: 'Bad request, provide a label associate with the same board' });
@@ -183,7 +183,7 @@ const CardController = () => {
                     return res.status(201).json({ message: 'Label added successfully' });
                 });
             });
-        });
+        });*/
     }
 
     /**
@@ -200,14 +200,14 @@ const CardController = () => {
      * @security JWT
      */
     const deleteLabel = async (req, res) => {
-        if (!mongoose.Types.ObjectId.isValid(req.params.idLabel))
+       /* if (!mongoose.Types.ObjectId.isValid(req.params.idLabel))
             return res.status(404).json({ message: 'Label id wrong' });
 
         req.card.idLabels.remove(req.params.idLabel);
         req.card.save(function (err) {
             if (err) return res.status(400).json({ message: err });
             return res.status(200).json({ message: 'Label removed successfully' });
-        })
+        })*/
     }
 
     return {

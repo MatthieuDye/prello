@@ -23,13 +23,13 @@ const ListController = () => {
      * @security JWT
      */
     const getList = async (req, res) => {
-        req.body._id = req.params.id
+       /* req.body._id = req.params.id
 
         List.findOne(req.body, function (err, list) {
             if (err) debug('lists/:id error : ' + err);
             if (!list) return res.status(404).json({ message: 'List not found' });
             return res.status(200).json(list);
-        });
+        });*/
     }
 
     /**
@@ -47,7 +47,7 @@ const ListController = () => {
      * @security JWT
      */
     const archiveList = async (req, res) => {
-        if (!req.query.value) res.status(400).json({ message: 'Value is missing' });
+       /* if (!req.query.value) res.status(400).json({ message: 'Value is missing' });
 
         let list = req.list;
         list.closed = req.query.value;
@@ -61,7 +61,7 @@ const ListController = () => {
                 }
                 return res.status(200).end();
             });
-        });
+        });*/
     }
 
     /**
@@ -79,7 +79,7 @@ const ListController = () => {
      * @security JWT
      */
     const renameList = async (req, res) => {
-        if (!req.query.value)
+       /* if (!req.query.value)
             return res.status(400).json({ message: 'Value is missing' });
 
         let list = req.list;
@@ -91,7 +91,7 @@ const ListController = () => {
                 if (err) return res.status(500).json({ message: 'Unexpected internal errror' });
                 return res.status(200).json({ message: 'Name updated successfully' });
             });
-        });
+        });*/
     }
 
     /**
@@ -109,7 +109,7 @@ const ListController = () => {
      * @security JWT
      */
     const moveList = async (req, res) => {
-        if (!req.query.value) res.status(400).json({ message: 'Value is missing' });
+      /*  if (!req.query.value) res.status(400).json({ message: 'Value is missing' });
 
         let list = req.list;
         list.pos = req.query.value;
@@ -120,7 +120,7 @@ const ListController = () => {
                 if (err) return res.status(500).send('Internal error');
                 return res.status(200).json({ message: 'Position updated successfully' });
             });
-        });
+        });*/
     }
 
     return {

@@ -7,13 +7,12 @@ let memberSchema = new Schema({
         idUser: {
             required  : true,
             type      : Schema.Types.ObjectId,
-            ref : 'User'
+            ref : 'users'
         },
-        subscriberType: {
-            type: String,
-            enum: ['normal', 'admin'],
+        admin: {
+            type: Boolean,
             required : true,
-            default : ['normal']
+            default : false
         }
     },
     {
@@ -28,15 +27,7 @@ memberSchema.plugin(idValidator);
  * @returns {boolean} true if admin or false else
  */
 memberSchema.methods.isAdmin = function(){
-    return this.subscriberType === 'admin';
-};
-
-/**
- * Check if the user is normal user
- * @returns {boolean} true if normal or false else
- */
-memberSchema.methods.isNormal = function(){
-    return this.subscriberType === 'normal';
+    return this.isAdmin;
 };
 
 module.exports = memberSchema;

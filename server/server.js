@@ -19,7 +19,10 @@ const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
 app.options("*", cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json())
+/*app.use(bodyParser.urlencoded({
+  extended: true
+}));*/
 app.use(express.static(path.join(__dirname, "client", "build")))
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });

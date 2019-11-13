@@ -23,7 +23,7 @@ const LabelController = () => {
      * @security JWT
      */
     const getLabel = async (req, res) => {
-        return res.status(200).json(req.label);
+        //return res.status(200).json(req.label);
     }
 
     /**
@@ -42,7 +42,7 @@ const LabelController = () => {
      * @security JWT
      */
     const updateLabel = async (req, res) => {
-        req.query.name ? req.label.name = req.query.name : null;
+        /*req.query.name ? req.label.name = req.query.name : null;
         req.query.color ? req.label.color = req.query.color : null;
 
         req.label.validate((err) => {
@@ -51,7 +51,7 @@ const LabelController = () => {
                 if (err) return res.status(500).json({ message: 'Unexpected internal error' });
                 return res.status(200).json(req.label);
             });
-        });
+        });*/
     }
 
     /**
@@ -67,11 +67,11 @@ const LabelController = () => {
      * @security JWT
      */
     const deleteLabel = async (req, res) => {
-        req.label.remove();
+       /* req.label.remove();
         req.label.save((err) => {
             if (err) return res.status(500).json({ message: 'Unexpected internal error' });
             return res.status(200).json({ message: 'Label successfully removed' });
-        })
+        })*/
     }
 
     return {

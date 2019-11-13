@@ -1,11 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const cors = require("cors");
+var ObjectID = require('mongodb').ObjectID;
 
 // Load models
 const Board = require("../models/Board");
 const Label = require('../models/Label');
 const List = require('../models/List');
+
+// Load input validation
+const validateCreateBoardInput = require("../validation/createBoard.js");
 
 router.use(cors());
 
@@ -23,13 +27,27 @@ const BoardController = () => {
      * @security JWT
      */
     const createBoard = async (req, res) => {
-        const newBoard = new Board({
-            name: "test"
-        });
+        // Form validation
+        const { errors, isValid } = validateCreateBoardInput(req.body);
 
-        newBoard.save(function (err) {
-            if (err) {
-                return res.status(400).json({ message: err });
+        // Check validation
+        if (!isValid) {
+            return res.status(400).json(errors);
+        }
+
+        Board.findOne({ name: req.body.name }).then(board => {
+            if (board) {
+                return res.status(400).json({ boardName: "This board name already exists" });
+            } else {
+                const newBoard = new Board({
+                    name: req.body.name,
+                    description: req.body.description,
+                    members: [{ idUser: req.body.userId, admin: true }],
+                });
+                newBoard
+                    .save()
+                    .then(board => res.status(201).send({ message: 'Board successfully created', board: board }))
+                    .catch(err => console.log(err));
             }
         });
     }
@@ -46,7 +64,7 @@ const BoardController = () => {
      * @security JWT
      */
     const getBoard = async (req, res) => {
-        req.query._id = req.params.id;
+        /*req.query._id = req.params.id;
 
         Board.findById(req.query._id)
             .populate('memberships.idMember', '_id username firstName lastName')
@@ -55,7 +73,7 @@ const BoardController = () => {
                 if (err) debug('GET boards/:id error : ' + err);
                 if (!board) return res.status(404).json({ message: 'Board not found' });
                 return res.status(200).json(board);
-            }).then();
+            }).then();*/
     }
 
     /**
@@ -72,7 +90,7 @@ const BoardController = () => {
      * @returns {Error}  default - Unexpected error
      */
     const updateBoard = async (req, res) => {
-        let board = req.board;
+       /* let board = req.board;
 
         (req.query.name) ? board.name = req.query.name : null;
         (req.query.desc) ? board.desc = req.query.desc : null;
@@ -87,7 +105,7 @@ const BoardController = () => {
                 }
                 return res.status(200).json({ message: 'Board updated successfully' });
             });
-        });
+        });*/
     }
 
     /**
@@ -103,7 +121,7 @@ const BoardController = () => {
      * @security JWT
      */
     const addList = async (req, res) => {
-        req.body.idBoard = req.params.id;
+        /*req.body.idBoard = req.params.id;
 
         Board.findById(req.params.id)
             .exec(function (err, board) {
@@ -123,7 +141,7 @@ const BoardController = () => {
                         res.status(201).json(newList);
                     });
                 });
-            }).then();
+            }).then();*/
     }
 
     /**
@@ -138,7 +156,7 @@ const BoardController = () => {
      * @security JWT
      */
     const getLists = async (req, res) => {
-        req.query.idBoard = req.board._id;
+      /*  req.query.idBoard = req.board._id;
         let openCard = false;
         if (req.query.cards) {
             if (req.query.cards === 'open') openCard = true;
@@ -152,7 +170,7 @@ const BoardController = () => {
                 return res.status(500).json({ message: 'Unexpected internal error' });
             }
             return res.status(200).json(lists)
-        }).then();
+        }).then();*/
     }
 
     /**
@@ -170,7 +188,7 @@ const BoardController = () => {
      * @security JWT
      */
     const addLabel = async (req, res) => {
-        if (!req.query.name) return res.status(400).json({ message: 'Label name missing' });
+        /*if (!req.query.name) return res.status(400).json({ message: 'Label name missing' });
         if (!req.query.color) return res.status(400).json({ message: 'Label color missing' });
 
         let label = new Label({ name: req.query.name, color: req.query.color, idBoard: req.board._id });
@@ -181,7 +199,7 @@ const BoardController = () => {
                 if (err) return res.status(500).json({ message: 'Unexpected internal error.' });
                 return res.status(201).json(label);
             })
-        })
+        })*/
     }
 
     return {

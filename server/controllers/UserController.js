@@ -71,7 +71,6 @@ const UserController = () => {
   // @access Public
   const login = async (req, res) => {
     // Form validation
-
     const { errors, isValid } = validateLoginInput(req.body);
 
     // Check validation
