@@ -12,15 +12,10 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
-<<<<<<< HEAD
-import CreateTeam from "./components/team/CreateTeam";
-import Profile from "./components/profile/Profile"
-=======
 import Profile from "./components/profile/Profile"
 import CreateTeam from "./components/team/CreateTeam";
 import MyTeams from "./components/team/MyTeams";
 import AddMember from "./components/team/AddMember";
->>>>>>> 80dea49461e822f9f5f77cf62e08bb220e68ce69
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
