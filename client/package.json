@@ -12,6 +12,8 @@
     "mongoose-hidden": "^1.8.1",
     "mongoose-unique-validator": "^2.0.3",
     "react": "^16.11.0",
+    "react-autocomplete": "^1.8.1",
+    "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
@@ -48,9 +50,6 @@
     ]
   },
   "devDependencies": {
-    "mocha": "^6.2.2",
-    "selenium-webdriver": "^4.0.0-alpha.5",
-    "chromedriver": "^78.0.1",
-    "geckodriver": "^1.19.1"
+    "reactstrap": "^8.1.1"
   }
 }

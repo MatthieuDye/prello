@@ -3,26 +3,28 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { getUserById, updateUser } from "../../actions/userActions";
+import { updateUser } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      name: "",
+      firstName: "",
+      lastName: "",
+      userName: "",
       email: "",
       errors: {}
     };
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Profile page, should redirect them to dashboard
-    /*if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/profile");
-    }*/
-    //const { user } = getUserById(this.props.auth.user.id)
-    console.log(this.props.auth.user.id)
-    console.log(getUserById(this.props.auth.user.id))
+    //Retrieve all data from the state
+    this.setState({
+      firstName: this.props.user.firstName,
+      lastName: this.props.user.lastName,
+      userName: this.props.user.userName,
+      email: this.props.user.email,
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,22 +43,23 @@ class Profile extends Component {
     e.preventDefault();
 
     const updatedUser = {
-      name: this.state.name,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      userName: this.state.userName,
       email: this.state.email
     };
 
     console.log(`Form submitted:`);
-    console.log(`User name: ${this.state.name}`);
+    console.log(`User first name: ${this.state.firstName}`);
+    console.log(`User last name: ${this.state.lastName}`);
+    console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
 
-    this.props.updateUser(this.props.auth.user.id, updatedUser);
+    this.props.updateUser(this.props.auth.user.id, updatedUser, this.props.history);
   };
 
   render() {
     const { errors } = this.state;
-    const { user } = this.props.auth;
-
-    console.log(getUserById(this.props.auth.user.id))
 
     return (
       <div className="container">
@@ -72,20 +75,52 @@ class Profile extends Component {
               </h4>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
+
+            <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.firstName}
+                  error={errors.firstName}
+                  id="firstName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.firstName
+                  })}
+                />
+                <label htmlFor="firstName">First Name</label>
+                <span className="red-text">{errors.firstName}</span>
+              </div>
+              
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
-                  value={this.state.name}
-                  error={errors.name}
-                  id="name"
+                  value={this.state.lastName}
+                  error={errors.lastName}
+                  id="lastName"
                   type="text"
                   className={classnames("", {
-                    invalid: errors.name
+                    invalid: errors.lastName
                   })}
                 />
-                <label htmlFor="name">Name</label>
-                <span className="red-text">{errors.name}</span>
+                <label htmlFor="lastName">Last Name</label>
+                <span className="red-text">{errors.lastName}</span>
               </div>
+              
+              <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.userName}
+                  error={errors.userName}
+                  id="userName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.userName
+                  })}
+                />
+                <label htmlFor="userName">User Name</label>
+                <span className="red-text">{errors.userName}</span>
+              </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -126,12 +161,14 @@ class Profile extends Component {
 Profile.propTypes = {
   updateUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
+  user: state.user
 });
 
 export default connect(

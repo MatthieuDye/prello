@@ -5,14 +5,38 @@ module.exports = function validateRegisterInput(data) {
   let errors = {};
 
   // Convert empty fields to an empty string so we can use validator functions
-  data.name = !isEmpty(data.name) ? data.name : "";
+  data.firstName = !isEmpty(data.firstName) ? data.firstName : "";
+  data.lastName = !isEmpty(data.lastName) ? data.lastName : "";
+  data.userName = !isEmpty(data.userName) ? data.userName : "";
   data.email = !isEmpty(data.email) ? data.email : "";
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
 
-  // Name checks
-  if (Validator.isEmpty(data.name)) {
-    errors.name = "Name field is required";
+  // First Name checks
+  if (Validator.isEmpty(data.firstName)) {
+    errors.firstName = "First Name field is required";
+  }
+
+  if (!Validator.isLength(data.firstName, { min: 2, max: 50 })) {
+    errors.firstName = "First Name must be between 2 and 50 characters";
+  }
+
+  // Last Name checks
+  if (Validator.isEmpty(data.lastName)) {
+    errors.lastName = "Last Name field is required";
+  }
+
+  if (!Validator.isLength(data.lastName, { min: 2, max: 50 })) {
+    errors.lastName = "Last Name must be between 2 and 50 characters";
+  }
+  
+  // User Name checks
+  if (Validator.isEmpty(data.userName)) {
+    errors.userName = "User Name field is required";
+  }
+
+  if (!Validator.isLength(data.userName, { min: 3, max: 30 })) {
+    errors.userName = "User Name must be between 3 and 30 characters";
   }
 
   // Email checks
@@ -32,7 +56,7 @@ module.exports = function validateRegisterInput(data) {
   }
 
   if (!Validator.isLength(data.password, { min: 6, max: 30 })) {
-    errors.password = "Password must be at least 6 characters";
+    errors.password = "Password must be between 6 and 30 characters";
   }
 
   if (!Validator.equals(data.password, data.password2)) {

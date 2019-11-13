@@ -9,6 +9,8 @@ class Register extends Component {
   constructor() {
     super();
     this.state = {
+      firstName: "",
+      lastName: "",
       name: "",
       email: "",
       password: "",
@@ -40,14 +42,18 @@ class Register extends Component {
     e.preventDefault();
 
     const newUser = {
-      name: this.state.name,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      userName: this.state.userName,
       email: this.state.email,
       password: this.state.password,
       password2: this.state.password2
     };
 
     console.log(`Form submitted:`);
-    console.log(`User name: ${this.state.name}`);
+    console.log(`User first name: ${this.state.firstName}`);
+    console.log(`User last name: ${this.state.lastName}`);
+    console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
     console.log(`User password: ${this.state.password}`);
     console.log(`User password 2: ${this.state.password2}`);
@@ -75,20 +81,52 @@ class Register extends Component {
               </p>
             </div>
             <form noValidate onSubmit={this.onSubmit}>
+
+            <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.firstName}
+                  error={errors.firstName}
+                  id="firstName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.firstName
+                  })}
+                />
+                <label htmlFor="name">First Name</label>
+                <span className="red-text">{errors.firstName}</span>
+                </div>
+
+                <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.lastName}
+                  error={errors.lastName}
+                  id="lastName"
+                  type="text"
+                  className={classnames("", {
+                    invalid: errors.lastName
+                  })}
+                />
+                <label htmlFor="name">Last Name</label>
+                <span className="red-text">{errors.lastName}</span>
+                </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
-                  value={this.state.name}
-                  error={errors.name}
-                  id="name"
+                  value={this.state.userName}
+                  error={errors.userName}
+                  id="userName"
                   type="text"
                   className={classnames("", {
-                    invalid: errors.name
+                    invalid: errors.userName
                   })}
                 />
-                <label htmlFor="name">Name</label>
-                <span className="red-text">{errors.name}</span>
+                <label htmlFor="name">User Name</label>
+                <span className="red-text">{errors.userName}</span>
               </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -103,6 +141,7 @@ class Register extends Component {
                 <label htmlFor="email">Email</label>
                 <span className="red-text">{errors.email}</span>
               </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -117,6 +156,7 @@ class Register extends Component {
                 <label htmlFor="password">Password</label>
                 <span className="red-text">{errors.password}</span>
               </div>
+
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}
@@ -131,6 +171,7 @@ class Register extends Component {
                 <label htmlFor="password2">Confirm Password</label>
                 <span className="red-text">{errors.password2}</span>
               </div>
+              
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <button
                   style={{

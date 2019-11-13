@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
+const TeamMember = require('./TeamMember');
 const Schema = mongoose.Schema;
 
 const TeamSchema = new Schema({
-    urlAvatar: String,
-    admins: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
-    description: String,
     name: {type: String, required: true},
+    description: String,
     boards: [{
+        required: true,
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Board'
+        ref: 'Board',
+        default : []
     }],
-    members: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}]
+    members: {
+        required: true,
+        type: [TeamMember],
+        default: []
+    },
 }, {timestamps: true});
 
 const Team = mongoose.model('Team', TeamSchema, 'Teams');

@@ -6,7 +6,6 @@ module.exports = function validateCreateTeamInput(data) {
 
     // Convert empty fields to an empty string so we can use validator functions
     data.name = !isEmpty(data.name) ? data.name : "";
-    data.urlAvatar = !isEmpty(data.urlAvatar) ? data.urlAvatar : "";
     data.description = !isEmpty(data.description) ? data.description : "";
 
     // Email checks

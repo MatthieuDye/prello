@@ -4,15 +4,18 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const prelloRoutes = express.Router();
-const path = require("path")
+const path = require("path");
+const mapRoutes = require("express-routes-mapper");
+const auth = require("./config/policies/authPolicy");
+const config = require("./config/");
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
+app.options("*", cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "client", "build")))
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 const users = require("./routes/api/users");
 const team = require("./routes/api/team");
@@ -27,25 +30,15 @@ const connection = mongoose.connection;
 
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
-})
 
 
-app.use("/api/users", users);
-app.use("/api/team", team);
-app.use('/api/boards', boardsRouter);
-app.use('/api/lists', listsRouter);
-app.use('/api/cards', cardsRouter);
-app.use('/api/labels', labelsRouter);
-app.use('/api/*', function(req, res) {
-    res.status(404).json({message : 'Resource not found on this server'});
-});
+const mappedPublicRoutes = mapRoutes(config.publicRoutes, "controllers/");
+const mappedPrivateRoutes = mapRoutes(config.privateRoutes, "controllers/");
 
-
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-
+// Express routes
+app.use("/api/public/", mappedPublicRoutes);
+app.use("/api/private/", mappedPrivateRoutes);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
-});
+});}

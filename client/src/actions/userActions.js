@@ -2,32 +2,38 @@ import axios from "axios";
 
 import { GET_ERRORS, UPDATE_USER_PROFILE } from "./types";
 
-//Get user
-export const getUserById = userId => {
-    axios
-      .get("/api/users/" + userId)
-      .then(res => res.data.data.name)
-  };
-
-export const updateUserSuccessAction = user => ({
-  type: UPDATE_USER_PROFILE,
-  payload: {
-      user,
-  },
-});
-
 // Update User
-export const updateUser = (userId, userData) => dispatch => {
+export const updateUser = (userId, userData, history) => dispatch => {
   axios
-    .post("/api/users/" + userId, {
+    .post("/api/private/user/" + userId, {
         id: userId,
         update: userData
     })
-    .then(res => res.data)
+    .then(res => {
+      // Set token to localStorage
+      /*const { token } = res.data;
+      console.log(token)
+      localStorage.setItem("jwtToken", token);
+      // Set token to Auth header
+      setAuthToken(token);
+      // Decode token to get user data
+      const decoded = jwt_decode(token);
+      console.log(decoded)*/
+      dispatch(updateUserProfile(userData));
+      history.push("/dashboard");
+    })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
       })
     );
+};
+
+// Update user profile
+export const updateUserProfile = userData => {
+  return {
+    type: UPDATE_USER_PROFILE,
+    payload: userData
+  };
 };

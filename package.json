@@ -9,7 +9,7 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --timeout=10000 --recursive --exit",
     "start": "nodemon server.js",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
@@ -22,18 +22,25 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
+    "express-routes-mapper": "^1.1.0",
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^6.2.2",
     "mongoose": "^5.7.6",
     "mongoose-id-validator": "^0.5.3",
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "unicode-match-property-ecmascript": "^1.0.4",
-    "validator": "^11.1.0",
-    "mongodb": "latest"
+    "validator": "^11.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "react-autocomplete": "^1.8.1",
+    "request": "^2.88.0",
+    "supertest": "^4.0.2"
   }
 }
