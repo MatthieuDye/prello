@@ -3,11 +3,13 @@ import axios from "axios";
 import { GET_ERRORS, UPDATE_USER_PROFILE } from "./types";
 
 // Update User
-export const updateUser = (userId, userData, history) => dispatch => {
+export const updateUser = (userName, userData, history) => dispatch => {
   axios
-    .post("/api/private/user/" + userId, {
-        id: userId,
-        update: userData
+    .put("/api/private/user/" + userName, {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        userName: userData.userName
     })
     .then(res => {
       // Set token to localStorage

@@ -7,9 +7,45 @@ servers:
   - url: http://localhost:5000
 
 paths:
+  /api/public/register:
+    post:
+      summary: Register to the application
+      security: []   # No security
+      tags:
+        - users
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: Register successfull
+        '409':
+          description: Email or userName already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
   /api/public/login:
     post:
       summary: Log to the application
+      security: []   # No security
       tags:
         - users
       requestBody:
@@ -34,6 +70,53 @@ paths:
                 $ref: "#/components/schemas/Error"
         '404':
           description: User not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userName} :
+    put:
+      summary: Update a user
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: userName
+          in: path
+          description: User Name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '201':
+          description: User sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewUser"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '409':
+          description: Email or userName already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -70,4 +153,40 @@ components:
         email:
           type: string
         password:
-          type: string   
+          type: string
+    NewUser:
+      required:
+        - firstName
+        - lastName
+        - userName
+        - email
+        - password
+        - password2
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        password2:
+          type: string
+    UpdateUser:
+      required:
+        - firstName
+        - lastName
+        - userName
+        - email
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string

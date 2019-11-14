@@ -1,6 +1,6 @@
 const privateRoutes = {
     //User
-    'POST /user/:id': 'UserController.updateProfile',
+    'PUT /user/:userName': 'UserController.updateProfile',
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
