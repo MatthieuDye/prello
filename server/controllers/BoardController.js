@@ -31,12 +31,12 @@ const BoardController = () => {
 
         // Check validation
         if (!isValid) {
-            return res.status(400).json(errors);
+            return res.status(422).json({message: "Invalid input"});
         }
 
         Board.findOne({ name: req.body.name }).then(board => {
             if (board) {
-                return res.status(400).json({ boardName: "This board name already exists" });
+                return res.status(409).json({ boardName: "This board name already exists" });
             } else {
                 const newBoard = new Board({
                     name: req.body.name,
@@ -46,7 +46,7 @@ const BoardController = () => {
                 newBoard
                     .save()
                     .then(board => res.status(201).send({ message: 'Board successfully created', board: board }))
-                    .catch(err => console.log(err));
+                    .catch(err => res.status(500).json({message: "Server error " + err}));
             }
         });
     }

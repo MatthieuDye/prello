@@ -24,15 +24,13 @@ const TeamController = () => {
 
         // Check validation
         if (!isValid) {
-            return res.status(400).json(errors);
+            return res.status(422).json({message: "Invalid input"});
         }
 
         Team.findOne({ name: req.body.name }).then(team => {
             if (team) {
-                return res.status(400).json({ teamName: "This team Name already exists" });
+                return res.status(409).json({ message: "This team Name already exists" });
             } else {
-
-
                 const newTeam = new Team({
                     name: req.body.name,
                     description: req.body.description,
@@ -41,7 +39,7 @@ const TeamController = () => {
                 newTeam
                     .save()
                     .then(team => res.status(201).send({ message: 'Team successfully created', team: team }))
-                    .catch(err => console.log(err));
+                    .catch(err => res.status(500).json({message: "Server error " + err}));
             }
         });
     };

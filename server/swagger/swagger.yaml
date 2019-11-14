@@ -121,6 +121,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
+  /api/private/team/create:
+    post:
+      summary: Add a team
+      security:
+        - token: []
+      tags:
+        - teams
+      requestBody:
+        description: Team details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTeam'
+      responses:
+        '201':
+          description: Team create successfull
+        '409':
+          description: Team name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/create:
+    post:
+      summary: Add a board
+      security:
+        - token: []
+      tags:
+        - boards
+      requestBody:
+        description: Board details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBoard'
+      responses:
+        '201':
+          description: Board create successfull
+        '409':
+          description: Board name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   securitySchemes:
@@ -189,4 +261,26 @@ components:
         userName:
           type: string
         email:
+          type: string
+    NewTeam:
+      required:
+        - name
+        - userId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        userId:
+          type: string
+    NewBoard:
+      required:
+        - name
+        - userId
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        userId:
           type: string
