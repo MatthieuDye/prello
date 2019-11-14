@@ -171,7 +171,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewBoard'
+              $ref: '#/components/schemas/Board'
       responses:
         '201':
           description: Board create successfull
@@ -189,6 +189,34 @@ paths:
                 $ref: "#/components/schemas/Error"
         '500':
           description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/{boardId} :
+    get:
+      summary: Get a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Board sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: Board not found
           content:
             application/json:
               schema:
@@ -273,14 +301,63 @@ components:
           type: string
         userId:
           type: string
-    NewBoard:
+
+    Board:
       required:
         - name
-        - userId
+        - isFavorite
+        - members
+        - closed
+        - labelNames
       properties:
         name:
           type: string
+        isFavorite:
+          type: boolean
+          default: false
         description:
           type: string
-        userId:
+        members:
+          $ref: "#/components/schemas/BoardMembers"
+          default: []
+        team:
           type: string
+        closed:
+          type: boolean
+          default: false
+        labelNames:
+          $ref: "#/components/schemas/LabelNames"
+
+    BoardMembers:
+      type: array
+      items:
+        $ref: "#/components/schemas/BoardMember"
+
+    BoardMember:
+      required:
+        - idUser
+        - admin
+      properties:
+        idUser:
+          type: string
+        admin:
+          type: boolean
+          default: false
+
+    LabelNames:
+      properties:
+        green:
+          type: string
+        yellow:
+          type: string
+        orange:
+          type: string
+        red:
+          type: string
+        purple:
+          type: string
+        blue:
+          type: string
+        pink:
+          type: string
+    

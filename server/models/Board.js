@@ -38,14 +38,6 @@ const boardSchema = new Schema({
             type : Boolean,
             default : false
         },
-        prefs: {
-            background : {
-                required  : false,
-                default   : "#FFFFFF",
-                type      : String,
-                match     : [/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Please, provide a color code in hexa format (#000000).']
-            }
-        },
 
         labelNames: {
             green : {
@@ -72,19 +64,7 @@ const boardSchema = new Schema({
                 type : String,
                 default : ""
             },
-            sky : {
-                type : String,
-                default : ""
-            },
-            lime : {
-                type : String,
-                default : ""
-            },
             pink : {
-                type : String,
-                default : ""
-            },
-            black : {
                 type : String,
                 default : ""
             }

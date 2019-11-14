@@ -16,14 +16,8 @@ const BoardController = () => {
 
     /**
      * Create a board
-     * @route POST /boards
-     * @group board - Operations about boards
      * @param board.body.required - board's information.
      * @returns {Board.model} 201 - Board created
-     * @returns {Error}  400 - bad request, one of fields is invalid
-     * @returns {Error}  401 - Unauthorized, invalid credentials
-     * @returns {Error}  default - Unexpected error
-     * @security JWT
      */
     const createBoard = async (req, res) => {
         // Form validation
@@ -71,14 +65,8 @@ const BoardController = () => {
 
     /**
      * Get a board by id
-     * @route GET /boards/{id}
-     * @group board - Operations about boards
      * @param {string} id.path.required - board's id.
      * @returns {Board.model} 200 - Board object
-     * @returns {Error}  401 - Unauthorized, invalid credentials
-     * @returns {Error}  404 - Not found, board is not found
-     * @returns {Error}  default - Unexpected error
-     * @security JWT
      */
     const getBoard = async (req, res) => {
 
@@ -86,12 +74,12 @@ const BoardController = () => {
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
-                return res.status(400).json(board)
+                return res.status(201).json(board)
             } else {
-                return res.status(404).json({ boardNotFound: "Board not found" });
+                return res.status(404).json({ message: "Board not found" });
             }
         }).catch(err => {
-            res.status(404).json({ error: err });
+            res.status(404).json({ message: "Board not found " + err });
         });
     }
 
