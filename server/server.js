@@ -46,7 +46,7 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
         console.log("ici : " + user);
 
         const payload = {
-            id: user._id,
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,
@@ -55,12 +55,13 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
 
        jwt.sign(
             payload,
-            "secret",
+            process.env.SECRET_TOKEN,
             {
                 expiresIn: 3600 // 1 hour in seconds
             },
             (err, token) => {
-                console.log("ici2 :" + token)
+                console.log("before : " + token);
+                res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
             }
         );
 

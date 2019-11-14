@@ -43,7 +43,8 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(tokenToVerify, 'secret');
+    console.log("after : " + tokenToVerify);
+    payload = jwt.verify(tokenToVerify, process.env.SECRET_TOKEN);
     if (!payload) {
       // On verifie la validité du payload avec notre secretKey
       return res.status(401).send("Unauthorized request");

@@ -19,30 +19,45 @@ export const registerUser = (userData, history) => dispatch => {
 
 // Login - get user token
 export const loginUser = (userData, history) => dispatch => {
-  axios
-    .post("/api/public/user/login", userData)
-    .then(res => {
-      // Save to localStorage
+    axios
+        .post("/api/public/user/login", userData)
+        .then(res => {
+            // Save to localStorage
 
-      // Set token to localStorage
-      const { token } = res.data;
-      localStorage.setItem("jwtToken", token);
-      // Set token to Auth header
-      setAuthToken(token);
-      // Decode token to get user data
-      const decoded = jwt_decode(token);
-      // Set current user
-      dispatch(setCurrentUser(decoded));
-      // Save user
-      dispatch(saveUser(decoded));
-      history.push("/dashboard");
-    })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    );
+            // Set token to localStorage
+
+            const { token } = res.data;
+            console.log(token);
+            localStorage.setItem("jwtToken", token);
+            // Set token to Auth header
+            setAuthToken(token);
+            // Decode token to get user data
+            const decoded = jwt_decode(token);
+            // Set current user
+            dispatch(setCurrentUser(decoded));
+            // Save user
+            dispatch(saveUser(decoded));
+            history.push("/dashboard");
+        })
+        .catch(err =>
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+export const loginGoogleUser = (token, history) => dispatch => {
+    localStorage.setItem("jwtToken", token);
+    // Set token to Auth header
+    setAuthToken(token);
+    // Decode token to get user data
+    const decoded = jwt_decode(token);
+    // Set current user
+    dispatch(setCurrentUser(decoded));
+    // Save user
+    dispatch(saveUser(decoded));
+    history.push("/dashboard");
 };
 
 // Set logged in user

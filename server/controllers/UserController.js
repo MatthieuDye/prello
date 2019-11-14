@@ -109,7 +109,7 @@ const UserController = () => {
           // Sign token
           jwt.sign(
             payload,
-            keys.secretOrKey,
+              process.env.SECRET_TOKEN,
             {
               expiresIn: 3600 // 1 hour in seconds
             },

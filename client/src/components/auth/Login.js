@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
+import { loginUser, loginGoogleUser } from "../../actions/authActions";
 import {Button} from "react-bootstrap";
 import classnames from "classnames";
 import GoogleButton from 'react-google-button'
 import Row from "react-bootstrap/Row";
+import {bindActionCreators} from "redux";
 
 class Login extends Component {
   constructor() {
@@ -29,7 +30,7 @@ class Login extends Component {
           window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
               params[key] = value;
           });
-          console.log(params)
+          this.props.loginGoogleUser("Bearer ".concat(params.token.substring(0, params.token.length - 1)), this.props.history)
       }
   }
 
@@ -141,6 +142,7 @@ class Login extends Component {
 }
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  loginGoogleUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -148,7 +150,16 @@ const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors
 });
+
+// Put actions in props
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      loginUser,
+      loginGoogleUser,
+
+    }, dispatch,
+);
 export default connect(
   mapStateToProps,
-  { loginUser }
+  mapDispatchToProps
 )(Login);

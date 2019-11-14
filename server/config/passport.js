@@ -26,9 +26,9 @@ module.exports = (passport) => {
                     } else {
                         new User({
 
-                            userName:  profile.name.givenName + profile.name.familyName,
-                            lastName: profile.name.familyName,
                             firstName: profile.name.givenName,
+                            lastName: profile.name.familyName,
+                            userName:  profile.name.givenName + profile.name.familyName,
                             email: profile.emails[0].value,
                             password: "test34560"
 
