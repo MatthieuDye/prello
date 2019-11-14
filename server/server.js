@@ -24,6 +24,8 @@ const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 });
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Passport config
 require("./config/passport")(passport);
