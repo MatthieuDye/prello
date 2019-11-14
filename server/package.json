@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --timeout=10000 --recursive --exit",
     "start": "nodemon server.js",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+    "heroku-postbuild": "cd ../client && npm install --only=dev && npm install && npm run build"
   },
   "engines": {
     "node": "10.14.1"
@@ -22,13 +22,16 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-routes-mapper": "^1.1.0",
+    "googleapis": "^45.0.0",
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^6.2.2",
     "mongoose": "^5.7.6",
     "nodemon": "^1.19.4",
     "passport": "^0.4.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
+    "query-string": "^6.9.0",
     "validator": "^11.1.0"
   },
   "devDependencies": {
