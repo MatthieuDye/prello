@@ -9,6 +9,7 @@ const validateCreateTeamInput = require("../validation/createTeam");
 // Load Team model
 const Team = require("../models/Team");
 const User = require("../models/User");
+const UserController = require("../controllers/UserController");
 
 router.use(cors());
 
@@ -24,7 +25,7 @@ const TeamController = () => {
 
         // Check validation
         if (!isValid) {
-            return res.status(422).json({message: "Invalid input"});
+            return res.status(422).json({ message: "Invalid input" });
         }
 
         Team.findOne({ name: req.body.name }).then(team => {
@@ -38,8 +39,28 @@ const TeamController = () => {
                 });
                 newTeam
                     .save()
-                    .then(team => res.status(201).send({ message: 'Team successfully created', team: team }))
-                    .catch(err => res.status(500).json({message: "Server error " + err}));
+                    .then(team => {
+                        //Add the team to the user team list
+                        Team.findById(team.id)
+                            .then(
+                                User.findById(req.body.userId)
+                                    .then(
+                                        User.updateOne({ _id: req.body.userId }, {
+                                            $addToSet: {
+                                                teams: team.id,
+                                            }
+                                        })
+                                            .then()
+                                            .catch(err => res.send({message: err}))
+                                    )
+                                    .catch(err => res.status(404).json({ message: "This user does not exists " + err }))
+                            )
+                            .catch(err => res.status(404).json({ message: "This team does not exists " + err }));
+                        res.status(201).send({ message: 'Team successfully created', team: team })
+                    })
+
+
+                    .catch(err => res.status(500).json({ message: "Server error " + err }));
             }
         });
     };

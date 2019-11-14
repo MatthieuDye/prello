@@ -29,7 +29,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({message: "Invalid input"});
+      return res.status(422).json({ message: "Invalid input" });
     }
 
     User.findOne({ email: req.body.email }).then(user => {
@@ -56,7 +56,7 @@ const UserController = () => {
                 newUser
                   .save()
                   .then(user => res.status(201).json(user))
-                  .catch(err => res.status(500).json({message: "Server error " + err}));
+                  .catch(err => res.status(500).json({ message: "Server error " + err }));
               });
             });
           }
@@ -74,7 +74,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({message: "Email or password invalid"});
+      return res.status(422).json({ message: "Email or password invalid" });
     }
 
     const email = req.body.email;
@@ -129,7 +129,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({message: "Invalid input"});
+      return res.status(422).json({ message: "Invalid input" });
     }
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
@@ -151,8 +151,8 @@ const UserController = () => {
                 }
               },
             )
-            .then(user => res.status(201).json(user))
-            .catch(err => res.status(404).json({ message: "User not found " + err }))
+              .then(user => res.status(201).json(user))
+              .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
         });
       }

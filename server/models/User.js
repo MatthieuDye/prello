@@ -50,6 +50,16 @@ const UserSchema = new Schema({
     ],
     default : [],
     required : true
+  },
+  teams: {
+    type : [
+      {
+        type : Schema.Types.ObjectId,
+        ref : 'Team'
+      }
+    ],
+    default : [],
+    required : true
   }
 
 });
