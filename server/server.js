@@ -3,7 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const path = require("path")
+const jwt = require("jsonwebtoken");
+const keys = require("./config/keys");
+const path = require("path");
 const mapRoutes = require("express-routes-mapper");
 const auth = require("./config/policies/authPolicy");
 const config = require("./config");
@@ -38,14 +40,34 @@ app.get(
     passport.authenticate("google", { scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"] })
 );
 
-app.get(
-    "/api/public/user/auth/google/callback",
-    passport.authenticate("google"),
-    (req, res) => {
-        console.log("zefsqdf");
-        res.redirect("/");
+app.get('/api/public/user/auth/google/callback', passport.authenticate('google', { session: false }), async (req, res) => {
+    try {
+        const user = req.user;
+        console.log("ici : " + user);
+
+        const payload = {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userName: user.userName,
+            email: user.email
+        };
+
+       jwt.sign(
+            payload,
+            "secret",
+            {
+                expiresIn: 3600 // 1 hour in seconds
+            },
+            (err, token) => {
+                console.log("ici2 :" + token)
+            }
+        );
+
+    } catch (e) {
+       console.log("error")
     }
-);
+});
 
 
 

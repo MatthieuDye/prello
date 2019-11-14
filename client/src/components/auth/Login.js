@@ -23,6 +23,14 @@ class Login extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
     }
+
+      if (this.props.location.search) {
+          const params = {};
+          window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+              params[key] = value;
+          });
+          console.log(params)
+      }
   }
 
   componentWillReceiveProps(nextProps) {

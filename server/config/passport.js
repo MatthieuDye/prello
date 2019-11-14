@@ -19,14 +19,14 @@ module.exports = (passport) => {
                 passReqToCallback: true
             },
             (req, accessToken, refreshToken, profile, done) => {
-                console.log(profile);
+                //console.log(profile);
                 User.findOne({email: profile.emails[0].value}).then(existingUser => {
                     if (existingUser) {
                         done(null, existingUser);
                     } else {
                         new User({
 
-                            userName:  profile.displayName,
+                            userName:  profile.name.givenName + profile.name.familyName,
                             lastName: profile.name.familyName,
                             firstName: profile.name.givenName,
                             email: profile.emails[0].value,
