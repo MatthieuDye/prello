@@ -31,7 +31,7 @@ const BoardController = () => {
 
         // Check validation
         if (!isValid) {
-            return res.status(422).json({message: "Invalid input"});
+            return res.status(422).json({ message: "Invalid input" });
         }
 
         Board.findOne({ name: req.body.name }).then(board => {
@@ -45,8 +45,26 @@ const BoardController = () => {
                 });
                 newBoard
                     .save()
-                    .then(board => res.status(201).send({ message: 'Board successfully created', board: board }))
-                    .catch(err => res.status(500).json({message: "Server error " + err}));
+                    .then(board => {
+                        //Add the team to the user team list
+                        Board.findById(board.id)
+                            .then(
+                                User.findById(req.body.userId)
+                                    .then(
+                                        User.updateOne({ _id: req.body.userId }, {
+                                            $addToSet: {
+                                                boards: board.id,
+                                            }
+                                        })
+                                            .then()
+                                            .catch(err => res.send({ message: err }))
+                                    )
+                                    .catch(err => res.status(404).json({ message: "This user does not exists " + err }))
+                            )
+                            .catch(err => res.status(404).json({ message: "This team does not exists " + err }));
+                        res.status(201).send({ message: 'Board successfully created', board: board })
+                    })
+                    .catch(err => res.status(500).json({ message: "Server error " + err }));
             }
         });
     }
@@ -65,16 +83,16 @@ const BoardController = () => {
     const getBoard = async (req, res) => {
 
         const id = req.params.id
-        
+
         Board.findOne({ _id: Object(id) }).then(board => {
-            if(board){
+            if (board) {
                 return res.status(400).json(board)
-            }else{
+            } else {
                 return res.status(404).json({ boardNotFound: "Board not found" });
             }
         }).catch(err => {
             res.status(404).json({ error: err });
-          });
+        });
     }
 
     /**
