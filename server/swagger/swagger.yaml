@@ -135,7 +135,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewTeam'
+              $ref: '#/components/schemas/Team'
       responses:
         '201':
           description: Team create successfull
@@ -153,6 +153,34 @@ paths:
                 $ref: "#/components/schemas/Error"
         '500':
           description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/member/{teamId} :
+    get:
+      summary: Get a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Team sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: Team not found
           content:
             application/json:
               schema:
@@ -230,8 +258,10 @@ components:
       scheme: bearer
       in: header
       bearerFormat: JWT
+
   security:
     - token: ''
+
   schemas:
     Error:
       required:
@@ -239,12 +269,14 @@ components:
       properties:
         message:
           type: string
+
     Token:
       required:
         - token
       properties:
         token:
           type: string
+
     UserCredentials:
       required:
         - email
@@ -254,6 +286,7 @@ components:
           type: string
         password:
           type: string
+
     NewUser:
       required:
         - firstName
@@ -275,6 +308,7 @@ components:
           type: string
         password2:
           type: string
+
     UpdateUser:
       required:
         - firstName
@@ -290,17 +324,44 @@ components:
           type: string
         email:
           type: string
-    NewTeam:
+
+    Team:
       required:
         - name
-        - userId
+        - boards
+        - members
       properties:
         name:
           type: string
         description:
           type: string
-        userId:
+        boards:
+          $ref: "#/components/schemas/Boards"
+          default: []
+        members:
+          $ref: "#/components/schemas/TeamMembers"
+          default: []
+
+    Boards:
+      type: array
+        items:
+          $ref: "#/components/schemas/Board"
+
+    TeamMembers:
+      type: array
+        items:
+          $ref: "#/components/schemas/TeamMember"
+
+    TeamMember:
+      required:
+        - idUser
+        - isAdmin
+      properties:
+        idUser:
           type: string
+        isAdmin:
+          type: boolean
+          default: false
 
     Board:
       required:
@@ -337,10 +398,14 @@ components:
       required:
         - idUser
         - admin
+        - teamMember
       properties:
         idUser:
           type: string
         admin:
+          type: boolean
+          default: false
+        teamMember:
           type: boolean
           default: false
 

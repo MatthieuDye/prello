@@ -13,7 +13,12 @@ let memberSchema = new Schema({
             type: Boolean,
             required : true,
             default : false
-        }
+        },
+        teamMember: {
+            type: Boolean,
+            required : true,
+            default : false
+        },
     },
     {
         toJSON: { virtuals: true },

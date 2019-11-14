@@ -1,5 +1,5 @@
 let mongoose = require('mongoose');
-let Board = require('./../models/Board');
+let Board = require('./Board');
 let Schema = mongoose.Schema;
 
 let listSchema = new Schema({

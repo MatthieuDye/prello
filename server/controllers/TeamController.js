@@ -65,6 +65,26 @@ const TeamController = () => {
         });
     };
 
+    /**
+     * Get a team by id
+     * @param {string} id.path.required - team's id.
+     * @returns {Team.model} 201 - Team object
+     */
+    const getTeam = async (req, res) => {
+
+        const id = req.params.id
+
+        Team.findOne({ _id: Object(id) }).then(team => {
+            if (team) {
+                return res.status(201).json(team)
+            } else {
+                return res.status(404).json({ message: "Team not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "Team not found " + err });
+        });
+    }
+
     // @route PUT api/team/addmember/:teamId/:memberId
     // @desc add a user to the team
     // @access Auth users
@@ -143,6 +163,7 @@ const TeamController = () => {
 
     return {
         createTeam,
+        getTeam,
         addMember,
         deleteMember,
         deleteTeam

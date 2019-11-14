@@ -66,7 +66,7 @@ const BoardController = () => {
     /**
      * Get a board by id
      * @param {string} id.path.required - board's id.
-     * @returns {Board.model} 200 - Board object
+     * @returns {Board.model} 201 - Board object
      */
     const getBoard = async (req, res) => {
 
