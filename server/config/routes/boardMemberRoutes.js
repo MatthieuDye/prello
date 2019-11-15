@@ -2,7 +2,7 @@ const boardMemberRoutes = {
 
     //Board
     'GET /:id': 'BoardController.getBoard',
-    'PUT /:id': 'BoardController.updateBoard',
+  //  'PUT /:id': 'BoardController.updateBoard',
     'POST /:id/add/list': 'BoardController.addList',
     'GET /:id/lists': 'BoardController.getLists',
     'POST /:id/add/label': 'BoardController.addLabel',

@@ -346,6 +346,54 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/admin/{boardId}/add/user/{userId}:
+    post:
+      summary: Add a member to a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: is the user admin
+        required: false
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+              example:   # Sample object
+                isAdmin: true
+
+
+      responses:
+        '201':
+          description: Board sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
