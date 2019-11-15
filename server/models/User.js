@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
 
 // Create Schema
@@ -31,7 +30,7 @@ const UserSchema = new Schema({
     required: true,
     sparse: true,
     maxlength : 100,
-    match    : [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+    match    : [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
   },
   password: {
     type: String,
@@ -61,6 +60,5 @@ const UserSchema = new Schema({
     default : [],
     required : true
   }
-
 });
 module.exports = User = mongoose.model("users", UserSchema);

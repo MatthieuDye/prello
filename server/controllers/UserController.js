@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const keys = require("../config/database/keys");
 const cors = require("cors");
+const qs = require('query-string');
+const passport = require("passport");
 
+
+//const passport = require("passport");
 var ObjectID = require('mongodb').ObjectID;
 
 // Load input validation
@@ -103,7 +106,7 @@ const UserController = () => {
           // Sign token
           jwt.sign(
             payload,
-            keys.secretOrKey,
+              process.env.SECRET_TOKEN,
             {
               expiresIn: 3600 // 1 hour in seconds
             },
@@ -159,10 +162,33 @@ const UserController = () => {
     });
   };
 
+  const googleAuth =  (req, res)  => {
+    console.log("google auth");
+     passport.authenticate("google", {
+      scope: [
+        "profile",
+        "email"
+      ]
+    })
+  };
+
+  const googleAuthCallback = async (req, res) => {
+
+    passport.authenticate("google"),
+        (req, res) => {
+      console.log("zefsqdf");
+          res.redirect("/");
+        }
+    };
+
+
+
   return {
     register,
     login,
-    updateProfile
+    updateProfile,
+    googleAuth,
+    googleAuthCallback
   };
 };
 

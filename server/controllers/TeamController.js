@@ -9,6 +9,7 @@ const validateCreateTeamInput = require("../validation/createTeam");
 // Load Team model
 const Team = require("../models/Team");
 const User = require("../models/User");
+
 const UserController = require("../controllers/UserController");
 
 router.use(cors());
@@ -133,7 +134,6 @@ const TeamController = () => {
                 }
             })
             .catch(err => res.status(500).json({ message: "Server error - " + err }))
-
     };
 
     const deleteMember = async (req, res) => {
@@ -180,7 +180,6 @@ const TeamController = () => {
                 }
             })
             .catch(err => res.status(500).json({ message: "Server error - " + err }))
-
     };
 
     const deleteTeam = async (req, res) => {
@@ -213,7 +212,6 @@ const TeamController = () => {
                 }
             })
             .catch(err => res.status(500).json({ message: "Server error - " + err }))
-
     };
 
     return {

@@ -12,6 +12,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+require('dotenv').config();
+
 const path = require("path")
 const mapRoutes = require("express-routes-mapper");
 const config = require("./config/");
@@ -28,18 +32,21 @@ const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
 app.options("*", cors());
-app.use(bodyParser.json())
-/*app.use(bodyParser.urlencoded({
-  extended: true
-}));*/
+
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "client", "build")))
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true });
 
 const connection = mongoose.connection;
-connection.once('open', function () {
+connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 });
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport config
+require("./config/passport")(passport);
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -89,6 +96,41 @@ const mappedTeamAdminRoutes = mapRoutes(config.teamAdminRoutes, "controllers/");
 app.get('/', function (req, res) {
     res.send('Hello World')
 })
+
+app.get(
+    "/api/public/user/auth/google",
+    passport.authenticate("google", { scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"] })
+);
+
+app.get('/api/public/user/auth/google/callback', passport.authenticate('google', { session: false }), async (req, res) => {
+    try {
+        const user = req.user;
+        console.log("ici : " + user);
+
+        const payload = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userName: user.userName,
+            email: user.email
+        };
+
+        jwt.sign(
+            payload,
+            process.env.SECRET_TOKEN,
+            {
+                expiresIn: 3600 // 1 hour in seconds
+            },
+            (err, token) => {
+                console.log("before : " + token);
+                res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
+            }
+        );
+
+    } catch (e) {
+        console.log("error")
+    }
+});
 
 // Express routes
 app.use("/api/public/", mappedPublicRoutes);
