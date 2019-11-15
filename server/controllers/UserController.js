@@ -32,16 +32,16 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(422).json({ message: "Invalid input" });
     }
 
     User.findOne({ email: req.body.email }).then(user => {
       if (user) {
-        return res.status(400).json({ email: "Email already exists" });
+        return res.status(409).json({ message: "Email already exists" });
       } else {
         User.findOne({ userName: req.body.userName }).then(user => {
           if (user) {
-            return res.status(400).json({ userName: "Username already exists" });
+            return res.status(409).json({ message: "Username already exists" });
           } else {
             const newUser = new User({
               firstName: req.body.firstName,
@@ -50,7 +50,6 @@ const UserController = () => {
               email: req.body.email,
               password: req.body.password
             });
-            console.log(newUser)
 
             // Hash password before saving in database
             bcrypt.genSalt(10, (err, salt) => {
@@ -59,8 +58,8 @@ const UserController = () => {
                 newUser.password = hash;
                 newUser
                   .save()
-                  .then(user => res.json(user))
-                  .catch(err => console.log(err));
+                  .then(user => res.status(201).json(user))
+                  .catch(err => res.status(500).json({ message: "Server error " + err }));
               });
             });
           }
@@ -74,12 +73,11 @@ const UserController = () => {
   // @access Public
   const login = async (req, res) => {
     // Form validation
-
     const { errors, isValid } = validateLoginInput(req.body);
 
     // Check validation
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(422).json({ message: "Email or password invalid" });
     }
 
     const email = req.body.email;
@@ -89,7 +87,7 @@ const UserController = () => {
     User.findOne({ email }).then(user => {
       // Check if user exists
       if (!user) {
-        return res.status(404).json({ emailnotfound: "Email not found" });
+        return res.status(404).json({ message: "Email not found" });
       }
 
       // Check password
@@ -113,7 +111,7 @@ const UserController = () => {
               expiresIn: 3600 // 1 hour in seconds
             },
             (err, token) => {
-              res.json({
+              res.status(201).json({
                 success: true,
                 token: "Bearer " + token
               });
@@ -121,47 +119,43 @@ const UserController = () => {
           );
         } else {
           return res
-            .status(400)
-            .json({ passwordincorrect: "Password incorrect" });
+            .status(404)
+            .json({ message: "Incorrect email or password" });
         }
       });
     });
   };
 
   const updateProfile = async (req, res) => {
-    const { id, update } = req.body
-
     // Form validation
-    const { errors, isValid } = validateUpdateUserInput(update);
+    const { errors, isValid } = validateUpdateUserInput(req.body);
 
     // Check validation
     if (!isValid) {
-      return res.status(400).json(errors);
+      return res.status(422).json({ message: "Invalid input" });
     }
 
-    User.findOne({ email: update.email, _id: { $ne: Object(id) } }).then(user => {
+    User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
       if (user) {
-        return res.status(400).json({ email: "Email already exists" });
+        return res.status(409).json({ email: "Email already exists" });
       } else {
-        User.findOne({ userName: update.userName, _id: { $ne: Object(id) } }).then(user => {
-          if (user) {
-            return res.status(400).json({ userName: "Username already exists" });
+        User.findOne({ userName: req.body.userName }).then(user => {
+          if (user && user.userName != req.params.userName) {
+            return res.status(409).json({ userName: "Username already exists" });
           } else {
             User.updateOne(
-              { "_id": ObjectID(id) },
+              { "userName": req.params.userName },
               {
                 $set: {
-                  "firstName": update.firstName,
-                  "lastName": update.lastName,
-                  "userName": update.userName,
-                  "email": update.email
+                  "firstName": req.body.firstName,
+                  "lastName": req.body.lastName,
+                  "userName": req.body.userName,
+                  "email": req.body.email
                 }
               },
-              (err) => {
-                if (err) return res.json({ success: false, error: err });
-                return res.json({ success: true });
-              }
-            );
+            )
+              .then(user => res.status(201).json(user))
+              .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
         });
       }

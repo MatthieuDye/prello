@@ -1,13 +1,12 @@
 const privateRoutes = {
     //User
-    'POST /user/:id': 'UserController.updateProfile',
+    'PUT /user/:userName': 'UserController.updateProfile',
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
-    'PUT /team/addmember/:teamId/:memberId': 'TeamController.addMember',
-    'DELETE /team/removemember/:teamId/:memberId': 'TeamController.deleteMember',
-    'DELETE /team/delete/:teamId': 'TeamController.deleteTeam',
     
+    //Board
+    'POST /board/create': 'BoardController.createBoard',
 };
 
 module.exports = privateRoutes;

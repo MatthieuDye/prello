@@ -3,6 +3,9 @@
 .vscode
 *.orig
 
+# Default ignored files
+/workspace.xml
+
 # dependencies
 /server/node_modules
 /client/node_modules

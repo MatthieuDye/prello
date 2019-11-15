@@ -1,0 +1,542 @@
+openapi: 3.0.2
+info:
+  version: "1.0.0"
+  title: "Prello"
+
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /api/public/register:
+    post:
+      summary: Register to the application
+      security: []   # No security
+      tags:
+        - users
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: Register successfull
+        '409':
+          description: Email or userName already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  /api/public/login:
+    post:
+      summary: Log to the application
+      security: []   # No security
+      tags:
+        - users
+      requestBody:
+        description: User credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '201':
+          description: Login successfull
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        '422':
+          description: Email or password empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: User not exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userName} :
+    put:
+      summary: Update a user
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: userName
+          in: path
+          description: User Name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '201':
+          description: User sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewUser"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '409':
+          description: Email or userName already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  /api/private/team/create:
+    post:
+      summary: Add a team
+      security:
+        - token: []
+      tags:
+        - teams
+      requestBody:
+        description: Team details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        '201':
+          description: Team create successfull
+        '409':
+          description: Team name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/member/{teamId} :
+    get:
+      summary: Get a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Team sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/admin/{teamId}/add/user/{userId} :
+    post:
+      summary: Add a member to a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: User sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/admin/{teamId}/delete/user/{userId} :
+    delete:
+      summary: Delete a member from a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: User sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/admin/delete/{teamId} :
+    delete:
+      summary: Delete a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Team sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/create:
+    post:
+      summary: Add a board
+      security:
+        - token: []
+      tags:
+        - boards
+      requestBody:
+        description: Board details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Board'
+      responses:
+        '201':
+          description: Board create successfull
+        '409':
+          description: Board name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/{boardId} :
+    get:
+      summary: Get a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Board sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  securitySchemes:
+    token:
+      description: "JWT authorization"
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
+
+  security:
+    - token: ''
+
+  schemas:
+    Error:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    Token:
+      required:
+        - token
+      properties:
+        token:
+          type: string
+
+    UserCredentials:
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    NewUser:
+      required:
+        - firstName
+        - lastName
+        - userName
+        - email
+        - password
+        - password2
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        password2:
+          type: string
+
+    UpdateUser:
+      required:
+        - firstName
+        - lastName
+        - userName
+        - email
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+
+    Team:
+      required:
+        - name
+        - boards
+        - members
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        boards:
+          $ref: "#/components/schemas/Boards"
+          default: []
+        members:
+          $ref: "#/components/schemas/TeamMembers"
+          default: []
+
+    Boards:
+      type: array
+        items:
+          $ref: "#/components/schemas/Board"
+
+    TeamMembers:
+      type: array
+        items:
+          $ref: "#/components/schemas/TeamMember"
+
+    TeamMember:
+      required:
+        - idUser
+        - isAdmin
+      properties:
+        idUser:
+          type: string
+        isAdmin:
+          type: boolean
+          default: false
+
+    Board:
+      required:
+        - name
+        - isFavorite
+        - members
+        - closed
+        - labelNames
+      properties:
+        name:
+          type: string
+        isFavorite:
+          type: boolean
+          default: false
+        description:
+          type: string
+        members:
+          $ref: "#/components/schemas/BoardMembers"
+          default: []
+        team:
+          type: string
+        closed:
+          type: boolean
+          default: false
+        labelNames:
+          $ref: "#/components/schemas/LabelNames"
+
+    BoardMembers:
+      type: array
+      items:
+        $ref: "#/components/schemas/BoardMember"
+
+    BoardMember:
+      required:
+        - idUser
+        - admin
+        - teamMember
+      properties:
+        idUser:
+          type: string
+        admin:
+          type: boolean
+          default: false
+        teamMember:
+          type: boolean
+          default: false
+
+    LabelNames:
+      properties:
+        green:
+          type: string
+        yellow:
+          type: string
+        orange:
+          type: string
+        red:
+          type: string
+        purple:
+          type: string
+        blue:
+          type: string
+        pink:
+          type: string
+    

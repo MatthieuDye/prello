@@ -55,7 +55,7 @@ class Profile extends Component {
     console.log(`User name: ${this.state.userName}`);
     console.log(`User email: ${this.state.email}`);
 
-    this.props.updateUser(this.props.auth.user.id, updatedUser, this.props.history);
+    this.props.updateUser(this.props.user.userName, updatedUser, this.props.history);
   };
 
   render() {
