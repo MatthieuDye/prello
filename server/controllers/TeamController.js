@@ -155,9 +155,9 @@ const TeamController = () => {
                                             idUser: req.params.memberId,
                                         }
                                     }
-                                },
-                                {multi: true}
-                                                                )
+                                }, {
+                                    multi: true
+                                })
                                     .then(team => {
                                         //Delete the team to the user team list
                                         User.updateOne({ _id: req.params.memberId }, {
@@ -187,26 +187,32 @@ const TeamController = () => {
 
         //TODO : if user in not a admin of the team : 403
 
-        const team = Team.findById(req.params.teamId);
-
-        if (!team) {
-            return res.status(404).json({ teamName: "This team does not exists" });
-        }
-
-        Team
-            .deleteOne({ _id: req.params.teamId })
+        //Search if the team exists
+        Team.findById(req.params.teamId)
             .then(team => {
-                //Delete the team to the user team list
-                User.updateOne({ _id: req.params.memberId }, {
-                    $pull: {
-                        teams: req.params.teamId,
-                    }
-                })
-                    .then()
-                    .catch(err => res.status(404).json({ team: team, message: "This user does not exists - " + err }))
-                res.status(201).send({ message: 'Team successfully deleted' })
+                if (team) {
+                    //Delete the team
+                    Team
+                        .deleteOne({ _id: req.params.teamId })
+                        .then(team => {
+                            //Delete the team to the user team list
+                            User.update({}, {
+                                $pull: {
+                                    teams: req.params.teamId,
+                                }
+                            }, {
+                                multi: true
+                            })
+                                .then()
+                                .catch(err => res.status(404).json({ team: team, message: "This user does not exists - " + err }))
+                            res.status(201).send({ message: 'Team successfully deleted' })
+                        })
+                        .catch(err => console.log(err));
+                } else {
+                    return res.status(404).json({ message: "This team does not exists" })
+                }
             })
-            .catch(err => console.log(err));
+            .catch(err => res.status(500).json({ message: "Server error - " + err }))
 
     };
 
