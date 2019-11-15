@@ -462,16 +462,12 @@ components:
     Board:
       required:
         - name
-        - isFavorite
         - members
         - closed
         - labelNames
       properties:
         name:
           type: string
-        isFavorite:
-          type: boolean
-          default: false
         description:
           type: string
         members:
