@@ -1,8 +1,9 @@
-/*const request = require('supertest');
+const request = require('supertest');
 const { expect, assert } = require('chai');
 
 require('dotenv').config();
-const app = process.env.SERVER_URI
+//const app = process.env.SERVER_URI
+const app = require("../server")
 const User = require('../models/User');
 
 const data = {
@@ -16,7 +17,7 @@ const data = {
 
 describe('POST /api/public/register', () => {
     before(async () => {
-        //await User.deleteMany({});
+        await User.deleteMany({});
     });
     it('should return 201 OK', (done) => {
         request(app)
@@ -47,4 +48,4 @@ describe('POST /api/public/register', () => {
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
-});*/
+});
