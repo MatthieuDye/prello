@@ -30,7 +30,7 @@ class Login extends Component {
           window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
               params[key] = value;
           });
-          this.props.loginGoogleUser("Bearer ".concat(params.token.substring(0, params.token.length - 1)), this.props.history)
+          this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
       }
   }
 
