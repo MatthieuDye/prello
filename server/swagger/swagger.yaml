@@ -219,12 +219,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        '500':
-          description: Servor error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /api/private/team/admin/{teamId}/delete/user/{userId} :
     delete:
@@ -430,21 +424,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        description: is the deleted user admin and team member
-        required: false
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                isAdmin:
-                  type: boolean
-                isTeamMember:
-                  type: boolean
-              example:   # Sample object
-                isAdmin: true
-                isTeamMember: false
       responses:
         '201':
           description: User sucessfully deleted from the board
@@ -499,6 +478,74 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/private/board/admin/{boardId}/add/team/{teamId}:
+    post:
+      summary: add a team to the board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Team sucessfully added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: Team or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+  /api/private/board/admin/{boardId}/delete/team/{teamId}:
+    delete:
+      summary: Delete a team from a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Team sucessfully deleted from the board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Team not found
           content:
             application/json:
               schema:

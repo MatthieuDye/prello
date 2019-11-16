@@ -6,6 +6,8 @@ const cors = require("cors");
 const Board = require("../models/Board");
 const Label = require('../models/Label');
 const List = require('../models/List');
+const User = require('../models/User');
+const Team = require('../models/Team');
 
 // Load input validation
 const validateCreateBoardInput = require("../validation/createBoard.js");
@@ -35,7 +37,8 @@ const BoardController = () => {
                 const newBoard = new Board({
                     name: req.body.name,
                     description: req.body.description,
-                    members: [{ idUser: req.body.userId, admin: true }],
+                    guestMembers: [req.body.userId],
+                    admins: [req.body.userId],
                 });
                 newBoard
                     .save()
@@ -47,7 +50,7 @@ const BoardController = () => {
                                     .then(
                                         User.updateOne({ _id: req.body.userId }, {
                                             $addToSet: {
-                                                boards: board.id,
+                                                guestBoards: board.id,
                                             }
                                         })
                                             .then()
@@ -74,7 +77,7 @@ const BoardController = () => {
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
-                return res.status(201).json(board)
+                return res.status(201).json({board: board})
             } else {
                 return res.status(404).json({ message: "Board not found" });
             }
@@ -120,27 +123,23 @@ const BoardController = () => {
     // @access Auth users
     const addMember = async (req, res) => {
 
-        const board = Board.findById(req.params.boardId);
-        const user = User.findById(req.params.memberId);
-
-        if (!board) {
-            return res.status(404).json({ teamName: "This board does not exists" });
+        if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({ message: "This board id is not correct"});
         }
-        if (!user) {
-            return res.status(404).json({ teamName: "This user does not exists" });
+        if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({ message: "This user id is not correct"});
         }
 
-        console.log(req.body.isAdmin);
+        if (req.body.isAdmin) {
+            // add to admin collection
+            await Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } });
+        }
 
         Board
-            .updateOne({ _id: req.params.boardId }, {
+            .findOneAndUpdate({ _id: req.params.boardId }, {
                 $addToSet: {
-                    members: {
-                        idUser: req.params.memberId,
-                        admin: req.body.isAdmin,
-                        teamMember: false
-                    }
-                }
+                    guestMembers: req.params.memberId,
+                },
             })
             .then(board => {
                 //Add the team to the user team list
@@ -149,9 +148,14 @@ const BoardController = () => {
                         boards: req.params.boardId,
                     }
                 })
-                    .then()
+                    .then(e =>
+                    {Board.findById(req.params.boardId)
+                        .then(board => {
+                            res.status(201).send({ board: board, message: 'User successfully added to the board' })
+                        })
+                        .catch(err => res.status(404).json({ message: "This user does not exists - " + err }));
+                    })
                     .catch(err => res.status(404).json({ message: "This user does not exists - " + err }));
-                res.status(201).send({ board: board, message: 'User successfully added to the board' })
             })
             .catch(err => res.status(404).json({ message: "This board does not exists - " + err }));
 
@@ -163,38 +167,37 @@ const BoardController = () => {
 
     const deleteMember = async (req, res) => {
 
-        const board = Board.findById(req.params.boardId);
-        const user = User.findById(req.params.memberId);
 
-        if (!board) {
-            return res.status(404).json({ teamName: "This board does not exists" });
+        if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({ message: "This board id is not correct"});
         }
-        if (!user) {
-            return res.status(404).json({ teamName: "This user does not exists" });
+        if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({ message: "This user id is not correct"});
         }
 
-        board.updateOne({
+        Board.updateOne({_id: req.params.boardId}, {
             $pull: {
-                members: {
-                    idUser: req.params.memberId,
-                    admin: req.body.isAdmin,
-                    teamMember: req.body.isTeamMember
-                }
+                guestMembers: req.params.memberId,
+                admins: req.params.memberId,
             }
         })
-            .then(team => {
+            .then(board => {
                 //Delete the team to the user team list
-                User.updateOne({ _id: req.params.memberId }, {
+                User.updateOne({_id: req.params.memberId}, {
                     $pull: {
                         boards: req.params.boardId
                     }
                 })
-                    .then()
-                    .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
-                res.status(201).send({ team: team, message: 'User successfully deleted from the board' })
+                    .then(e =>{
+                        Board.findById(req.params.boardId)
+                            .then(board => {
+                                res.status(201).send({board: board, message: 'User successfully deleted from the board'})
+                            })
+                            .catch(err => res.status(404).json({message: "This user does not exists - " + err}))
+                    })
+                    .catch(err => res.status(404).json({message: "This user does not exists - " + err}))
             })
             .catch(err => console.log(err));
-
     };
 
     // @route PUT api/board/admin/:teamId/update/user/role/:memberId
@@ -213,24 +216,103 @@ const BoardController = () => {
             return res.status(404).json({teamName: "This user does not exists"});
         }
 
-        Board.updateOne({_id: req.params.boardId, "members.idUser": req.params.memberId}, {
-            $set: {
-                "members.$.admin": req.body.isAdmin
-            }
-        })
-            .then(board => res.status(201).send({board: board, message: 'User role successfully updated'}))
-            .catch(err => res.status(404).json({message: "This Board does not exists - " + err}));
+        if (req.body.isAdmin) {
+            // add to admin collection
+            await Board.updateOne({_id: req.params.boardId}, {$addToSet: {admins: req.params.memberId}})
+                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+        } else {
+            await Board.updateOne({_id: req.params.boardId}, {$pull: {admins: req.params.memberId}})
+                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+        }
 
+        res.status(201).send({message: 'User role successfully updated'});
     };
 
-    // @route DELETE api/board/admin/:teamId/delete/team/:teamId
-    // @desc add a user to the team
+
+    // @route POST api/board/admin/:boardId/add/team/:teamId
+    // @desc add a team to the board
     // @access Auth users
+
+    const addTeam = async (req, res) => {
+
+        const board = Board.findById(req.params.boardId);
+        const team = Team.findById(req.params.teamId);
+
+        if (!board) {
+            return res.status(404).json({ teamName: "This board does not exists" });
+        }
+        if (!team) {
+            return res.status(404).json({ teamName: "This team does not exists" });
+        }
+
+        Board
+            .updateOne({ _id: req.params.boardId }, {
+                $set: {
+                    "team": req.params.teamId
+                },
+            })
+            .then(board => {
+                //Add the team to the user team list
+                Team.updateOne({ _id: req.params.teamId }, {
+                    $addToSet: {
+                        boards: req.params.boardId
+                    }
+                })
+                    .then((err) => {
+                        Board
+                            .findById(req.params.boardId)
+                            .then(board => {res.status(201).send({ board: board, message: 'Team successfully added to the board' })})
+                            .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
+                    })
+                    .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
+
+            })
+            .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+
+    };
 
     const deleteTeam = async (req, res) => {
 
+        const board = Board.findById(req.params.boardId);
+        const team = Team.findById(req.params.teamId);
+
+        if (!board) {
+            return res.status(404).json({ teamName: "This board does not exists" });
+        }
+        if (!team) {
+            return res.status(404).json({ teamName: "This team does not exists" });
+        }
+
+
+        Team.findById(req.params.teamId).then(teamFounded => {
+
+            Board
+                .updateOne({_id: req.params.boardId}, {
+                    $unset: {
+                        "team": ""
+                    },
+                    $pullAll: {
+                        "admins": teamFounded.members
+                    }
+                })
+                .then(board => {
+                    //Add the team to the user team list
+                    Team.updateOne({_id: req.params.teamId}, {
+                        $pull: {
+                            boards: req.params.boardId,
+                        }
+                    })
+                        .then()
+                        .catch(err => res.status(404).json({message: "This team does not exists - " + err}));
+                    res.status(201).send({board: board, message: 'Team successfully removed from the board'})
+                })
+                .catch(err => res.status(404).json({message: "This Board does not exists - " + err}));
+        })  .catch(err => res.status(404).json({message: "This Team does not exists - " + err}));
 
     };
+
+
+
     /**
      * Create a list on the board
      * @route POST /boards/{id}/lists
@@ -333,7 +415,9 @@ const BoardController = () => {
         addLabel,
         addMember,
         deleteMember,
-        updateMemberRole
+        updateMemberRole,
+        addTeam,
+        deleteTeam
     };
 };
 
