@@ -150,8 +150,50 @@ describe('PUT /api/private/board/admin/:boardId/add/user/:userId', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                expect(res.body.board.admins.length === 2);
+                expect(res.body.board.admins.includes(userDataTwo.userId));
+                expect(res.body.board.guestMembers.includes(userDataTwo.userId));
                 done();
             });
+    });
+});
+
+describe('DELETE /api/private/board/admin/:boardId/delete/user/:userId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/user/' + boardData.userId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/user/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/sdfsdf/delete/user/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
+            .send({isAdmin: true})
+            .set('Authorization', token)
+        .then(
+
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/user/' + userDataTwo.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(!res.body.board.admins.includes(userDataTwo.userId));
+                expect(!res.body.board.guestMembers.includes(userDataTwo.userId));
+                done();
+            }));
     });
 });
