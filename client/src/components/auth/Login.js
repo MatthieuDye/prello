@@ -2,8 +2,12 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
+import { loginUser, loginGoogleUser } from "../../actions/authActions";
+import {Button} from "react-bootstrap";
 import classnames from "classnames";
+import GoogleButton from 'react-google-button'
+import Row from "react-bootstrap/Row";
+import {bindActionCreators} from "redux";
 
 class Login extends Component {
   constructor() {
@@ -20,6 +24,14 @@ class Login extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
     }
+
+      if (this.props.location.search) {
+          const params = {};
+          window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+              params[key] = value;
+          });
+          this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+      }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,6 +116,7 @@ class Login extends Component {
                 </span>
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                <Row>
                 <button
                   style={{
                     width: "150px",
@@ -116,6 +129,9 @@ class Login extends Component {
                 >
                   Login
                 </button>
+
+                  <a href= "http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
+                </Row>
               </div>
             </form>
           </div>
@@ -126,6 +142,7 @@ class Login extends Component {
 }
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  loginGoogleUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -133,7 +150,16 @@ const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors
 });
+
+// Put actions in props
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+      loginUser,
+      loginGoogleUser,
+
+    }, dispatch,
+);
 export default connect(
   mapStateToProps,
-  { loginUser }
+  mapDispatchToProps
 )(Login);

@@ -39,6 +39,26 @@ const UserSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  boards: {
+    type : [
+      {
+        type : Schema.Types.ObjectId,
+        ref : 'Board'
+      }
+    ],
+    default : [],
+    required : true
+  },
+  teams: {
+    type : [
+      {
+        type : Schema.Types.ObjectId,
+        ref : 'Team'
+      }
+    ],
+    default : [],
+    required : true
   }
 });
 module.exports = User = mongoose.model("users", UserSchema);

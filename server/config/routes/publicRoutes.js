@@ -1,7 +1,7 @@
 const publicRoutes = {
     //Gestion des utilisateurs
-    'POST /user/register': 'UserController.register',
-    'POST /user/login': 'UserController.login',
+    'POST /register': 'UserController.register',
+    'POST /login': 'UserController.login',
 };
 
 module.exports = publicRoutes;

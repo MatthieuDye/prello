@@ -8,22 +8,33 @@
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
     "history": "^4.10.1",
+    "is-empty": "^1.2.0",
     "jwt-decode": "^2.2.0",
+    "mongoose-hidden": "^1.8.1",
+    "mongoose-unique-validator": "^2.0.3",
     "react": "^16.11.0",
     "react-autocomplete": "^1.8.1",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.11.0",
+    "react-google-button": "^0.5.3",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "shortid": "^2.2.15"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "s-test": "mocha tests/test"
   },
   "eslintConfig": {
     "extends": "react-app"
