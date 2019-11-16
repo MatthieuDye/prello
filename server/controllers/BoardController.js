@@ -134,15 +134,16 @@ const BoardController = () => {
 
         console.log(req.body.isAdmin);
 
+        if (req.body.isAdmin) {
+            // add to admin collection
+            await Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } });
+        }
+
         Board
             .updateOne({ _id: req.params.boardId }, {
                 $addToSet: {
-                    members: {
-                        idUser: req.params.memberId,
-                        admin: req.body.isAdmin,
-                        teamMember: false
-                    }
-                }
+                    guestMembers: req.params.memberId,
+                },
             })
             .then(board => {
                 //Add the team to the user team list
@@ -177,11 +178,8 @@ const BoardController = () => {
 
         board.updateOne({
             $pull: {
-                members: {
-                    idUser: req.params.memberId,
-                    admin: req.body.isAdmin,
-                    teamMember: req.body.isTeamMember
-                }
+                guestMembers: req.params.memberId,
+                admins: req.params.memberId,
             }
         })
             .then(team => {
@@ -215,12 +213,14 @@ const BoardController = () => {
             return res.status(404).json({teamName: "This user does not exists"});
         }
 
-        Board.updateOne({_id: req.params.boardId, "members.idUser": req.params.memberId}, {
-            $set: {
-                "members.$.admin": req.body.isAdmin
-            }
-        })
-            .then(board => res.status(201).send({board: board, message: 'User role successfully updated'}))
+        if (req.body.isAdmin) {
+            // add to admin collection
+            await Board.updateOne({_id: req.params.boardId}, {$addToSet: {admins: req.params.memberId}});
+        } else {
+            await Board.updateOne({_id: req.params.boardId}, {$pull: {admins: req.params.memberId}});
+        }
+
+        res.status(201).send({message: 'User role successfully updated'})
             .catch(err => res.status(404).json({message: "This Board does not exists - " + err}));
 
     };

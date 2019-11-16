@@ -430,21 +430,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        description: is the deleted user admin and team member
-        required: false
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                isAdmin:
-                  type: boolean
-                isTeamMember:
-                  type: boolean
-              example:   # Sample object
-                isAdmin: true
-                isTeamMember: false
       responses:
         '201':
           description: User sucessfully deleted from the board
