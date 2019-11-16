@@ -36,7 +36,8 @@ const TeamController = () => {
                 const newTeam = new Team({
                     name: req.body.name,
                     description: req.body.description,
-                    members: [{ idUser: req.body.userId, isAdmin: true }],
+                    members: [req.body.userId],
+                    admins: [req.body.userId],
                 });
                 newTeam
                     .save()

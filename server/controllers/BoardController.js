@@ -35,7 +35,8 @@ const BoardController = () => {
                 const newBoard = new Board({
                     name: req.body.name,
                     description: req.body.description,
-                    members: [{ idUser: req.body.userId, admin: true }],
+                    guestMembers: [req.body.userId],
+                    admins: [req.body.userId],
                 });
                 newBoard
                     .save()
@@ -47,7 +48,7 @@ const BoardController = () => {
                                     .then(
                                         User.updateOne({ _id: req.body.userId }, {
                                             $addToSet: {
-                                                boards: board.id,
+                                                guestBoards: board.id,
                                             }
                                         })
                                             .then()

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const BoardMember = require('./BoardMember');
 const isNullOrUndefined = require("mongoose");
 const idValidator = require('mongoose-id-validator');
 
@@ -18,11 +17,8 @@ const boardSchema = new Schema({
             type      : String,
             maxlength : 1000,
         },
-        members: {
-            required : true,
-            type     : [BoardMember],
-            default  : []
-        },
+        admins: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        guestMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
         team : {
             required  : false,
             type      : Schema.Types.ObjectId,
@@ -69,20 +65,6 @@ const boardSchema = new Schema({
         toJSON: { virtuals: true },
         versionKey: false
     });
-
-boardSchema.methods.setOwner = function(idUser) {
-    let actualOwner = this.members.find(sub => sub.idUser.equals(idUser));
-    if (!isNullOrUndefined(actualOwner)) {
-        return actualOwner;
-    } else {
-        actualOwner = {
-            idOwner: idUser,
-            subscriberType: 'owner'
-        };
-        this._owner.push(actualOwner);
-        return actualOwner;
-    }
-};
 
 boardSchema.plugin(idValidator);
 
