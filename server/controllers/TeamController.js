@@ -6,11 +6,10 @@ const cors = require("cors");
 const validateCreateTeamInput = require("../validation/createTeam");
 
 
-// Load Team model
+// Load models
 const Team = require("../models/Team");
 const User = require("../models/User");
-
-const UserController = require("../controllers/UserController");
+const Board = require("../models/Board");
 
 router.use(cors());
 
@@ -98,6 +97,8 @@ const TeamController = () => {
 
         //TODO : if user in not a admin of the team : 403
 
+        let currentTeam;
+
         //Search if the team exists
         Team.findById(req.params.teamId)
             .then(team => {
@@ -122,6 +123,7 @@ const TeamController = () => {
                                             }
                                         })
                                             .then(team => {
+                                                //Get the team to return
                                                 Team.findById(req.params.teamId)
                                                 .then(team => res.status(201).send({ team: team, message: 'User successfully added to the team' }))
                                                 .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
@@ -156,9 +158,8 @@ const TeamController = () => {
                                 //Delete the user from the team
                                 Team.update({ _id: req.params.teamId }, {
                                     $pull: {
-                                        members: {
-                                            idUser: req.params.memberId,
-                                        }
+                                        members: req.params.memberId,
+                                        admins: req.params.memberId
                                     }
                                 }, {
                                     multi: true
@@ -170,9 +171,22 @@ const TeamController = () => {
                                                 teams: req.params.teamId,
                                             }
                                         })
-                                            .then()
+                                            .then(user => {
+                                                //Delete the member for all team boards where he is admin
+                                                Board.update({ team: req.params.teamId }, {
+                                                    $pull: {
+                                                        admins: req.params.memberId,
+                                                    } 
+                                                })
+                                                .then(board => {
+                                                    //Get the team to return
+                                                    Team.findById(req.params.teamId)
+                                                    .then(team => res.status(201).send({ team: team, message: 'User successfully deleted from the team' }))
+                                                    .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
+                                                })
+                                                .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
+                                            })
                                             .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
-                                        res.status(201).send({ team: team, message: 'User successfully deleted from the team' })
                                     })
                                     .catch(err => console.log(err));
                             } else {
