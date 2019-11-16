@@ -31,6 +31,13 @@ const userDataTwo = {
     password2: 'testpsw',
 };
 
+const teamData = {
+    name: "team test",
+    description: "description",
+    userId:"",
+    id:""
+}
+
 let token;
 
 describe('POST /board/create', () => {
@@ -41,7 +48,8 @@ describe('POST /board/create', () => {
                     .post('/api/public/register')
                     .send(userData)
                     .then((res) => {
-                        boardData.userId = res.body.user._id
+                        boardData.userId = res.body.user._id;
+                        teamData.userId = res.body.user._id;
                     });
                 await request(app)
                     .post('/api/public/register')
@@ -49,6 +57,7 @@ describe('POST /board/create', () => {
                     .then((res) => {
                         userDataTwo.userId = res.body.user._id
                     });
+
                 request(app)
                     .post('/api/public/login')
                     .send({ email: userData.email, password: userData.password })
@@ -195,5 +204,155 @@ describe('DELETE /api/private/board/admin/:boardId/delete/user/:userId', () => {
                 expect(!res.body.board.guestMembers.includes(userDataTwo.userId));
                 done();
             }));
+    });
+});
+
+describe('PUT /api/private/board/admin/:boardId/update/user/role/:userId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/' + boardData.userId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/sdfsdf/update/user/role/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .then(
+
+                request(app)
+                    .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/' + userDataTwo.userId)
+                    .send({isAdmin: false})
+                    .set('Authorization', token)
+                    .expect('Content-Type', /json/)
+                    .expect(201, (err, res) => {
+                        expect(!res.body.board.admins.includes(userDataTwo.userId));
+                        expect(res.body.board.guestMembers.includes(userDataTwo.userId));
+                        done();
+                    }));
+    });
+    it('should return 201 OK', (done) => {
+
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
+            .send({isAdmin: false})
+            .set('Authorization', token)
+            .then(
+                request(app)
+                    .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/' + userDataTwo.userId)
+                    .send({isAdmin: true})
+                    .set('Authorization', token)
+                    .expect('Content-Type', /json/)
+                    .expect(201, (err, res) => {
+                        expect(res.body.board.admins.includes(userDataTwo.userId));
+                        expect(res.body.board.guestMembers.includes(userDataTwo.userId));
+                        done();
+                    }));
+    });
+});
+
+describe('POST /api/private/board/admin/:boardId/add/team/:teamId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/' + boardData.userId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/sdfsdf/add/team/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+
+        request(app)
+            .post('/api/private/team/create')
+            .send(teamData)
+            .set('Authorization', token)
+            .then(res => {
+                    const teamId = res.body.team._id;
+                    request(app)
+                        .post('/api/private/board/admin/' + boardData.id + '/add/team/' + teamId)
+                        .set('Authorization', token)
+                        .expect('Content-Type', /json/)
+                        .expect(201, (err, res) => {
+                            expect(res.body.board.team.localeCompare(teamId));
+                            done();
+                        })
+                }
+            );
+    });
+});
+
+describe('DELETE /api/private/board/admin/:boardId/delete/team/:teamId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/team/' + boardData.userId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/team/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/sdfsdf/delete/team/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        teamData.name = "deuxieme test";
+        request(app)
+            .post('/api/private/team/create')
+            .send(teamData)
+            .set('Authorization', token)
+            .then(res => {
+                    const teamId = res.body.team._id;
+                    request(app)
+                        .post('/api/private/board/admin/' + boardData.id + '/add/team/' + teamId)
+                        .set('Authorization', token)
+                        .then(res => {
+                            request(app)
+                                .delete('/api/private/board/admin/' + boardData.id + '/delete/team/' + teamId)
+                                .set('Authorization', token)
+                                .expect('Content-Type', /json/)
+                                .expect(201, (err, res) => {
+                                    expect(res.body.board.name === boardData.name);
+                                    expect(res.body.board.team === undefined);
+                                    done();
+                                })
+                        })
+                }
+            );
     });
 });
