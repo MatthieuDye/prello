@@ -162,33 +162,10 @@ const UserController = () => {
     });
   };
 
-  const googleAuth =  (req, res)  => {
-    console.log("google auth");
-     passport.authenticate("google", {
-      scope: [
-        "profile",
-        "email"
-      ]
-    })
-  };
-
-  const googleAuthCallback = async (req, res) => {
-
-    passport.authenticate("google"),
-        (req, res) => {
-      console.log("zefsqdf");
-          res.redirect("/");
-        }
-    };
-
-
-
   return {
     register,
     login,
-    updateProfile,
-    googleAuth,
-    googleAuthCallback
+    updateProfile
   };
 };
 
