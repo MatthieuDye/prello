@@ -46,7 +46,9 @@ class App extends Component {
                         <nav className="navbar navbar-expand-lg navbar-light bg-light">
                             <a class="navbar-brand" href="https://codingthesmartway.com" target="_blank">
                             </a>
-                            <Link to="/" className="navbar-brand">Prello</Link>
+                            <Link to="/" className="navbar-brand">
+                            <img src={ require('./prello_logo.png') } alt="Prello" height="50" width="95" />
+                            </Link>
                             <div className="collpase navbar-collapse">
                                 <ul className="navbar-nav mr-auto">
                                     <li className="navbar-item">
