@@ -77,7 +77,7 @@ const BoardController = () => {
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
-                return res.status(201).json(board)
+                return res.status(201).json({board: board})
             } else {
                 return res.status(404).json({ message: "Board not found" });
             }
@@ -123,17 +123,8 @@ const BoardController = () => {
     // @access Auth users
     const addMember = async (req, res) => {
 
-        const board = Board.findById(req.params.boardId);
-        const user = User.findById(req.params.memberId);
-
-        if (!board) {
-            return res.status(404).json({ teamName: "This board does not exists" });
-        }
-        if (!user) {
-            return res.status(404).json({ teamName: "This user does not exists" });
-        }
-
-        console.log(req.body.isAdmin);
+        Board.findById(req.params.boardId).catch(err => {return res.status(404).json({ message: "yyyyThis board does not exists" });});
+        User.findById(req.params.memberId).catch(err => {return res.status(404).json({ message: "This user does not exists" })});
 
         if (req.body.isAdmin) {
             // add to admin collection
@@ -141,7 +132,7 @@ const BoardController = () => {
         }
 
         Board
-            .updateOne({ _id: req.params.boardId }, {
+            .findOneAndUpdate({ _id: req.params.boardId }, {
                 $addToSet: {
                     guestMembers: req.params.memberId,
                 },
@@ -153,9 +144,14 @@ const BoardController = () => {
                         boards: req.params.boardId,
                     }
                 })
-                    .then()
+                    .then(e =>
+                    {Board.findById(req.params.boardId)
+                        .then(board => {
+                            res.status(201).send({ board: board, message: 'User successfully added to the board' })
+                        })
+                        .catch(err => res.status(404).json({ message: "This user does not exists - " + err }));
+                    })
                     .catch(err => res.status(404).json({ message: "This user does not exists - " + err }));
-                res.status(201).send({ board: board, message: 'User successfully added to the board' })
             })
             .catch(err => res.status(404).json({ message: "This board does not exists - " + err }));
 
@@ -253,12 +249,17 @@ const BoardController = () => {
                 //Add the team to the user team list
                 Team.updateOne({ _id: req.params.teamId }, {
                     $addToSet: {
-                        boards: req.params.boardId,
+                        boards: req.params.boardId
                     }
                 })
-                    .then()
+                    .then((err) => {
+                        Board
+                            .findById(req.params.boardId)
+                            .then(board => {res.status(201).send({ board: board, message: 'Team successfully added to the board' })})
+                            .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
+                    })
                     .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
-                res.status(201).send({ board: board, message: 'Team successfully added to the board' })
+
             })
             .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
 

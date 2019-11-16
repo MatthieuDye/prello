@@ -9,15 +9,9 @@ const Board = require('../models/Board');
 const boardData = {
     name: "hkhkjhkjh",
     description: "board description",
-    userId: ""
+    userId: "",
+    id:""
 };
-
-const newBoard = {
-    name: "board name",
-    description: "board description",
-    id: ""
-};
-
 
 const userData = {
     firstName: 'test',
@@ -28,6 +22,17 @@ const userData = {
     password2: 'testpsw',
 };
 
+const userDataTwo = {
+    firstName: 'test',
+    lastName: 'user',
+    userName: 'testUserTrois',
+    email: 'test@t.fr',
+    password: 'testpsw',
+    password2: 'testpsw',
+};
+
+let token;
+
 describe('POST /board/create', () => {
     before((done) => {
         Promise.all([Board.deleteMany({}), User.deleteMany({})]).then(async () => {
@@ -37,6 +42,12 @@ describe('POST /board/create', () => {
                     .send(userData)
                     .then((res) => {
                         boardData.userId = res.body.user._id
+                    });
+                await request(app)
+                    .post('/api/public/register')
+                    .send(userDataTwo)
+                    .then((res) => {
+                        userDataTwo.userId = res.body.user._id
                     });
                 request(app)
                     .post('/api/public/login')
@@ -59,8 +70,8 @@ describe('POST /board/create', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                expect(res.body.board).to.not.be.undefined
-                .id = res.body.board._id;
+                expect(res.body.board).to.not.be.undefined;
+                boardData.id = res.body.board._id;
                 done();
             });
     });
@@ -79,5 +90,68 @@ describe('POST /board/create', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(409, done);
+    });
+});
+
+describe('GET /api/private/board/member/:boardId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/' + boardData.id)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/board/member/' + boardData.id)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.board).to.not.be.undefined;
+                done();
+            });
+    });
+});
+
+
+describe('PUT /api/private/board/admin/:boardId/add/user/:userId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + boardData.userId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/jkh')
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/sdfsdf/add/user/'+boardData.userId)
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.board.admins.length === 2);
+                done();
+            });
     });
 });
