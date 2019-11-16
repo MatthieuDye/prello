@@ -1,24 +1,81 @@
-let request = require('supertest');
-let chai = require('chai');
+const request = require('supertest');
+const { expect, assert } = require('chai');
 
-/*
-it('should send back a CREATED response - Team creation', function (done) {
-    request(app)
-        .post('/api/team/creation')
-        .set('Authorization', 'Bearer ' + options.token)
-        .set('Content-Type', 'application/json')
-        .send({
-            name: "test team 34560",
-            description: "description",
-            userId: "5dbef8aa222311218c5141d1"
-        })
-        .expect(201)
-        .end(function (err, res) {
-            if (err) return done(err);
-            res.body.team.name.should.equal("test team 3456");
-            res.body.members.should.be.instanceof(Array).and.have.length(1);
-            options.board = res.body;
-            done();
+require('dotenv').config();
+const app = require("../server")
+const Team = require('../models/Team');
+const User = require('../models/User');
+
+const teamData = {
+    name: "team name",
+    description: "team description",
+};
+
+const userData = {
+    firstName: 'test',
+    lastName: 'user',
+    userName: 'testUser',
+    email: 'test@user.fr',
+    password: 'testpsw',
+    password2: 'testpsw',
+};
+
+let token = null;
+
+describe('POST /api/private/team/create', () => {
+    before((done) => {
+        Promise.all([Team.deleteMany({}), User.deleteMany({})]).then(async () => {
+            try {
+                await request(app)
+                    .post('/api/public/register')
+                    .send(userData)
+                request(app)
+                    .post('/api/public/login')
+                    .send({ email: userData.email, password: userData.password })
+                    .end((err, res) => {
+                        token = res.body.token;
+                        done();
+                    });
+            } catch (err) {
+                console.log("ERROR : " + err);
+                process.exit(-1);
+            }
         });
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .post('/api/private/team/create')
+            .send(teamData)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                done();
+            });
+    });
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .post('/api/private/team/create')
+            .send(teamData)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 409 ERROR', (done) => {
+        const redondantTeam = { name: teamData.name, description: "test" };
+        request(app)
+            .post('/api/private/team/create')
+            .send(redondantTeam)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(409, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = { name: '' };
+        request(app)
+            .post('/api/private/team/create')
+            .send(wrongData)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
 });
-*/
