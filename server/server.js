@@ -28,7 +28,6 @@ const boardMember = require("./config/policies/boardMemberPolicy");
 const boardAdmin = require("./config/policies/boardAdminPolicy");
 
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = "mongolab-transparent-07367";
 
 app.use(cors());
 app.options("*", cors());
