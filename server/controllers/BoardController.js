@@ -197,6 +197,40 @@ const BoardController = () => {
 
     };
 
+    // @route PUT api/board/admin/:teamId/update/user/role/:memberId
+    // @desc add a user to the team
+    // @access Auth users
+
+    const updateMemberRole = async (req, res) => {
+
+        const board = Board.findById(req.params.boardId);
+        const user = User.findById(req.params.memberId);
+
+        if (!board) {
+            return res.status(404).json({teamName: "This board does not exists"});
+        }
+        if (!user) {
+            return res.status(404).json({teamName: "This user does not exists"});
+        }
+
+        Board.updateOne({_id: req.params.boardId, "members.idUser": req.params.memberId}, {
+            $set: {
+                "members.$.admin": req.body.isAdmin
+            }
+        })
+            .then(board => res.status(201).send({board: board, message: 'User role successfully updated'}))
+            .catch(err => res.status(404).json({message: "This Board does not exists - " + err}));
+
+    };
+
+    // @route DELETE api/board/admin/:teamId/delete/team/:teamId
+    // @desc add a user to the team
+    // @access Auth users
+
+    const deleteTeam = async (req, res) => {
+
+
+    };
     /**
      * Create a list on the board
      * @route POST /boards/{id}/lists
@@ -298,7 +332,8 @@ const BoardController = () => {
         getLists,
         addLabel,
         addMember,
-        deleteMember
+        deleteMember,
+        updateMemberRole
     };
 };
 
