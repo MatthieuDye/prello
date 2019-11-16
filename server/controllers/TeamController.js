@@ -78,7 +78,7 @@ const TeamController = () => {
 
         Team.findOne({ _id: Object(id) }).then(team => {
             if (team) {
-                return res.status(201).json(team)
+                return res.status(201).json({team: team})
             } else {
                 return res.status(404).json({ message: "Team not found" });
             }

@@ -11,6 +11,12 @@ const teamData = {
     description: "team description",
 };
 
+const newTeam = {
+    name: "team name",
+    description: "team description",
+    id: ""
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -40,7 +46,8 @@ describe('POST /api/private/team/create', () => {
                 console.log("ERROR : " + err);
                 process.exit(-1);
             }
-        });
+        })
+        .catch(err => console.log("ERROR : " + err));
     });
     it('should return 201 OK', (done) => {
         request(app)
@@ -50,6 +57,7 @@ describe('POST /api/private/team/create', () => {
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
+                newTeam.id = res.body.team._id;
                 done();
             });
     });
@@ -77,5 +85,32 @@ describe('POST /api/private/team/create', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(422, done);
+    });
+});
+
+describe('GET /api/private/team/member/:teamid', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/' + newTeam.id)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/team/member/' + newTeam.id)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                console.log("BODY : " + res.body)
+                expect(res.body.team).to.not.be.undefined;
+                done();
+            });
     });
 });
