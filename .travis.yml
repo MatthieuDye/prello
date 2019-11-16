@@ -13,7 +13,7 @@ install:
 script:
   - cd server
   - npm i
-  - node server.js
+  - node server.js &
   - npm test
   - cd ..
   - sonar-scanner
