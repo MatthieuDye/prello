@@ -9,10 +9,9 @@
     }
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout=10000 --recursive --exit",
     "start": "nodemon server.js",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
-    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "engines": {
     "node": "10.14.1"
