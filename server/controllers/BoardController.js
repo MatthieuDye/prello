@@ -297,7 +297,8 @@ const BoardController = () => {
         addList,
         getLists,
         addLabel,
-        addMember
+        addMember,
+        deleteMember
     };
 };
 
