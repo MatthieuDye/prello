@@ -177,7 +177,6 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
         request(app)
             .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId}`)
             .set('Authorization', token)
-            .send()
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -189,13 +188,72 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     it('should return 201 OK and fill the members list but not the admins list', (done) => {
         request(app)
             .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId2}`)
-            .set('Authorization', token2)
-            .send()
+            .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
                 expect(res.body.team.members).lengthOf(2);
                 expect(res.body.team.admins).lengthOf(1);
+                done();
+            });
+    });
+});
+
+
+describe('DELETE /api/private/team/admin/:teamId/delete/user/:userId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId}`)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR with a false teamId', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/666/delete/user/${createdUserId}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 404 ERROR with a false userId', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/666`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK and pull the members list but not the admins list', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId2}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.admins).lengthOf(1);
+                done();
+            });
+    });
+    it('should return 201 OK and not update members and admins lists', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId2}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.admins).lengthOf(1);
+                done();
+            });
+    });
+    it('should return 201 OK and pull members and admins lists', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.members).lengthOf(0);
+                expect(res.body.team.admins).lengthOf(0);
                 done();
             });
     });

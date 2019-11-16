@@ -188,17 +188,17 @@ const TeamController = () => {
                                             })
                                             .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                                     })
-                                    .catch(err => console.log(err));
+                                    .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                             } else {
                                 return res.status(404).json({ message: "This user does not exists" })
                             }
                         })
-                        .catch(err => res.status(500).json({ message: "Server error - " + err }))
+                        .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                 } else {
                     return res.status(404).json({ message: "This team does not exists" });
                 }
             })
-            .catch(err => res.status(500).json({ message: "Server error - " + err }))
+            .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
     };
 
     const deleteTeam = async (req, res) => {
