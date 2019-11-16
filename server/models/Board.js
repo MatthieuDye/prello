@@ -13,11 +13,6 @@ const boardSchema = new Schema({
             maxlength : 100,
             type      : String
         },
-        isFavorite: {
-            required: false,
-            type: Boolean,
-            default: false
-        },
         description: {
             required  : false,
             type      : String,

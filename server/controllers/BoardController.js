@@ -61,7 +61,7 @@ const BoardController = () => {
                     .catch(err => res.status(500).json({ message: "Server error " + err }));
             }
         });
-    }
+    };
 
     /**
      * Get a board by id
@@ -70,7 +70,7 @@ const BoardController = () => {
      */
     const getBoard = async (req, res) => {
 
-        const id = req.params.id
+        const id = req.params.id;
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
@@ -81,39 +81,121 @@ const BoardController = () => {
         }).catch(err => {
             res.status(404).json({ message: "Board not found " + err });
         });
-    }
+    };
 
-    /**
-     * Update a board by id
-     * @route PUT /boards/{id}
-     * @group board - Operations about boards
-     * @param {string} id.path.required - board's id
-     * @param {string} name.query - board's name.
-     * @param {string} desc.query - board's description.
-     * @param {string} closed.query - board's archived or not.
-     * @returns {code} 200 - Board updated successfully
-     * @returns {Error}  401 - Unauthorized, invalid credentials
-     * @returns {Error}  404 - Not found, board is not found
-     * @returns {Error}  default - Unexpected error
-     */
-    const updateBoard = async (req, res) => {
-        /* let board = req.board;
- 
-         (req.query.name) ? board.name = req.query.name : null;
-         (req.query.desc) ? board.desc = req.query.desc : null;
-         (req.query.closed) ? board.closed = req.query.closed : null;
- 
-         board.validate(function (err) {
-             if (err) return res.status(400).json({ message: err });
-             board.save(function (err) {
-                 if (err) {
-                     debug('PUT board/:id error : ' + err);
-                     return res.status(500).json({ message: 'Unexpected internal error' });
-                 }
-                 return res.status(200).json({ message: 'Board updated successfully' });
-             });
-         });*/
-    }
+    // /**
+    //  * Update a board by id
+    //  * @route PUT /boards/{id}
+    //  * @group board - Operations about boards
+    //  * @param {string} id.path.required - board's id
+    //  * @param {string} name.query - board's name.
+    //  * @param {string} desc.query - board's description.
+    //  * @param {string} closed.query - board's archived or not.
+    //  * @returns {code} 200 - Board updated successfully
+    //  * @returns {Error}  401 - Unauthorized, invalid credentials
+    //  * @returns {Error}  404 - Not found, board is not found
+    //  * @returns {Error}  default - Unexpected error
+    //  */
+    // const updateBoard = async (req, res) => {
+    //    let board = req.body.board;
+    //
+    //      (req.query.name) ? board.name = req.query.name : null;
+    //      (req.query.desc) ? board.desc = req.query.desc : null;
+    //      (req.query.closed) ? board.closed = req.query.closed : null;
+    //
+    //      board.validate(function (err) {
+    //          if (err) return res.status(400).json({ message: err });
+    //          board.save(function (err) {
+    //              if (err) {
+    //                  debug('PUT board/:id error : ' + err);
+    //                  return res.status(500).json({ message: 'Unexpected internal error' });
+    //              }
+    //              return res.status(200).json({ message: 'Board updated successfully' });
+    //          });
+    //      });
+    // }
+
+    // @route PUT api/private/board/admin/:boardId/add/user/:memberId
+    // @desc add a user to the team
+    // @access Auth users
+    const addMember = async (req, res) => {
+
+        const board = Board.findById(req.params.boardId);
+        const user = User.findById(req.params.memberId);
+
+        if (!board) {
+            return res.status(404).json({ teamName: "This board does not exists" });
+        }
+        if (!user) {
+            return res.status(404).json({ teamName: "This user does not exists" });
+        }
+
+        console.log(req.body.isAdmin);
+
+        Board
+            .updateOne({ _id: req.params.boardId }, {
+                $addToSet: {
+                    members: {
+                        idUser: req.params.memberId,
+                        admin: req.body.isAdmin,
+                        teamMember: false
+                    }
+                }
+            })
+            .then(board => {
+                //Add the team to the user team list
+                User.updateOne({ _id: req.params.memberId }, {
+                    $addToSet: {
+                        boards: req.params.boardId,
+                    }
+                })
+                    .then()
+                    .catch(err => res.status(404).json({ message: "This user does not exists - " + err }));
+                res.status(201).send({ board: board, message: 'User successfully added to the board' })
+            })
+            .catch(err => res.status(404).json({ message: "This board does not exists - " + err }));
+
+    };
+
+    // @route DELETE api/board/admin/:teamId/delete/user/:memberId
+    // @desc add a user to the team
+    // @access Auth users
+
+    const deleteMember = async (req, res) => {
+
+        const board = Board.findById(req.params.boardId);
+        const user = User.findById(req.params.memberId);
+
+        if (!board) {
+            return res.status(404).json({ teamName: "This board does not exists" });
+        }
+        if (!user) {
+            return res.status(404).json({ teamName: "This user does not exists" });
+        }
+
+        board.updateOne({
+            $pull: {
+                members: {
+                    idUser: req.params.memberId,
+                    admin: req.body.isAdmin,
+                    teamMember: req.body.isTeamMember
+                }
+            }
+        })
+            .then(team => {
+                //Delete the team to the user team list
+                User.updateOne({ _id: req.params.memberId }, {
+                    $pull: {
+                        boards: req.params.boardId
+                    }
+                })
+                    .then()
+                    .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
+                res.status(201).send({ team: team, message: 'User successfully deleted from the board' })
+            })
+            .catch(err => console.log(err));
+
+    };
 
     /**
      * Create a list on the board
@@ -212,10 +294,11 @@ const BoardController = () => {
     return {
         createBoard,
         getBoard,
-        updateBoard,
         addList,
         getLists,
-        addLabel
+        addLabel,
+        addMember,
+        deleteMember
     };
 };
 

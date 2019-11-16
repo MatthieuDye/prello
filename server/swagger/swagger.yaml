@@ -364,6 +364,101 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/admin/{boardId}/add/user/{userId}:
+    post:
+      summary: Add a member to a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: is the user admin
+        required: false
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+              example:   # Sample object
+                isAdmin: true
+      responses:
+        '201':
+          description: Board sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/admin/{boardId}/delete/user/{userId}:
+    delete:
+      summary: Delete a member from a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: is the deleted user admin and team member
+        required: false
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+                isTeamMember:
+                  type: boolean
+              example:   # Sample object
+                isAdmin: true
+                isTeamMember: false
+      responses:
+        '201':
+          description: User sucessfully deleted from the board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -480,16 +575,12 @@ components:
     Board:
       required:
         - name
-        - isFavorite
         - members
         - closed
         - labelNames
       properties:
         name:
           type: string
-        isFavorite:
-          type: boolean
-          default: false
         description:
           type: string
         members:
