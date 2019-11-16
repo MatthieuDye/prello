@@ -1,3 +1,17 @@
+## Travis
+[![Build Status](https://travis-ci.org/MatthieuDye/prello.svg?branch=master)](https://travis-ci.org/MatthieuDye/prello)
+
+## Sonar
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=alert_status)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=bugs)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=code_smells)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=ncloc)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=security_rating)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=sqale_index)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
