@@ -68,8 +68,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        '404':
-          description: User not exists
+        '403':
+          description: Invalid credentials
           content:
             application/json:
               schema:

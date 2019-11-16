@@ -20,14 +20,14 @@ module.exports = (req, res, next) => {
         console.log("1");
         return res.status(401).json({
           message:
-            "Format pour l'entête de requête : Authorization: Bearer [token]"
+            "Request header format: Authorization: Bearer [token]"
         });
       }
     } else {
       console.log("2");
       return res.status(401).json({
         message:
-          "Format pour l'entête de requête : Authorization: Bearer [token]"
+          "Request header format: Authorization: Bearer [token]"
       });
     }
   } else if (req.body.token) {
@@ -37,7 +37,7 @@ module.exports = (req, res, next) => {
     console.log("3");
     return res
       .status(401)
-      .json({ message: "Pas de jeton présent dans l'entête de requête" });
+      .json({ message: "No token in the request header" });
   }
 
   let payload;
@@ -47,12 +47,12 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(tokenToVerify, process.env.SECRET_TOKEN);
     if (!payload) {
       // On verifie la validité du payload avec notre secretKey
-      return res.status(401).send("Unauthorized request");
+      return res.status(401).json({ message: "Unauthorized request"});
     }
     next(); // Passe à la fonction suivante
   } catch (e) {
     if (e instanceof jwt.JsonWebTokenError) {
-      return res.status(401).send("Invalid Token");
+      return res.status(401).json({ message: "Invalid Token"});
     }
 
     next();
