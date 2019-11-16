@@ -58,7 +58,7 @@ const UserController = () => {
                 newUser.password = hash;
                 newUser
                   .save()
-                  .then(user => res.status(201).json(user))
+                  .then(user => res.status(201).json({user:user}))
                   .catch(err => res.status(500).json({ message: "Server error " + err }));
               });
             });
