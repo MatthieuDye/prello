@@ -110,35 +110,35 @@ const TeamController = () => {
                                 Team
                                     .updateOne({ _id: req.params.teamId }, {
                                         $addToSet: {
-                                            members: {
-                                                idUser: req.params.memberId,
-                                                isAdmin: req.body.isAdmin
-                                            }
+                                            members: req.params.memberId
                                         }
                                     })
                                     .then(team => {
                                         //Add the team to the user team list
-                                        User.findById(req.params.memberId).then(u => console.log(u))
+                                        User.findById(req.params.memberId).then()
                                         User.updateOne({ _id: req.params.memberId }, {
                                             $addToSet: {
                                                 teams: req.params.teamId,
                                             }
                                         })
-                                            .then()
-                                            .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
-                                        res.status(201).send({ team: team, message: 'User successfully added to the team' })
+                                            .then(team => {
+                                                Team.findById(req.params.teamId)
+                                                .then(team => res.status(201).send({ team: team, message: 'User successfully added to the team' }))
+                                                .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
+                                            })
+                                            .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))                                            
                                     })
                                     .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                             } else {
                                 return res.status(404).json({ message: "This user does not exists" })
                             }
                         })
-                        .catch(err => res.status(500).json({ message: "Server error - " + err }))
+                        .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                 } else {
                     return res.status(404).json({ message: "This team does not exists" });
                 }
             })
-            .catch(err => res.status(500).json({ message: "Server error - " + err }))
+            .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
     };
 
     const deleteMember = async (req, res) => {

@@ -219,12 +219,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        '500':
-          description: Servor error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /api/private/team/admin/{teamId}/delete/user/{userId} :
     delete:
