@@ -29,6 +29,10 @@ const TeamController = () => {
             return res.status(422).json({ message: "Invalid input" });
         }
 
+        if(!req.body.userId){
+            return res.status(422).json({ message: "No userId found for team creation" });
+        }
+
         Team.findOne({ name: req.body.name }).then(team => {
             if (team) {
                 return res.status(409).json({ message: "This team Name already exists" });

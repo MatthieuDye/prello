@@ -17,14 +17,12 @@ module.exports = (req, res, next) => {
       if (/^Bearer$/.test(scheme)) {
         tokenToVerify = credentials;
       } else {
-        console.log("1");
         return res.status(401).json({
           message:
             "Format pour l'entête de requête : Authorization: Bearer [token]"
         });
       }
     } else {
-      console.log("2");
       return res.status(401).json({
         message:
           "Format pour l'entête de requête : Authorization: Bearer [token]"
@@ -34,7 +32,6 @@ module.exports = (req, res, next) => {
     tokenToVerify = req.body.token;
     delete req.query.token;
   } else {
-    console.log("3");
     return res
       .status(401)
       .json({ message: "Pas de jeton présent dans l'entête de requête" });
@@ -43,7 +40,6 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    console.log("after : " + tokenToVerify)
     payload = jwt.verify(tokenToVerify, process.env.SECRET_TOKEN);
     if (!payload) {
       // On verifie la validité du payload avec notre secretKey
