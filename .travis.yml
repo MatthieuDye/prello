@@ -1,9 +1,17 @@
 language: node_js
 node_js:
  - "node"
+dist: trusty
+addons:
+  sonarcloud:
+    organization: "matthieudye"
+    token:
+      secure: "q1uAHF8fFYcylEmGENI5MM1aYA08/ZBOj0lQJoEJAs2eSYGHSb/BL704eORdjgIynJdpeGqIV45AQuqEz2kaA63UGWNyXk7RP9hPnaZfhVERGuoKEkMw3vIXk1FqUyFRw1diStKjghqapZmeOAqOkypt7VshVvZBOJxRqe/xIna3BWlKoKcGcj1+Hl9zHDkPBAI1UA4MWasBaFi6en08oYUh/I8tC0pAHshtU0cJdu7gNr2ZAdUqb+oFyFhqNM/jORdLp421ox8W1xU2OMPoCqrM3pSBXdcCxLjy6oUxaNj5U0kJUPd9e/CJfQ27cTyZ9dBW3XvlEXDxolYXFlFqW2QkyYLFqbPYAL9tJGv14Om8bOMmty213bV2Y1yvJFpYQNa99VulW3B3agXbbHpkwjm28oC+R6wR+94RyZhMdmQo3w7qElQhHxTIqlB3X7549g1W7a0JKsa/6XeWyY5qIT0In9rRLaMxsY+fOCasxO9M1bHK6ZWPj20nryeJsKCp5PaauN59oEJh8jg/E5fdxbX9qIO/Jbv/117z6P3jYDsMomx3xX86ihOzDz7eenmQZLI2ffnidmcbWMucz+ZiWHf1AYehgQ7rPzIEuvfZCVqXWE1ulXl0c+dmoaipYBGya84kPNg3tRmy7LphtZoJyBkddQQxNoGoTbLX7O2Gqrw="
 install:
-  - npm install -g nyc coveralls mocha mocha-lcov-reporter supertest
+  - npm install -g nyc mocha mocha-lcov-reporter supertest
 script:
   - cd server
   - npm i
   - npm test
+  - cd ..
+  - sonar-scanner
