@@ -6,6 +6,7 @@ const cors = require("cors");
 const Board = require("../models/Board");
 const Label = require('../models/Label');
 const List = require('../models/List');
+const User = require('../models/User');
 
 // Load input validation
 const validateCreateBoardInput = require("../validation/createBoard.js");
