@@ -6,8 +6,8 @@ import {ListGroup, ListGroupItem} from 'react-bootstrap';
 
 class MyTeams extends Component {
 
-    redirectionTeam = (id) => {
-        this.props.history.push(`/team/addMembers/${id}`);
+    redirectionTeam = (teamId) => {
+        this.props.history.push(`/team/${teamId}/add`);
     };
 
     render() {

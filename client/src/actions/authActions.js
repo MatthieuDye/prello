@@ -8,7 +8,7 @@ import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING, SAVE_USER } from "./types";
 export const registerUser = (userData, history) => dispatch => {
   axios
     .post("/api/public/register", userData)
-    .then(res => history.push("/dashboard"))
+    .then(res => history.push("/login"))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -27,7 +27,6 @@ export const loginUser = (userData, history) => dispatch => {
             // Set token to localStorage
 
             const { token } = res.data;
-            console.log(token);
             localStorage.setItem("jwtToken", token);
             // Set token to Auth header
             setAuthToken(token);
@@ -37,7 +36,7 @@ export const loginUser = (userData, history) => dispatch => {
             dispatch(setCurrentUser(decoded));
             // Save user
             dispatch(saveUser(decoded));
-            history.push("/dashboard");
+            history.push("/:userName/boards");
         })
         .catch(err =>
             dispatch({
@@ -57,7 +56,7 @@ export const loginGoogleUser = (token, history) => dispatch => {
     dispatch(setCurrentUser(decoded));
     // Save user
     dispatch(saveUser(decoded));
-    history.push("/dashboard");
+    history.push("/:userName/boards");
 };
 
 // Set logged in user
@@ -77,7 +76,6 @@ export const setUserLoading = () => {
 
 // Save user
 export const saveUser = userData => {
-  console.log(userData)
   return {
     type: SAVE_USER,
     payload: userData
