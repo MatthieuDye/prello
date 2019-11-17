@@ -124,7 +124,7 @@ const ListController = () => {
                         .then(list => {
                             //Get the list to return
                             List.findOne({ _id: Object(id) })
-                                .then(list => res.status(201).json({ list: list, message: "Team renamed" }))
+                                .then(list => res.status(201).json({ list: list, message: "List renamed" }))
                                 .catch(err => res.status(404).json({ message: "List not found - " + err }))
                         })
                         .catch(err => res.status(404).json({ message: "List not found - " + err }))

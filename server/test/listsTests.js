@@ -165,6 +165,11 @@ describe('PUT /api/private/board/member/list/:listId/rename', () => {
             .put(`/api/private/board/member/list/${listData.id}/rename`)
             .send(newListData)
             .set('Authorization', token)
-            .expect(201, done);
+            .expect(201, (err, res) => {
+                expect(res.body.list).to.not.be.undefined;
+                expect(res.body.list.cards).lengthOf(0);
+                expect(res.body.list.name).is.equal(newListData.name);
+                done();
+            });
     });
 });

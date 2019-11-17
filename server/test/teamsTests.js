@@ -11,6 +11,16 @@ const teamData = {
     id: ""
 };
 
+const otherTeamData = {
+    name: "other team name",
+    description: "other team description"
+};
+
+const newTeamData = {
+    name: "new team name",
+    description: "new team description"
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -105,6 +115,19 @@ describe('POST /api/private/team/create', () => {
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
+    it('should return 201 OK with new values', (done) => {
+        request(app)
+            .post('/api/private/team/create')
+            .send({ name: otherTeamData.name, description: otherTeamData.description, userId: createdUserId })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.admins).lengthOf(1);
+                done();
+            });
+    });
 });
 
 describe('GET /api/private/team/member/:teamId', () => {
@@ -133,10 +156,49 @@ describe('GET /api/private/team/member/:teamId', () => {
     });
 });
 
+describe('PUT /api/private/team/admin/:listId/update', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .send(newTeamData)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "",
+            description: "test"
+        };
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 409 ERROR with a name already existing', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .set('Authorization', token)
+            .send(otherTeamData)
+            .expect(409, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .send(newTeamData)
+            .set('Authorization', token)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.name).is.equal(newTeamData.name);
+                expect(res.body.team.description).is.equal(newTeamData.description);
+                done();
+            });
+    });
+});
+
 describe('GET /api/private/user/:userId/teams', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
-            .get('/api/private/user/'+ createdUserId + '/teams')
+            .get('/api/private/user/' + createdUserId + '/teams')
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
