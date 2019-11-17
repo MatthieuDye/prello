@@ -3,14 +3,14 @@ let Board = require('./Board');
 let Schema = mongoose.Schema;
 
 let listSchema = new Schema({
+        name: {
+                type: String,
+                required: true
+        },
         isArchived: {
                 type: Boolean,
                 required: true,
                 default: false
-        },
-        name: {
-                type: String,
-                required: true
         },
         cards: [
                 {

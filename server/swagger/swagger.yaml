@@ -550,6 +550,37 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/list/create:
+    post:
+      summary: Add a list to a board
+      security:
+        - token: []
+      tags:
+        - lists
+      requestBody:
+        description: List details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/List'
+      responses:
+        '201':
+          description: List create successfull
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -679,9 +710,12 @@ components:
           default: []
         team:
           type: string
-        closed:
+        isArchived:
           type: boolean
           default: false
+        lists:
+          $ref: "#/components/schemas/Lists"
+          default: []
         labelNames:
           $ref: "#/components/schemas/LabelNames"
 
@@ -721,4 +755,19 @@ components:
           type: string
         pink:
           type: string
+
+    List:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        isArchived:
+          type: boolean
+          default: false
+
+    Lists:
+      type: array
+        items:
+          $ref: "#/components/schemas/List"
     
