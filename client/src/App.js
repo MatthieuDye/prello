@@ -19,6 +19,7 @@ import CreateTeam from "./components/teams/CreateTeam";
 import CreateBoard from "./components/boards/CreateBoard";
 import AddTeamMember from "./components/teams/AddTeamMember";
 import AddBoardMember from "./components/boards/AddBoardMember";
+import TeamView from "./components/teams/TeamView";
 
 import { Menu, Dropdown } from 'semantic-ui-react'
 
@@ -53,7 +54,7 @@ class App extends Component {
     };
 
     render() {
-        const { activeItem, isLoggedIn } = this.state
+        const { activeItem, isLoggedIn } = this.state;
         const DefaultContainer = () => (
             <div>
                 <div className="container">
@@ -106,6 +107,7 @@ class App extends Component {
                     <PrivateRoute exact path="/:userName" component={Profile} />
                     <PrivateRoute exact path="/team/create" component={CreateTeam} />
                     <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
+                    <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                     <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
                 </div>
             </div>

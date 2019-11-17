@@ -14,7 +14,7 @@ const getSuggestionValue = suggestion => suggestion.userName;
 
 
 const renderSuggestion = suggestion => (
-    <div>
+    <div id={suggestion._id}>
         {suggestion.userName}
     </div>
 );
@@ -28,12 +28,13 @@ class AddTeamMember extends Component {
             isLoading: false,
             value: '',
             users: [],
-            team: this.props.teams.filter(t => t._id === this.props.match.params.teamId)[0]
+            team: this.props.currentTeam
         };
     }
 
     onSubmit = ()  => {
-        this.props.addMember(this.state.users[0].username,this.props.match.params.teamId)
+        console.log(this.state);
+        this.props.addMember(this.state.value,this.state.team._id)
     };
 
     //__________AUTOCOMPLETE_________
@@ -73,7 +74,6 @@ class AddTeamMember extends Component {
 
     };
 
-    // Autosuggest will call this function every time you need to clear suggestions.
     onSuggestionsClearRequested = () => {
         this.setState({
             users: []
@@ -114,12 +114,12 @@ class AddTeamMember extends Component {
 }
 
 AddTeamMember.propTypes = {
-    teams: PropTypes.array.isRequired,
+    currentTeam: PropTypes.object.isRequired,
     addMember: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-    teams: state.teams,
+    currentTeam: state.currentTeam,
 });
 
 export default connect(
