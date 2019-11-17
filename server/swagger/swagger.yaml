@@ -267,7 +267,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/team/admin/{teamId}/add/user/{userId} :
+  /api/private/team/admin/{teamId}/add/user/{userName} :
     post:
       summary: Add a member to a team
       security:
@@ -281,9 +281,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: userId
+        - name: userName
           in: path
-          description: User ID
+          description: UserName
           required: true
           schema:
             type: string
