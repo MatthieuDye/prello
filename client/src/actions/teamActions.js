@@ -46,7 +46,7 @@ export const fetchTeams = (userId) => dispatch => {
         );
 };
 
-// _______ FETCH TEAM _______
+// _______ FETCH ONE TEAM _______
 
 export const fetchTeamSuccessAction = team => ({
     type: FETCH_TEAM_SUCCESS,

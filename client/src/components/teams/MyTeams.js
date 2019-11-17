@@ -22,7 +22,7 @@ class MyTeams extends Component {
                 <Header as='h3'>
                     <Icon name='users'/>
                     <Header.Content>My Teams</Header.Content>
-                    <Link to='/team/create'>
+                    <Link to='/add/team'>
                         <Button primary size='mini' floated='right'>
                             <Icon name='add'/>
                             ADD

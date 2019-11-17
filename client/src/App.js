@@ -85,7 +85,7 @@ class App extends Component {
                                         <Link to="/board/create" className="nav-link">Create a board</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item>
-                                        <Link to="/team/create" className="nav-link">Create a team</Link>
+                                        <Link to="/add/team" className="nav-link">Create a team</Link>
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -105,7 +105,7 @@ class App extends Component {
                     <PrivateRoute exact path="/board/create" component={CreateBoard} />
                     <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
                     <PrivateRoute exact path="/:userName" component={Profile} />
-                    <PrivateRoute exact path="/team/create" component={CreateTeam} />
+                    <PrivateRoute exact path="/add/team" component={CreateTeam} />
                     <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
                     <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                     <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
