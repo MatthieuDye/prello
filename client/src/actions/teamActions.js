@@ -35,7 +35,7 @@ export const fetchTeamsSuccessAction = teams => ({
 
 export const fetchTeams = (userId) => dispatch => {
     axios
-        .get(`api/private/user/${userId}/teams`)
+        .get(`/api/private/user/${userId}/teams`)
         .then(res => dispatch(fetchTeamsSuccessAction(res.data.teams)))
         .catch(err =>
             dispatch({
