@@ -1,52 +1,65 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {ListGroup, ListGroupItem} from 'react-bootstrap';
+import {Card, Divider, Icon, Header, Container, Button} from "semantic-ui-react";
+import {Link} from "react-router-dom";
 
+import{fetchTeams} from "../../actions/teamActions";
 
 class MyTeams extends Component {
 
-    redirectionTeam = (teamId) => {
+    componentDidMount() {
+        this.props.fetchTeams(this.props.auth.user.id);
+    }
+
+    redirectionTeam = (id) => {
         this.props.history.push(`/team/${teamId}/add`);
     };
 
     render() {
         return (
-            <div style={{marginTop: 10}}>
-                <h3>My Teams</h3>
-                <p>Insert code</p>
-                <ListGroup>
-                    {this.props.teams.map(({_id, name, description}) => (
+            <Container>
+                <Header as='h3'>
+                    <Icon name='users'/>
+                    <Header.Content>My Teams</Header.Content>
+                    <Link to='/team/create'>
+                        <Button primary size='mini' floated='right'>
+                            <Icon name='add'/>
+                            ADD
+                        </Button>
+                    </Link>
+                </Header>
+                <Divider />
+                <Card.Group stackable doubling itemsPerRow={4}>
+                    {this.props.teams.map(({_id, name, description, members}) => (
 
-
-                        <ListGroupItem
-                            key={_id}
-                            className="ListMenu"
-                            onClick={() => this.redirectionTeam(_id)}
-                            action
-                        >
-
-                            <h3>{name}</h3>
-
-                        </ListGroupItem>
-
+                        <Card>
+                            <Card.Content textAlign='center' header={name}/>
+                            <Card.Content description={description}/>
+                            <Card.Content extra>
+                                <Icon name='user'/>
+                                {members.length > 1 ? members.length + ' members' : members.length + ' member'}
+                            </Card.Content>
+                        </Card>
                     ))}
-
-                </ListGroup>
-            </div>
+                </Card.Group>
+            </Container>
         )
     }
 }
 
 MyTeams.propTypes = {
     teams: PropTypes.array.isRequired,
-
+    fetchTeams: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
     teams: state.teams,
+    auth: state.auth
 });
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    {fetchTeams}
 )(MyTeams);

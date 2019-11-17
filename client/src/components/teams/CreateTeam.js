@@ -1,72 +1,81 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
+import React, {Component} from 'react';
+import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import { createTeam } from "../../actions/teamActions";
+import {createTeam} from "../../actions/teamActions";
+import {Button, Divider, Header, Icon, Label, Input, Form, Grid, Container, TextArea} from "semantic-ui-react";
+import {Formik} from 'formik'
+import * as Yup from 'yup'
 
+const CreateTeamSchema = Yup.object().shape({
+    teamName: Yup.string()
+        .required('Team name is required')
+});
 
+const CreateTeam = (props) => (
 
+    <Container>
 
-class CreateTeam extends Component {
+        <Header as='h3'>
+            <Icon name='users'/>
+            <Header.Content>Create a Team</Header.Content>
+        </Header>
+        <Divider/>
 
-    constructor(props) {
-        super(props);
+        <Grid centered textAlign='center' verticalAlign='middle'>
+            <Grid.Column style={{maxWidth: 500}}>
+                <Formik
+                    initialValues={{
+                        teamName: '',
+                        description: ''
+                    }}
+                    validationSchema={CreateTeamSchema}
+                    onSubmit={values => {
+                        const teamData = {
+                            name: values.teamName,
+                            description: values.description,
+                            userId: props.auth.user.id
+                        };
 
-        this.state = {
-            teamName: '',
-            description: ''
-        }
-    }
+                        props.createTeam(teamData, props.history);
+                    }}
+                >
 
-    onChange = e => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
+                    {({handleChange, handleSubmit, values, errors, touched}) => (
 
-    onSubmit = e => {
-        e.preventDefault();
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Field required>
+                                <Header as='h4'>Team Name</Header>
+                                <Input
+                                    placeholder='name'
+                                    value={values.teamName}
+                                    onChange={handleChange('teamName')}
+                                />
+                                {errors.teamName && touched.teamName &&
+                                <Label basic prompt pointing>
+                                    {errors.teamName}
+                                </Label>}
+                            </Form.Field>
 
-        const teamData = {
-            name: this.state.teamName,
-            description: this.state.description,
-            userId: this.props.auth.user.id
-        };
+                            <Form.Field>
+                                <Header as='h4'>Description</Header>
+                                <TextArea
+                                    placeholder='enter team description'
+                                    value={values.description}
+                                    style={{minHeight: 100}}
+                                    onChange={handleChange('description')}
+                                />
+                            </Form.Field>
 
-        this.props.createTeam(teamData,  this.props.history);
-    };
-
-    render() {
-        return (
-            <div style={{marginTop: 10}}>
-                <h3>Create a Team</h3>
-                <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>Team Name:  </label>
-                        <input
-                            onChange={this.onChange}
-                            value = {this.state.teamName}
-                            id="teamName"
-                            type="text"
-                            className="form-control"
-                            required={true}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Description: </label>
-                        <input
-                            onChange={this.onChange}
-                            value = {this.state.description}
-                            id="description"
-                            type="text"
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Create the team" className="btn btn-primary"/>
-                    </div>
-                </form>
-            </div>
-        )
-    }
-}
+                            <Button primary onPress={handleSubmit}>
+                                Create the Team
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
+            </Grid.Column>
+        </Grid>
+    </Container>
+);
 
 CreateTeam.propTypes = {
     createTeam: PropTypes.func.isRequired,
@@ -79,5 +88,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { createTeam }
+    {createTeam}
 )(CreateTeam);

@@ -7,3 +7,4 @@ export const SAVE_USER = "SAVE_USER";
 
 //________TEAM___________
 export const CREATE_TEAM_SUCCESS = "CREATE_TEAM_SUCCESS";
+export const FETCH_TEAMS_SUCCESS = "FETCH_TEAM_SUCCESS";

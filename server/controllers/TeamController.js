@@ -77,7 +77,7 @@ const TeamController = () => {
      */
     const getTeam = async (req, res) => {
 
-        const id = req.params.id
+        const id = req.params.id;
 
         Team.findOne({ _id: Object(id) }).then(team => {
             if (team) {
@@ -88,7 +88,26 @@ const TeamController = () => {
         }).catch(err => {
             res.status(404).json({ message: "Team not found " + err });
         });
-    }
+    };
+
+    const getTeams = async (req, res) => {
+        const userId = req.params.userId;
+        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({message: "This user id is not correct"});
+        }
+
+        User.findById(userId)
+            .select('teams')
+            .populate({
+                path: 'teams',
+                select: ['name', 'description', 'members']
+            })
+            .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
+            .catch(err => {
+                return res.status(404).json({message: "This user does not exists"});
+            })
+
+    };
 
     // @route PUT api/team/addmember/:teamId/:memberId
     // @desc add a user to the team
@@ -236,6 +255,7 @@ const TeamController = () => {
     return {
         createTeam,
         getTeam,
+        getTeams,
         addMember,
         deleteMember,
         deleteTeam
