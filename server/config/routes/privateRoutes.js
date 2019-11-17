@@ -8,6 +8,7 @@ const privateRoutes = {
     
     //Board
     'POST /board/create': 'BoardController.createBoard',
+    'GET /user/:userId/boards': 'BoardController.getBoards',
 
 };
 
