@@ -86,6 +86,36 @@ const BoardController = () => {
         });
     };
 
+    const getBoards = async (req, res) => {
+        const userId = req.params.userId;
+        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(404).json({message: "This user id is not correct"});
+        }
+
+        User.findById(userId)
+            .select('boards')
+            .populate([{
+                path: 'guestBoards',
+                select: ['name', 'description']
+            },{
+                path: 'teams',
+                select: ['name'],
+                populate:({
+                    path: 'boards',
+                    select: ['name', 'description']
+                })
+            }
+            ])
+            .then(user => res.status(201).send({
+                boards: {guestBoards: user.guestBoards, teamsBoards: user.teams},
+                message: 'Boards successfully fetched'
+            }))
+            .catch(err => {
+                return res.status(404).json({message: "This user does not exists"});
+            })
+
+    };
+
     // /**
     //  * Update a board by id
     //  * @route PUT /boards/{id}
@@ -421,7 +451,8 @@ const BoardController = () => {
         deleteMember,
         updateMemberRole,
         addTeam,
-        deleteTeam
+        deleteTeam,
+        getBoards
     };
 };
 

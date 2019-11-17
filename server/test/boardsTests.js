@@ -128,6 +128,51 @@ describe('GET /api/private/board/member/:boardId', () => {
     });
 });
 
+describe('GET /api/private/user/:userId/boards', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/'+ boardData.userId + '/boards')
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/666/boards')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        teamData.name = "test get boards";
+        request(app)
+            .post('/api/private/team/create')
+            .send(teamData)
+            .set('Authorization', token)
+            .then(res => {
+                const teamId = res.body.team._id;
+                request(app)
+                    .post('/api/private/board/admin/' + boardData.id + '/add/team/' + teamId)
+                    .set('Authorization', token)
+                    .then(result => {
+                        request(app)
+                            .post(`/api/private/team/admin/${teamId}/add/user/${boardData.userId}`)
+                            .set('Authorization', token)
+                            .then(resu => {
+                                request(app)
+                                    .get('/api/private/user/' + boardData.userId + '/boards')
+                                    .set('Authorization', token)
+                                    .expect('Content-Type', /json/)
+                                    .expect(201, (err, res) => {
+                                        expect(!(res.body.boards.guestBoards === undefined));
+                                        expect(res.body.boards.teamsBoards.length === 1);
+                                        done();
+                                    })
+                            });
+                    });
+            })
+    });
+});
+
 
 describe('PUT /api/private/board/admin/:boardId/add/user/:userId', () => {
     it('should return 401 ERROR', (done) => {
@@ -289,7 +334,7 @@ describe('POST /api/private/board/admin/:boardId/add/team/:teamId', () => {
             .expect(404, done);
     });
     it('should return 201 OK', (done) => {
-
+        teamData.name = "test add team to board"
         request(app)
             .post('/api/private/team/create')
             .send(teamData)

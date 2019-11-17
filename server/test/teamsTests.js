@@ -153,7 +153,6 @@ describe('GET /api/private/user/:userId/teams', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                console.log(res.body.teams);
                 expect(res.body.teams.length === 1);
                 done();
             });
