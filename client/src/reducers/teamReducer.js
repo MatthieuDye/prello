@@ -9,7 +9,7 @@ const teamReducer = (state =  [], action) => {
             return state.concat([action.payload.team])
         }
         case types.FETCH_TEAMS_SUCCESS: {
-            return action.payload.teams.teams
+            return action.payload.teams
         }
 
         default:

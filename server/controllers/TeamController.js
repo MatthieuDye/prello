@@ -100,9 +100,9 @@ const TeamController = () => {
             .select('teams')
             .populate({
                 path: 'teams',
-                select: ['name', 'description']
+                select: ['name', 'description', 'members']
             })
-            .then(teams => res.status(201).send({ teams: teams, message: 'Team successfully fetched' }))
+            .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
             .catch(err => {
                 return res.status(404).json({message: "This user does not exists"});
             })
