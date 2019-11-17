@@ -1,21 +1,27 @@
-import React, {Component} from "react";
-import {BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
+import './App.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import {setCurrentUser, logoutUser} from "./actions/authActions";
-import {Provider} from "react-redux";
+import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { Provider } from "react-redux";
 import store from "./store";
 
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import PrivateRoute from "./components/private-route/PrivateRoute";
-import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRoute from "./components/privateRoute/PrivateRoute";
+import MyBoards from "./components/boards/MyBoards";
+import MyTeams from "./components/teams/MyTeams";
 import Profile from "./components/profile/Profile"
-import CreateTeam from "./components/team/CreateTeam";
-import MyTeams from "./components/team/MyTeams";
-import AddMember from "./components/team/AddMember";
+import CreateTeam from "./components/teams/CreateTeam";
+import CreateBoard from "./components/boards/CreateBoard";
+import AddTeamMember from "./components/teams/AddTeamMember";
+import AddBoardMember from "./components/boards/AddBoardMember";
+import TeamView from "./components/teams/TeamView";
+
+import { Menu, Dropdown } from 'semantic-ui-react'
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -38,43 +44,86 @@ if (localStorage.jwtToken) {
 }
 
 class App extends Component {
+    state = {}
+
+    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+
+    onLogoutClick = e => {
+        e.preventDefault();
+        store.dispatch(logoutUser());
+    };
+
     render() {
+        const { activeItem } = this.state
+        const DefaultContainer = () => (
+            <div>
+                <div className="container">
+                    <Menu inverted>
+                        <Menu.Item>
+                            <img src={require('./prello_icon.png')} alt="Prello logo" />
+                        </Menu.Item>
+
+                        <Menu.Item
+                            name='boards'
+                            active={activeItem === 'boards'}
+                            onClick={this.handleItemClick}
+                        >
+                            <Link to="/:userName/boards" className="nav-link">Boards</Link>
+                        </Menu.Item>
+
+                        <Menu.Item
+                            name='teams'
+                            active={activeItem === 'teams'}
+                            onClick={this.handleItemClick}
+                        >
+                            <Link to="/:userName/teams" className="nav-link">Teams</Link>
+                        </Menu.Item>
+                        <Menu.Menu position='right'>
+                            <Dropdown item text='+'>
+                                <Dropdown.Menu className="dropDownMenu">
+                                    <Dropdown.Item>
+                                        <Link to="/board/create" className="nav-link">Create a board</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link to="/add/team" className="nav-link">Create a team</Link>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Dropdown item text='Profile'>
+                                <Dropdown.Menu className="dropDownMenu">
+                                    <Dropdown.Item>
+                                        <Link to="/:userName" className="nav-link">My profile</Link>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Menu.Menu>
+                    </Menu>                    
+                    <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
+                    <PrivateRoute exact path="/board/create" component={CreateBoard} />
+                    <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
+                    <PrivateRoute exact path="/:userName" component={Profile} />
+                    <PrivateRoute exact path="/add/team" component={CreateTeam} />
+                    <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
+                    <PrivateRoute exact path='/team/:teamId' component={TeamView} />
+                    <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
+                </div>
+            </div>
+        )
         return (
             <Provider store={store}>
                 <Router>
                     <div className="container">
-                        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                            <a class="navbar-brand" href="https://codingthesmartway.com" target="_blank">
-                            </a>
-                            <Link to="/" className="navbar-brand">
-                            <img src={ require('./prello_logo.png') } alt="Prello" height="50" width="95" />
-                            </Link>
-                            <div className="collpase navbar-collapse">
-                                <ul className="navbar-nav mr-auto">
-                                    <li className="navbar-item">
-                                    <Link to="/profile/:id" className="nav-link">My profile</Link>
-                                </li>
-                                    <li>
-                                        <Link to="/team/create" className="nav-link">Create a Team</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/team" className="nav-link">My Teams</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/login" className="nav-link">Login</Link>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
-                        <br/>
-                        <Route path="/login" component={Login}/>
-                        <Route exact path="/register" component={Register}/>
+
+                        <br />
+                        <Route path="/login" component={Login} />
+                        <Route exact path="/" component={Login} />
+                        <Route exact path="/register" component={Register} />
                         <Switch>
-                            <PrivateRoute exact path="/dashboard" component={Dashboard}/>
-                            <PrivateRoute exact path="/profile/:id" component={Profile} />
-                            <PrivateRoute exact path="/team/create" component={CreateTeam}/>
-                            <PrivateRoute exact path="/team" component={MyTeams}/>
-                            <PrivateRoute exact path='/team/addMembers/:teamId' component={AddMember}/>
+                            
+                            <PrivateRoute component={DefaultContainer} />
                         </Switch>
                     </div>
                 </Router>
@@ -82,5 +131,6 @@ class App extends Component {
         );
     }
 }
+
 
 export default App;

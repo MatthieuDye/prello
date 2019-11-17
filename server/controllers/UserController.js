@@ -126,6 +126,23 @@ const UserController = () => {
     });
   };
 
+  const findByBeginName = async (req, res) => {
+
+    const query = req.params.query;
+
+    User.find({"userName": { $regex : `^${query}`, $options: 'i'}})
+        .then(users => {
+          console.log(users);
+          res.status(201).send({
+            users: users,
+            message: 'Users successfully fetched'
+          })
+        })
+        .catch(err => {
+          return res.status(404).json({message: "This query is not right" + err});
+        })
+  };
+
   const updateProfile = async (req, res) => {
     // Form validation
     const { errors, isValid } = validateUpdateUserInput(req.body);
@@ -137,7 +154,7 @@ const UserController = () => {
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
       if (user) {
-        return res.status(409).json({ email: "Email already exists" });
+        return res.status(409).json({ message: "Email already exists" });
       } else {
         User.findOne({ userName: req.body.userName }).then(user => {
           if (user && user.userName != req.params.userName) {
@@ -154,7 +171,10 @@ const UserController = () => {
                 }
               },
             )
-              .then(user => res.status(201).json(user))
+              .then(user => {
+                User.findOne({ userName: req.params.userName })
+                .then(user => res.status(201).json({ user: user, message: "User updated" }))
+              })
               .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
         });
@@ -165,7 +185,8 @@ const UserController = () => {
   return {
     register,
     login,
-    updateProfile
+    updateProfile,
+    findByBeginName
   };
 };
 

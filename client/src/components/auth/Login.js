@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser, loginGoogleUser } from "../../actions/authActions";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import classnames from "classnames";
 import GoogleButton from 'react-google-button'
 import Row from "react-bootstrap/Row";
-import {bindActionCreators} from "redux";
+import { bindActionCreators } from "redux";
 
 class Login extends Component {
   constructor() {
@@ -22,16 +22,16 @@ class Login extends Component {
   componentDidMount() {
     // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push("/:userName/boards");
     }
 
-      if (this.props.location.search) {
-          const params = {};
-          window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
-              params[key] = value;
-          });
-          this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
-      }
+    if (this.props.location.search) {
+      const params = {};
+      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+        params[key] = value;
+      });
+      this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -117,20 +117,20 @@ class Login extends Component {
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <Row>
-                <button
-                  style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem"
-                  }}
-                  type="submit"
-                  className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                >
-                  Login
+                  <button
+                    style={{
+                      width: "150px",
+                      borderRadius: "3px",
+                      letterSpacing: "1.5px",
+                      marginTop: "1rem"
+                    }}
+                    type="submit"
+                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                  >
+                    Login
                 </button>
 
-                  <a href= "http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
+                  <a href="http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
                 </Row>
               </div>
             </form>
@@ -153,11 +153,11 @@ const mapStateToProps = state => ({
 
 // Put actions in props
 const mapDispatchToProps = dispatch => bindActionCreators(
-    {
-      loginUser,
-      loginGoogleUser,
+  {
+    loginUser,
+    loginGoogleUser,
 
-    }, dispatch,
+  }, dispatch,
 );
 export default connect(
   mapStateToProps,

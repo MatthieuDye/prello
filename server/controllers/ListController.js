@@ -5,10 +5,61 @@ let debug = require('debug')('app:lists');
 
 // Load models
 let List = require('../models/List');
+let Board = require('../models/Board');
+
+// Load input validation
+const validateCreateListInput = require("../validation/createList.js");
 
 router.use(cors());
 
 const ListController = () => {
+
+    /**
+     * Create a list
+     * @param {string} id.param.required - the board's id
+     * @returns {List} 201 - List created
+     */
+    const createList = async (req, res) => {
+        // Form validation
+        const { errors, isValid } = validateCreateListInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        if (!req.body.boardId) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        //Serach if the board exists
+        Board.findById(req.body.boardId)
+            .then(board => {
+                //If the board is not null
+                if (board) {
+                    //Create the new list
+                    const newList = new List({
+                        name: req.body.name
+                    });
+                    newList
+                        .save()
+                        .then(list => {
+                            //Add the list to the lists array in the board
+                            Board.updateOne({ _id: req.body.boardId }, {
+                                $addToSet: {
+                                    lists: list._id,
+                                }
+                            })
+                                .then(board => res.status(201).send({ list: list, message: 'List successfully created' }))
+                                .catch(err => res.status(404).json({ message: "Board not found - " + err }))
+                        })
+                        .catch(err => res.status(500).json({ message: "Server error - " + err }));
+                } else {
+
+                }
+            })
+            .catch(err => res.status(404).json({ message: "Board not found - " + err }))
+    }
 
     /**
      * Get a list
@@ -16,7 +67,17 @@ const ListController = () => {
      * @returns {List} 200 - List got
      */
     const getList = async (req, res) => {
-       
+        const id = req.params.id;
+
+        List.findOne({ _id: Object(id) }).then(list => {
+            if (list) {
+                return res.status(201).json({ list: list, message: "List found" })
+            } else {
+                return res.status(404).json({ message: "List not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "List not found - " + err });
+        });
     }
 
     /**
@@ -26,7 +87,7 @@ const ListController = () => {
      * @returns {code} 201 - List updated
      */
     const archiveList = async (req, res) => {
-       
+
     }
 
     /**
@@ -36,7 +97,41 @@ const ListController = () => {
      * @returns {code} 201 - List updated
      */
     const renameList = async (req, res) => {
-       
+        const id = req.params.id;
+
+        // Form validation
+        const { errors, isValid } = validateCreateListInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        //Search the list
+        List.findOne({ _id: Object(id) })
+            .then(list => {
+                //If the list exists
+                if (list) {
+                    //Rename the list
+                    List.updateOne(
+                        { _id: Object(id) },
+                        {
+                            $set: {
+                                "name": req.body.name,
+                            }
+                        },
+                    )
+                        .then(list => {
+                            //Get the list to return
+                            List.findOne({ _id: Object(id) })
+                                .then(list => res.status(201).json({ list: list, message: "List renamed" }))
+                                .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                        })
+                        .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                } else {
+                    return res.status(404).json({ message: "List not found" })
+                }
+            });
     }
 
     /**
@@ -46,10 +141,11 @@ const ListController = () => {
      * @returns {code} 201 - List updated
      */
     const moveList = async (req, res) => {
-      
+
     }
 
     return {
+        createList,
         getList,
         archiveList,
         renameList,

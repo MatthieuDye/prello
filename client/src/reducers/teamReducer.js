@@ -8,6 +8,9 @@ const teamReducer = (state =  [], action) => {
         case types.CREATE_TEAM_SUCCESS: {
             return state.concat([action.payload.team])
         }
+        case types.FETCH_TEAMS_SUCCESS: {
+            return action.payload.teams
+        }
 
         default:
             return state;

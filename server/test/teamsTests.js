@@ -11,6 +11,16 @@ const teamData = {
     id: ""
 };
 
+const otherTeamData = {
+    name: "other team name",
+    description: "other team description"
+};
+
+const newTeamData = {
+    name: "new team name",
+    description: "new team description"
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -105,6 +115,19 @@ describe('POST /api/private/team/create', () => {
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
+    it('should return 201 OK with new values', (done) => {
+        request(app)
+            .post('/api/private/team/create')
+            .send({ name: otherTeamData.name, description: otherTeamData.description, userId: createdUserId })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.admins).lengthOf(1);
+                done();
+            });
+    });
 });
 
 describe('GET /api/private/team/member/:teamId', () => {
@@ -133,7 +156,79 @@ describe('GET /api/private/team/member/:teamId', () => {
     });
 });
 
-describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
+describe('PUT /api/private/team/admin/:teamId/update', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .send(newTeamData)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "",
+            description: "test"
+        };
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 409 ERROR with a name already existing', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .set('Authorization', token)
+            .send(otherTeamData)
+            .expect(409, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .send(newTeamData)
+            .set('Authorization', token)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
+                expect(res.body.team.name).is.equal(newTeamData.name);
+                expect(res.body.team.description).is.equal(newTeamData.description);
+                done();
+            });
+    });
+});
+
+describe('GET /api/private/user/:userId/teams', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/' + createdUserId + '/teams')
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/666/teams')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/000000000000000000000000/teams')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/user/' + createdUserId + '/teams')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.teams.length === 1);
+                done();
+            });
+    });
+});
+
+describe('POST /api/private/team/admin/:teamId/add/user/:memberUserName', () => {
     before(async () => {
         try {
             await request(app)
@@ -155,13 +250,13 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     });
     it('should return 401 ERROR', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
-            .post(`/api/private/team/admin/666/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/666/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
@@ -175,19 +270,20 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     });
     it('should return 201 OK and not fill the members and admins lists', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
+                console.log(res.body.team);
                 expect(res.body.team).to.not.be.undefined;
-                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.members).lengthOf(2);
                 expect(res.body.team.admins).lengthOf(1);
                 done();
             });
     });
     it('should return 201 OK and fill the members list but not the admins list', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId2}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
