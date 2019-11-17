@@ -1,6 +1,7 @@
 const boardAdminRoutes = {
 
     //Board
+    'PUT /:id/update': 'BoardController.updateBoard',
     'POST /:boardId/add/user/:memberId': 'BoardController.addMember',
     'DELETE /:boardId/delete/user/:memberId': 'BoardController.deleteMember',
     'PUT /:boardId/update/user/role/:memberId': 'BoardController.updateMemberRole',

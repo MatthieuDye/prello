@@ -98,8 +98,6 @@ const TeamController = () => {
     const updateTeam = async (req, res) => {
         const id = req.params.id;
 
-        Team.countDocuments().then(nb => console.log(nb))
-
         // Form validation
         const { errors, isValid } = validateCreateTeamInput(req.body);
 
@@ -110,10 +108,6 @@ const TeamController = () => {
 
         //Search another team with the same name
         Team.findOne({ name: req.body.name, _id: { $ne: Object(id) } }).then(team => {
-            console.log("-------------")
-            console.log(team)
-            console.log("-------------")
-
             if (team) {
                 return res.status(409).json({ message: "Team name already exists" });
             } else {

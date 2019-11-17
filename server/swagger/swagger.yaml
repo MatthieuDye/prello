@@ -439,6 +439,47 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/admin/{boardId}/update:
+    put:
+      summary: Update a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Board details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBoard'
+      responses:
+        '201':
+          description: Board sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/admin/{boardId}/add/user/{userId}:
     post:
       summary: Add a member to a board
@@ -823,6 +864,16 @@ components:
           $ref: "#/components/schemas/TeamMembers"
           default: []
 
+    UpdateTeam:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
     Teams:
       type: array
         items:
@@ -832,6 +883,16 @@ components:
       type: array
         items:
           $ref: "#/components/schemas/Board"
+
+    UpdateBoard:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
 
     TeamMembers:
       type: array

@@ -13,6 +13,12 @@ const boardData = {
     id:""
 };
 
+const newBoardData = {
+    name: "new board name",
+    description: "new board description"
+
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -123,6 +129,39 @@ describe('GET /api/private/board/member/:boardId', () => {
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.board).to.not.be.undefined;
+                done();
+            });
+    });
+});
+
+
+describe('PUT /api/private/board/admin/:boardId/update', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/admin/${boardData.id}/update`)
+            .send(newBoardData)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "",
+            description: "test"
+        };
+        request(app)
+            .put(`/api/private/board/admin/${boardData.id}/update`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/board/admin/${boardData.id}/update`)
+            .send(newBoardData)
+            .set('Authorization', token)
+            .expect(201, (err, res) => {
+                expect(res.body.board).to.not.be.undefined;
+                expect(res.body.board.name).is.equal(newBoardData.name);
+                expect(res.body.board.description).is.equal(newBoardData.description);
                 done();
             });
     });

@@ -156,7 +156,7 @@ describe('GET /api/private/team/member/:teamId', () => {
     });
 });
 
-describe('PUT /api/private/team/admin/:listId/update', () => {
+describe('PUT /api/private/team/admin/:teamId/update', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
