@@ -174,9 +174,16 @@ describe('GET /api/private/user/:userId/boards', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
-    it('should return 404 ERROR', (done) => {
+    it('should return 422 ERROR', (done) => {
         request(app)
             .get('/api/private/user/666/boards')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/000000000000000000000000/boards')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);

@@ -130,10 +130,10 @@ const BoardController = () => {
             })
     };
 
-    const getBoards = async (req, res) => {
+    const getBoardsByUserId = async (req, res) => {
         const userId = req.params.userId;
         if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct" });
+            return res.status(422).json({ message: "This user id is not correct" });
         }
 
         User.findById(userId)
@@ -489,6 +489,7 @@ const BoardController = () => {
         createBoard,
         getBoard,
         updateBoard,
+        getBoardsByUserId,
         addList,
         getLists,
         addLabel,
@@ -496,8 +497,7 @@ const BoardController = () => {
         deleteMember,
         updateMemberRole,
         addTeam,
-        deleteTeam,
-        getBoards
+        deleteTeam
     };
 };
 

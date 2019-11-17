@@ -255,7 +255,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Teams"
         '404':
-          description: Team not found
+          description: User not found
           content:
             application/json:
               schema:
@@ -469,6 +469,40 @@ paths:
                 $ref: "#/components/schemas/Board"
         '404':
           description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userId}/boards :
+    get:
+      summary: Get all the boards for a user
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Boards sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Boards"
+        '404':
+          description: User not found
           content:
             application/json:
               schema:
