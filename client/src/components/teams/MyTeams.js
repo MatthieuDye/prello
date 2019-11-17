@@ -14,6 +14,7 @@ class MyTeams extends Component {
         return (
             <div style={{marginTop: 10}}>
                 <h3>My Teams</h3>
+                <p>Insert code</p>
                 <ListGroup>
                     {this.props.teams.map(({_id, name, description}) => (
 
