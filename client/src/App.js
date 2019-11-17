@@ -53,7 +53,7 @@ class App extends Component {
     };
 
     render() {
-        const { activeItem, isLoggedIn } = this.state
+        const { activeItem } = this.state
         const DefaultContainer = () => (
             <div>
                 <div className="container">

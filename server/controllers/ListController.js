@@ -71,7 +71,7 @@ const ListController = () => {
 
         List.findOne({ _id: Object(id) }).then(list => {
             if (list) {
-                return res.status(201).json({list: list, message: "List found"})
+                return res.status(201).json({ list: list, message: "List found" })
             } else {
                 return res.status(404).json({ message: "List not found" });
             }
@@ -97,7 +97,41 @@ const ListController = () => {
      * @returns {code} 201 - List updated
      */
     const renameList = async (req, res) => {
+        const id = req.params.id;
 
+        // Form validation
+        const { errors, isValid } = validateCreateListInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        //Search the list
+        List.findOne({ _id: Object(id) })
+            .then(list => {
+                //If the list exists
+                if (list) {
+                    //Rename the list
+                    List.updateOne(
+                        { _id: Object(id) },
+                        {
+                            $set: {
+                                "name": req.body.name,
+                            }
+                        },
+                    )
+                        .then(list => {
+                            //Get the list to return
+                            List.findOne({ _id: Object(id) })
+                                .then(list => res.status(201).json({ list: list, message: "Team renamed" }))
+                                .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                        })
+                        .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                } else {
+                    return res.status(404).json({ message: "List not found" })
+                }
+            });
     }
 
     /**

@@ -154,7 +154,10 @@ const UserController = () => {
                 }
               },
             )
-              .then(user => res.status(201).json(user))
+              .then(user => {
+                User.findOne({ userName: req.params.userName })
+                .then(user => res.status(201).json({ user: user, message: "User updated" }))
+              })
               .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
         });

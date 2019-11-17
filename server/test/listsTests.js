@@ -11,6 +11,10 @@ const listData = {
     id: ""
 };
 
+const newListData = {
+    name: "new team name"
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -136,5 +140,31 @@ describe('GET /api/private/board/member/list/:listId', () => {
                 expect(res.body.list.cards).lengthOf(0);
                 done();
             });
+    });
+});
+
+describe('PUT /api/private/board/member/list/:listId/rename', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/rename`)
+            .send(newListData)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "",
+        };
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/rename`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/rename`)
+            .send(newListData)
+            .set('Authorization', token)
+            .expect(201, done);
     });
 });
