@@ -133,6 +133,33 @@ describe('GET /api/private/team/member/:teamId', () => {
     });
 });
 
+describe('GET /api/private/user/:userId/teams', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/'+ createdUserId + '/teams')
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/666/teams')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/user/' + createdUserId + '/teams')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                console.log(res.body.teams);
+                expect(res.body.teams.length === 1);
+                done();
+            });
+    });
+});
+
 describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     before(async () => {
         try {

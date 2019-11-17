@@ -13,7 +13,7 @@ class AddMember extends Component {
         this.state = {
             value: '',
             users: [{name: "Rémi"}],
-            team: this.props.teams.filter(t => t._id = this.props.match.params.teamId)[0]
+            team: this.props.teams.filter(t => t._id === this.props.match.params.teamId)[0]
         };
     }
 
