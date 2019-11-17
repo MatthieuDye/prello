@@ -2,6 +2,7 @@ language: node_js
 node_js:
  - "node"
 dist: trusty
+services: mongodb
 addons:
   sonarcloud:
     organization: "matthieudye"
@@ -12,6 +13,6 @@ install:
 script:
   - cd server
   - npm i
-  - npm test
+  - npm test &
   - cd ..
   - sonar-scanner

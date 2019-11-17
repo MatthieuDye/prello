@@ -142,3 +142,5 @@ app.use("/api/private/team/admin/", mappedTeamAdminRoutes);
 app.listen(PORT, function () {
     console.log("Server is running on Port: " + PORT);
 });
+
+module.exports = app;
