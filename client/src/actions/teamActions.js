@@ -69,16 +69,16 @@ export const fetchTeam = (teamId) => dispatch => {
 
 // _______ ADD MEMBER_______
 
-export const addMemberSuccessAction = teams => ({
+export const addMemberSuccessAction = team => ({
     type: ADD_MEMBER_SUCCESS,
     payload: {
-        teams,
+        team,
     },
 });
 
-export const addMember = (userId, teamId) => dispatch => {
+export const addMember = (userName, teamId) => dispatch => {
     axios
-        .get(`/api/private/team/${teamId}/add/user/${userId}`)
+        .post(`/api/private/team/admin/${teamId}/add/user/${userName}`)
         .then(res => dispatch(addMemberSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({

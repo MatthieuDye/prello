@@ -109,12 +109,11 @@ const TeamController = () => {
 
     };
 
-    // @route PUT api/team/addmember/:teamId/:memberId
+
     // @desc add a user to the team
     // @access Auth users
     const addMember = async (req, res) => {
 
-        //TODO : if user in not a admin of the team : 403
 
         let currentTeam;
 
@@ -123,20 +122,19 @@ const TeamController = () => {
             .then(team => {
                 if (team) {
                     //Search if the user exists
-                    User.findById(req.params.memberId)
+                    User.findOne({userName: req.params.memberUserName})
                         .then(user => {
                             if (user) {
                                 //Add the user to the team
                                 Team
                                     .updateOne({ _id: req.params.teamId }, {
                                         $addToSet: {
-                                            members: req.params.memberId
+                                            members: user._id
                                         }
                                     })
                                     .then(team => {
                                         //Add the team to the user team list
-                                        User.findById(req.params.memberId).then()
-                                        User.updateOne({ _id: req.params.memberId }, {
+                                        User.updateOne({ _id: user._id }, {
                                             $addToSet: {
                                                 teams: req.params.teamId,
                                             }

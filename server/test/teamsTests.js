@@ -159,7 +159,7 @@ describe('GET /api/private/user/:userId/teams', () => {
     });
 });
 
-describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
+describe('POST /api/private/team/admin/:teamId/add/user/:memberUserName', () => {
     before(async () => {
         try {
             await request(app)
@@ -181,13 +181,13 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     });
     it('should return 401 ERROR', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
-            .post(`/api/private/team/admin/666/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/666/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
@@ -201,19 +201,20 @@ describe('POST /api/private/team/admin/:teamId/add/user/:userId', () => {
     });
     it('should return 201 OK and not fill the members and admins lists', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
+                console.log(res.body.team);
                 expect(res.body.team).to.not.be.undefined;
-                expect(res.body.team.members).lengthOf(1);
+                expect(res.body.team.members).lengthOf(2);
                 expect(res.body.team.admins).lengthOf(1);
                 done();
             });
     });
     it('should return 201 OK and fill the members list but not the admins list', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/${createdUserId2}`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
