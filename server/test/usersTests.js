@@ -24,6 +24,8 @@ const otherData = {
     password2: 'azerty',
 };
 
+let token = null;
+
 describe('POST /api/public/register', () => {
     before(async () => {
         await User.deleteMany({});
@@ -157,7 +159,6 @@ describe('POST /api/public/login', () => {
 });
 
 describe('PUT /api/private/user/:username', () => {
-    let token = null;
     before((done) => {
         request(app)
             .post('/api/public/login')
@@ -253,5 +254,26 @@ describe('PUT /api/private/user/:username', () => {
             .send(wrongData)
             .set('Authorization', token)
             .expect(409, done);
+    });
+});
+
+describe('GET /api/private/user/findByBeginName/:query', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/findByBeginName/oui')
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 201 OK', (done) => {
+
+        request(app)
+            .get('/api/private/user/findByBeginName/newUser')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                console.log("users : " + res.body.users);
+                expect(res.body.users.length === 1);
+                done();
+            })
     });
 });

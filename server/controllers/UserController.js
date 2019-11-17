@@ -126,6 +126,23 @@ const UserController = () => {
     });
   };
 
+  const findByBeginName = async (req, res) => {
+
+    const query = req.params.query;
+
+    User.find({"userName": { $regex : `^${query}`, $options: 'i'}})
+        .then(users => {
+          console.log(users);
+          res.status(201).send({
+            users: users,
+            message: 'Users successfully fetched'
+          })
+        })
+        .catch(err => {
+          return res.status(404).json({message: "This query is not right" + err});
+        })
+  };
+
   const updateProfile = async (req, res) => {
     // Form validation
     const { errors, isValid } = validateUpdateUserInput(req.body);
@@ -165,7 +182,8 @@ const UserController = () => {
   return {
     register,
     login,
-    updateProfile
+    updateProfile,
+    findByBeginName
   };
 };
 

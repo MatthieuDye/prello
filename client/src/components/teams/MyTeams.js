@@ -13,7 +13,7 @@ class MyTeams extends Component {
     }
 
     redirectionTeam = (teamId) => {
-        this.props.history.push(`/team/${teamId}/add`);
+        this.props.history.push(`/team/${teamId}`);
     };
 
     render() {
@@ -22,7 +22,7 @@ class MyTeams extends Component {
                 <Header as='h3'>
                     <Icon name='users'/>
                     <Header.Content>My Teams</Header.Content>
-                    <Link to='/team/create'>
+                    <Link to='/add/team'>
                         <Button primary size='mini' floated='right'>
                             <Icon name='add'/>
                             ADD
@@ -39,6 +39,7 @@ class MyTeams extends Component {
                             <Card.Content extra>
                                 <Icon name='user'/>
                                 {members.length > 1 ? members.length + ' members' : members.length + ' member'}
+                                <Button onClick={() => this.redirectionTeam(_id)}> go team </Button>
                             </Card.Content>
                         </Card>
                     ))}

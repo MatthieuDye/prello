@@ -19,6 +19,7 @@ import CreateTeam from "./components/teams/CreateTeam";
 import CreateBoard from "./components/boards/CreateBoard";
 import AddTeamMember from "./components/teams/AddTeamMember";
 import AddBoardMember from "./components/boards/AddBoardMember";
+import TeamView from "./components/teams/TeamView";
 
 import { Menu, Dropdown } from 'semantic-ui-react'
 
@@ -53,7 +54,7 @@ class App extends Component {
     };
 
     render() {
-        const { activeItem, isLoggedIn } = this.state
+        const { activeItem, isLoggedIn } = this.state;
         const DefaultContainer = () => (
             <div>
                 <div className="container">
@@ -84,7 +85,7 @@ class App extends Component {
                                         <Link to="/board/create" className="nav-link">Create a board</Link>
                                     </Dropdown.Item>
                                     <Dropdown.Item>
-                                        <Link to="/team/create" className="nav-link">Create a team</Link>
+                                        <Link to="/add/team" className="nav-link">Create a team</Link>
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -104,8 +105,9 @@ class App extends Component {
                     <PrivateRoute exact path="/board/create" component={CreateBoard} />
                     <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
                     <PrivateRoute exact path="/:userName" component={Profile} />
-                    <PrivateRoute exact path="/team/create" component={CreateTeam} />
+                    <PrivateRoute exact path="/add/team" component={CreateTeam} />
                     <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
+                    <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                     <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
                 </div>
             </div>
