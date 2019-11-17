@@ -77,7 +77,7 @@ const BoardController = () => {
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
-                return res.status(201).json({board: board})
+                return res.status(201).json({board: board, message: "Board found"})
             } else {
                 return res.status(404).json({ message: "Board not found" });
             }

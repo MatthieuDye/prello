@@ -7,7 +7,8 @@ const Board = require('../models/Board');
 const User = require('../models/User');
 
 const listData = {
-    name: "team name"
+    name: "team name",
+    id: ""
 };
 
 const userData = {
@@ -68,6 +69,7 @@ describe('POST /api/private/board/member/list/create', () => {
             .expect(201, (err, res) => {
                 expect(res.body.list).to.not.be.undefined;
                 expect(res.body.list.cards).lengthOf(0);
+                listData.id = res.body.list._id
                 done();
             });
     });
@@ -102,9 +104,37 @@ describe('POST /api/private/board/member/list/create', () => {
     it('should return 422 ERROR with no board', (done) => {
         request(app)
             .post('/api/private/board/member/list/create')
-            .send(listData)
+            .send({ name: listData.name })
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(422, done);
+    });
+});
+
+
+describe('GET /api/private/board/member/list/:listId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/list/' + listData.id)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/list/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/board/member/list/' + listData.id)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.list).to.not.be.undefined;
+                expect(res.body.list.cards).lengthOf(0);
+                done();
+            });
     });
 });

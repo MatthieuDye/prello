@@ -67,7 +67,17 @@ const ListController = () => {
      * @returns {List} 200 - List got
      */
     const getList = async (req, res) => {
+        const id = req.params.id;
 
+        List.findOne({ _id: Object(id) }).then(list => {
+            if (list) {
+                return res.status(201).json({list: list, message: "List found"})
+            } else {
+                return res.status(404).json({ message: "List not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "List not found - " + err });
+        });
     }
 
     /**
