@@ -24,11 +24,18 @@ const boardSchema = new Schema({
             type      : Schema.Types.ObjectId,
             ref : 'Team'
         },
-        closed : {
+        isArchived : {
             required : true,
             type : Boolean,
             default : false
         },
+        lists: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'List',
+                default: []
+            }
+        ],
 
         labelNames: {
             green : {
@@ -65,20 +72,6 @@ const boardSchema = new Schema({
         toJSON: { virtuals: true },
         versionKey: false
     });
-
-boardSchema.plugin(idValidator);
-
-boardSchema.virtual('labels', {
-    ref: 'Label', // The model to use
-    localField: '_id', // Find people where `localField`
-    foreignField: 'idBoard' // is equal to `foreignField`
-});
-
-boardSchema.virtual('lists', {
-    ref: 'List', // The model to use
-    localField: '_id', // Find people where `localField`
-    foreignField: 'idList' // is equal to `foreignField`
-});
 
 const Board = mongoose.model('Board', boardSchema);
 
