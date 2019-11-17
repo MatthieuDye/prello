@@ -12,7 +12,7 @@ class MyTeams extends Component {
         this.props.fetchTeams(this.props.auth.user.id);
     }
 
-    redirectionTeam = (id) => {
+    redirectionTeam = (teamId) => {
         this.props.history.push(`/team/${teamId}/add`);
     };
 
