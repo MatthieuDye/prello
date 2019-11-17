@@ -25,6 +25,7 @@ export const createTeam = (teamData, history) => dispatch => {
     );
 };
 
+// _______ FETCH TEAMS _______
 
 export const fetchTeamsSuccessAction = teams => ({
     type: FETCH_TEAMS_SUCCESS,
@@ -37,6 +38,27 @@ export const fetchTeams = (userId) => dispatch => {
     axios
         .get(`/api/private/user/${userId}/teams`)
         .then(res => dispatch(fetchTeamsSuccessAction(res.data.teams)))
+        .catch(err =>
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+// _______ ADD MEMBER_______
+
+export const addMemberSuccessAction = teams => ({
+    type: FETCH_TEAMS_SUCCESS,
+    payload: {
+        teams,
+    },
+});
+
+export const addMember = (userId, teamId) => dispatch => {
+    axios
+        .get(`/api/private/team/${teamId}/add/user/${userId}`)
+        .then(res => dispatch(addMemberSuccessAction(res.data.teams)))
         .catch(err =>
             dispatch({
                 type: GET_ERRORS,

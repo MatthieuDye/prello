@@ -39,6 +39,7 @@ class MyTeams extends Component {
                             <Card.Content extra>
                                 <Icon name='user'/>
                                 {members.length > 1 ? members.length + ' members' : members.length + ' member'}
+                                <Button onClick={() => this.redirectionTeam(_id)}> add member </Button>
                             </Card.Content>
                         </Card>
                     ))}
