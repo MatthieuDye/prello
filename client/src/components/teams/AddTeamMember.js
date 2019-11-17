@@ -4,7 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 
-class AddMember extends Component {
+class AddTeamMember extends Component {
 
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ class AddMember extends Component {
     }
 }
 
-AddMember.propTypes = {
+AddTeamMember.propTypes = {
     teams: PropTypes.array.isRequired,
 
 };
@@ -70,4 +70,4 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps
-)(AddMember);
+)(AddTeamMember);
