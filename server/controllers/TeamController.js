@@ -147,10 +147,10 @@ const TeamController = () => {
         });
     };
 
-    const getTeams = async (req, res) => {
+    const getTeamsByUserId = async (req, res) => {
         const userId = req.params.userId;
         if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct" });
+            return res.status(422).json({ message: "This user id is not correct" });
         }
 
         User.findById(userId)
@@ -313,7 +313,7 @@ const TeamController = () => {
         createTeam,
         getTeam,
         updateTeam,
-        getTeams,
+        getTeamsByUserId,
         addMember,
         deleteMember,
         deleteTeam
