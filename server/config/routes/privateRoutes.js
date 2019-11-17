@@ -5,11 +5,11 @@ const privateRoutes = {
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
-    'GET /user/:userId/teams': 'TeamController.getTeams',
+    'GET /user/:userId/teams': 'TeamController.getTeamsByUserId',
     
     //Board
     'POST /board/create': 'BoardController.createBoard',
-    'GET /user/:userId/boards': 'BoardController.getBoards',
+    'GET /user/:userId/boards': 'BoardController.getBoardsByUserId',
 
 };
 

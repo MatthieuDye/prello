@@ -28,7 +28,7 @@ const TeamController = () => {
             return res.status(422).json({ message: "Invalid input" });
         }
 
-        if(!req.body.userId){
+        if (!req.body.userId) {
             return res.status(422).json({ message: "No userId found for team creation" });
         }
 
@@ -61,7 +61,7 @@ const TeamController = () => {
                                     .catch(err => res.status(404).json({ message: "This user does not exists " + err }))
                             )
                             .catch(err => res.status(404).json({ message: "This team does not exists " + err }));
-                        res.status(201).send({ message: 'Team successfully created', team: team })
+                            res.status(201).send({ message: 'Team successfully created', team: team })
                     })
 
 
@@ -81,7 +81,7 @@ const TeamController = () => {
 
         Team.findOne({ _id: Object(id) }).then(team => {
             if (team) {
-                return res.status(201).json({team: team})
+                return res.status(201).json({ team: team, message: "Team found" })
             } else {
                 return res.status(404).json({ message: "Team not found" });
             }
@@ -90,10 +90,61 @@ const TeamController = () => {
         });
     };
 
-    const getTeams = async (req, res) => {
+    /**
+     * Update a team
+     * @param {string} id.path.required - team's id.
+     * @returns {Team.model} 201 - Team object
+     */
+    const updateTeam = async (req, res) => {
+        const id = req.params.id;
+
+        // Form validation
+        const { errors, isValid } = validateCreateTeamInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        //Search another team with the same name
+        Team.findOne({ name: req.body.name, _id: { $ne: Object(id) } }).then(team => {
+            if (team) {
+                return res.status(409).json({ message: "Team name already exists" });
+            } else {
+                //Search the team
+                Team.findOne({ _id: Object(id) })
+                    .then(team => {
+                        //If the team exists
+                        if (team) {
+                            //Rename the list
+                            Team.updateOne(
+                                { _id: Object(id) },
+                                {
+                                    $set: {
+                                        "name": req.body.name,
+                                        "description": req.body.description
+                                    }
+                                },
+                            )
+                                .then(team => {
+                                    //Get the team to return
+                                    Team.findOne({ _id: Object(id) })
+                                        .then(team => res.status(201).json({ team: team, message: "Team renamed" }))
+                                        .catch(err => res.status(404).json({ message: "Team not found - " + err }))
+                                })
+                                .catch(err => res.status(404).json({ message: "Team not found - " + err }))
+                        } else {
+                            return res.status(404).json({ message: "Team not found" })
+                        }
+                    })
+            }
+        });
+    };
+
+    const getTeamsByUserId = async (req, res) => {
         const userId = req.params.userId;
         if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({message: "This user id is not correct"});
+            return res.status(422).json({ message: "This user id is not correct" });
         }
 
         User.findById(userId)
@@ -104,7 +155,7 @@ const TeamController = () => {
             })
             .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
             .catch(err => {
-                return res.status(404).json({message: "This user does not exists"});
+                return res.status(404).json({ message: "This user does not exists" });
             })
 
     };
@@ -142,10 +193,10 @@ const TeamController = () => {
                                             .then(team => {
                                                 //Get the team to return
                                                 Team.findById(req.params.teamId)
-                                                .then(team => res.status(201).send({ team: team, message: 'User successfully added to the team' }))
-                                                .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
+                                                    .then(team => res.status(201).send({ team: team, message: 'User successfully added to the team' }))
+                                                    .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                             })
-                                            .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))                                            
+                                            .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                                     })
                                     .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                             } else {
@@ -193,15 +244,15 @@ const TeamController = () => {
                                                 Board.update({ team: req.params.teamId }, {
                                                     $pull: {
                                                         admins: req.params.memberId,
-                                                    } 
+                                                    }
                                                 })
-                                                .then(board => {
-                                                    //Get the team to return
-                                                    Team.findById(req.params.teamId)
-                                                    .then(team => res.status(201).send({ team: team, message: 'User successfully deleted from the team' }))
-                                                    .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
-                                                })
-                                                .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
+                                                    .then(board => {
+                                                        //Get the team to return
+                                                        Team.findById(req.params.teamId)
+                                                            .then(team => res.status(201).send({ team: team, message: 'User successfully deleted from the team' }))
+                                                            .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
+                                                    })
+                                                    .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
                                             })
                                             .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                                     })
@@ -253,7 +304,8 @@ const TeamController = () => {
     return {
         createTeam,
         getTeam,
-        getTeams,
+        updateTeam,
+        getTeamsByUserId,
         addMember,
         deleteMember,
         deleteTeam

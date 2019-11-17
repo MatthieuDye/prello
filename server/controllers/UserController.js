@@ -154,7 +154,7 @@ const UserController = () => {
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
       if (user) {
-        return res.status(409).json({ email: "Email already exists" });
+        return res.status(409).json({ message: "Email already exists" });
       } else {
         User.findOne({ userName: req.body.userName }).then(user => {
           if (user && user.userName != req.params.userName) {
@@ -171,7 +171,10 @@ const UserController = () => {
                 }
               },
             )
-              .then(user => res.status(201).json(user))
+              .then(user => {
+                User.findOne({ userName: req.params.userName })
+                .then(user => res.status(201).json({ user: user, message: "User updated" }))
+              })
               .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
         });

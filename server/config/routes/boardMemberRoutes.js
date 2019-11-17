@@ -21,6 +21,7 @@ const boardMemberRoutes = {
     'DELETE /label/:id': 'LabelController.deleteLabel',
 
     //List
+    'POST /list/create': 'ListController.createList',
     'GET /list/:id': 'ListController.getList',
     'PUT /list/:id/archive': 'ListController.archiveList',
     'PUT /list/:id/rename': 'ListController.renameList',

@@ -19,7 +19,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewUser'
+              $ref: '#/components/schemas/User'
       responses:
         '201':
           description: Register successfull
@@ -102,7 +102,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewUser"
+                $ref: "#/components/schemas/User"
         '404':
           description: User not found
           content:
@@ -181,6 +181,87 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/team/admin/{teamId}/update:
+    put:
+      summary: Update a team
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Team details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTeam'
+      responses:
+        '201':
+          description: Team sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '409':
+          description: Team name already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userId}/teams :
+    get:
+      summary: Get all the teams for a user
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Teams sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -353,6 +434,81 @@ paths:
                 $ref: "#/components/schemas/Board"
         '404':
           description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/admin/{boardId}/update:
+    put:
+      summary: Update a board
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Board details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBoard'
+      responses:
+        '201':
+          description: Board sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Board"
+        '404':
+          description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userId}/boards :
+    get:
+      summary: Get all the boards for a user
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Boards sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Boards"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -550,6 +706,106 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/list/create:
+    post:
+      summary: Add a list to a board
+      security:
+        - token: []
+      tags:
+        - lists
+      requestBody:
+        description: List details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/List'
+      responses:
+        '201':
+          description: List create successfull
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/list/{listId} :
+    get:
+      summary: Get a list from a board
+      security:
+        - token: []
+      tags:
+        - lists
+      parameters:
+        - name: listId
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: List sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/List"
+        '404':
+          description: List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/list/{listId}/rename:
+    put:
+      summary: Update a list from a board
+      security:
+        - token: []
+      tags:
+        - lists
+      parameters:
+        - name: listId
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: List details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateList'
+      responses:
+        '201':
+          description: List sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/List"
+        '404':
+          description: List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -587,7 +843,7 @@ components:
         password:
           type: string
 
-    NewUser:
+    User:
       required:
         - firstName
         - lastName
@@ -642,10 +898,35 @@ components:
           $ref: "#/components/schemas/TeamMembers"
           default: []
 
+    UpdateTeam:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    Teams:
+      type: array
+        items:
+          $ref: "#/components/schemas/Team"
+
     Boards:
       type: array
         items:
           $ref: "#/components/schemas/Board"
+
+    UpdateBoard:
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
 
     TeamMembers:
       type: array
@@ -679,9 +960,12 @@ components:
           default: []
         team:
           type: string
-        closed:
+        isArchived:
           type: boolean
           default: false
+        lists:
+          $ref: "#/components/schemas/Lists"
+          default: []
         labelNames:
           $ref: "#/components/schemas/LabelNames"
 
@@ -720,5 +1004,27 @@ components:
         blue:
           type: string
         pink:
+          type: string
+
+    List:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        isArchived:
+          type: boolean
+          default: false
+
+    Lists:
+      type: array
+        items:
+          $ref: "#/components/schemas/List"
+
+    UpdateList:
+      required:
+        - name
+      properties:
+        name:
           type: string
     

@@ -77,7 +77,7 @@ const BoardController = () => {
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {
-                return res.status(201).json({board: board})
+                return res.status(201).json({ board: board, message: "Board found" })
             } else {
                 return res.status(404).json({ message: "Board not found" });
             }
@@ -86,10 +86,54 @@ const BoardController = () => {
         });
     };
 
-    const getBoards = async (req, res) => {
+    /**
+     * Update a board
+     * @param {string} id.path.required - board's id.
+     * @returns {Board.model} 201 - Board object
+     */
+    const updateBoard = async (req, res) => {
+        const id = req.params.id;
+
+        // Form validation
+        const { errors, isValid } = validateCreateBoardInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: "Invalid input" });
+        }
+
+        //Search the board
+        Board.findOne({ _id: Object(id) })
+            .then(board => {
+                //If the board exists
+                if (board) {
+                    //Rename the board
+                    Board.updateOne(
+                        { _id: Object(id) },
+                        {
+                            $set: {
+                                "name": req.body.name,
+                                "description": req.body.description
+                            }
+                        },
+                    )
+                        .then(board => {
+                            //Get the board to return
+                            Board.findOne({ _id: Object(id) })
+                                .then(board => res.status(201).json({ board: board, message: "Board renamed" }))
+                                .catch(err => res.status(404).json({ message: "Board not found - " + err }))
+                        })
+                        .catch(err => res.status(404).json({ message: "Board not found - " + err }))
+                } else {
+                    return res.status(404).json({ message: "Board not found" })
+                }
+            })
+    };
+
+    const getBoardsByUserId = async (req, res) => {
         const userId = req.params.userId;
         if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({message: "This user id is not correct"});
+            return res.status(422).json({ message: "This user id is not correct" });
         }
 
         User.findById(userId)
@@ -97,21 +141,21 @@ const BoardController = () => {
             .populate([{
                 path: 'guestBoards',
                 select: ['name', 'description']
-            },{
+            }, {
                 path: 'teams',
                 select: ['name'],
-                populate:({
+                populate: ({
                     path: 'boards',
                     select: ['name', 'description']
                 })
             }
             ])
             .then(user => res.status(201).send({
-                boards: {guestBoards: user.guestBoards, teamsBoards: user.teams},
+                boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
                 message: 'Boards successfully fetched'
             }))
             .catch(err => {
-                return res.status(404).json({message: "This user does not exists"});
+                return res.status(404).json({ message: "This user does not exists" });
             })
 
     };
@@ -154,10 +198,10 @@ const BoardController = () => {
     const addMember = async (req, res) => {
 
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct"});
+            return res.status(404).json({ message: "This board id is not correct" });
         }
         if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct"});
+            return res.status(404).json({ message: "This user id is not correct" });
         }
 
         if (req.body.isAdmin) {
@@ -178,8 +222,8 @@ const BoardController = () => {
                         boards: req.params.boardId,
                     }
                 })
-                    .then(e =>
-                    {Board.findById(req.params.boardId)
+                    .then(e => {
+                        Board.findById(req.params.boardId)
                         .then(board => {
                             res.status(201).send({ board: board, message: 'User successfully added to the board' })
                         })
@@ -199,13 +243,13 @@ const BoardController = () => {
 
 
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct"});
+            return res.status(404).json({ message: "This board id is not correct" });
         }
         if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct"});
+            return res.status(404).json({ message: "This user id is not correct" });
         }
 
-        Board.updateOne({_id: req.params.boardId}, {
+        Board.updateOne({ _id: req.params.boardId }, {
             $pull: {
                 guestMembers: req.params.memberId,
                 admins: req.params.memberId,
@@ -213,19 +257,19 @@ const BoardController = () => {
         })
             .then(board => {
                 //Delete the team to the user team list
-                User.updateOne({_id: req.params.memberId}, {
+                User.updateOne({ _id: req.params.memberId }, {
                     $pull: {
                         boards: req.params.boardId
                     }
                 })
-                    .then(e =>{
+                    .then(e => {
                         Board.findById(req.params.boardId)
                             .then(board => {
-                                res.status(201).send({board: board, message: 'User successfully deleted from the board'})
+                                res.status(201).send({ board: board, message: 'User successfully deleted from the board' })
                             })
-                            .catch(err => res.status(404).json({message: "This user does not exists - " + err}))
+                            .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
                     })
-                    .catch(err => res.status(404).json({message: "This user does not exists - " + err}))
+                    .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
             })
             .catch(err => console.log(err));
     };
@@ -237,24 +281,24 @@ const BoardController = () => {
     const updateMemberRole = async (req, res) => {
 
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct"});
+            return res.status(404).json({ message: "This board id is not correct" });
         }
         if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct"});
+            return res.status(404).json({ message: "This user id is not correct" });
         }
 
         if (req.body.isAdmin) {
             // add to admin collection
-            await Board.updateOne({_id: req.params.boardId}, {$addToSet: {admins: req.params.memberId}})
+            await Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } })
                 .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
         } else {
-            await Board.updateOne({_id: req.params.boardId}, {$pull: {admins: req.params.memberId}})
+            await Board.updateOne({ _id: req.params.boardId }, { $pull: { admins: req.params.memberId } })
                 .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
         }
 
         Board.findById(req.params.boardId)
             .then(board => {
-                res.status(201).send({board: board, message: 'User role successfully updated'});
+                res.status(201).send({ board: board, message: 'User role successfully updated' });
             })
             .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
 
@@ -268,10 +312,10 @@ const BoardController = () => {
     const addTeam = async (req, res) => {
 
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct"});
+            return res.status(404).json({ message: "This board id is not correct" });
         }
         if (!req.params.teamId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This team id is not correct"});
+            return res.status(404).json({ message: "This team id is not correct" });
         }
 
 
@@ -291,7 +335,7 @@ const BoardController = () => {
                     .then((a) => {
                         Board
                             .findById(req.params.boardId)
-                            .then(board => {res.status(201).send({ board: board, message: 'Team successfully added to the board' })})
+                            .then(board => { res.status(201).send({ board: board, message: 'Team successfully added to the board' }) })
                             .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                     })
                     .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
@@ -304,17 +348,17 @@ const BoardController = () => {
     const deleteTeam = async (req, res) => {
 
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct"});
+            return res.status(404).json({ message: "This board id is not correct" });
         }
         if (!req.params.teamId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This team id is not correct"});
+            return res.status(404).json({ message: "This team id is not correct" });
         }
 
 
         Team.findById(req.params.teamId).then(teamFounded => {
 
             Board
-                .updateOne({_id: req.params.boardId}, {
+                .updateOne({ _id: req.params.boardId }, {
                     $unset: {
                         "team": ""
                     },
@@ -324,7 +368,7 @@ const BoardController = () => {
                 })
                 .then(board => {
                     //Add the team to the user team list
-                    Team.updateOne({_id: req.params.teamId}, {
+                    Team.updateOne({ _id: req.params.teamId }, {
                         $pull: {
                             boards: req.params.boardId,
                         }
@@ -337,11 +381,11 @@ const BoardController = () => {
                                         message: 'Team successfully removed from the board'
                                     })
                                 })
-                                .catch(err => res.status(404).json({message: "This team does not exists - " + err})))
-                        .catch(err => res.status(404).json({message: "This team does not exists - " + err}));
+                                .catch(err => res.status(404).json({ message: "This team does not exists - " + err })))
+                        .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                 })
-                .catch(err => res.status(404).json({message: "This Board does not exists - " + err}));
-        }).catch(err => res.status(404).json({message: "This Team does not exists - " + err}));
+                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+        }).catch(err => res.status(404).json({ message: "This Team does not exists - " + err }));
 
     };
 
@@ -444,6 +488,8 @@ const BoardController = () => {
     return {
         createBoard,
         getBoard,
+        updateBoard,
+        getBoardsByUserId,
         addList,
         getLists,
         addLabel,
@@ -451,8 +497,7 @@ const BoardController = () => {
         deleteMember,
         updateMemberRole,
         addTeam,
-        deleteTeam,
-        getBoards
+        deleteTeam
     };
 };
 
