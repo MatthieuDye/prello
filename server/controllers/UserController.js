@@ -14,6 +14,7 @@ var ObjectID = require('mongodb').ObjectID;
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 const validateUpdateUserInput = require("../validation/updateUser");
+const validateIdParam = require("../validation/idParam");
 
 // Load User model
 const User = require("../models/User");
@@ -58,7 +59,7 @@ const UserController = () => {
                 newUser.password = hash;
                 newUser
                   .save()
-                  .then(user => res.status(201).json({user: user}))
+                  .then(user => res.status(201).json({ user: user }))
                   .catch(err => res.status(500).json({ message: "Server error " + err }));
               });
             });
@@ -106,7 +107,7 @@ const UserController = () => {
           // Sign token
           jwt.sign(
             payload,
-              process.env.SECRET_TOKEN,
+            process.env.SECRET_TOKEN,
             {
               expiresIn: 3600 // 1 hour in seconds
             },
@@ -126,21 +127,45 @@ const UserController = () => {
     });
   };
 
+  /**
+     * Get a user by id
+     * @param {string} id.path.required - user's id.
+     * @returns {User.model} 201 - User object
+     */
+  const getUser = async (req, res) => {
+    const id = req.params.id;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(id);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findOne({ _id: Object(id) }).then(user => {
+      if (user) {
+        return res.status(201).json({ user: user, message: "User found" })
+      } else {
+        return res.status(404).json({ message: "User not found" });
+      }
+    }).catch(err => {
+      res.status(404).json({ message: "User not found " + err });
+    });
+  };
+
   const findByBeginName = async (req, res) => {
 
     const query = req.params.query;
 
-    User.find({"userName": { $regex : `^${query}`, $options: 'i'}})
-        .then(users => {
-          console.log(users);
-          res.status(201).send({
-            users: users,
-            message: 'Users successfully fetched'
-          })
+    User.find({ "userName": { $regex: `^${query}`, $options: 'i' } })
+      .then(users => {
+        res.status(201).send({
+          users: users,
+          message: 'Users successfully fetched'
         })
-        .catch(err => {
-          return res.status(404).json({message: "This query is not right" + err});
-        })
+      })
+      .catch(err => {
+        return res.status(404).json({ message: "This query is not right" + err });
+      })
   };
 
   const updateProfile = async (req, res) => {
@@ -173,7 +198,7 @@ const UserController = () => {
             )
               .then(user => {
                 User.findOne({ userName: req.params.userName })
-                .then(user => res.status(201).json({ user: user, message: "User updated" }))
+                  .then(user => res.status(201).json({ user: user, message: "User updated" }))
               })
               .catch(err => res.status(404).json({ message: "User not found " + err }))
           }
@@ -185,6 +210,7 @@ const UserController = () => {
   return {
     register,
     login,
+    getUser,
     updateProfile,
     findByBeginName
   };

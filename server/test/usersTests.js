@@ -257,6 +257,60 @@ describe('PUT /api/private/user/:username', () => {
     });
 });
 
+describe('GET /api/private/user/:userId', () => {
+
+    const userForGet = {
+        firstName: 'userForGet',
+        lastName: 'userForGet',
+        userName: 'userForGet',
+        email: 'userForGet@user.fr',
+        password: 'azerty',
+        password2: 'azerty',
+    }
+    let userForGetId;
+
+    before((done) => {
+        request(app)
+            .post('/api/public/register')
+            .send(userForGet)
+            .then((res) => {
+                userForGetId = res.body.user._id
+                done()
+            })
+    })
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/' + userForGetId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/000000000000000000000000')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/user/' + userForGetId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.user).to.not.be.undefined;
+                expect(res.body.user.userName).equals(userForGet.userName);
+                done();
+            });
+    });
+});
+
 describe('GET /api/private/user/findByBeginName/:query', () => {
     it('should return 401 ERROR', (done) => {
         request(app)

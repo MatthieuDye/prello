@@ -75,6 +75,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/user/{userId} :
+    get:
+      summary: Get a user with an id
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: User sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/user/{userName} :
     put:
       summary: Update a user
@@ -160,7 +194,7 @@ paths:
 
   /api/private/team/member/{teamId} :
     get:
-      summary: Get a team
+      summary: Get a team with an id
       security:
         - token: []
       tags:
@@ -181,6 +215,12 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -341,6 +381,58 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/team/admin/{teamId}/update/user/role/{userId}:
+    put:
+      summary: Change the role of a user in the team (admin or not)
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: if the user will be admin or not
+        required: false
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+              example:   # Sample object
+                isAdmin: true
+      responses:
+        '201':
+          description: User role sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/team/admin/delete/{teamId} :
     delete:
       summary: Delete a team
@@ -413,7 +505,7 @@ paths:
 
   /api/private/board/member/{boardId} :
     get:
-      summary: Get a board
+      summary: Get a board with an id
       security:
         - token: []
       tags:
@@ -434,6 +526,12 @@ paths:
                 $ref: "#/components/schemas/Board"
         '404':
           description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -559,6 +657,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/delete/user/{userId}:
     delete:
@@ -593,6 +697,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/admin/{boardId}/update/user/role/{userId}:
     put:
       summary: Change the role of a user in the board (admin or not)
@@ -631,13 +742,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: "#/components/schemas/Board"
         '404':
           description: User or Board not found
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/admin/{boardId}/add/team/{teamId}:
     post:
       summary: add a team to the board
@@ -667,6 +785,12 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: Team or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -702,6 +826,12 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -764,6 +894,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/list/{listId}/rename:
     put:
@@ -789,6 +925,52 @@ paths:
       responses:
         '201':
           description: List sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/List"
+        '404':
+          description: List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/list/{listId}/archive:
+    put:
+      summary: Archive or unarchive a list from a board
+      security:
+        - token: []
+      tags:
+        - lists
+      parameters:
+        - name: listId
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: if the list will be archived or unarchived
+        required: true
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isArchived:
+                  type: boolean
+              example:   # Sample object
+                isArchived: true
+      responses:
+        '201':
+          description: List archived status sucessfully updated
           content:
             application/json:
               schema:
