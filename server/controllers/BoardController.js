@@ -331,7 +331,7 @@ const BoardController = () => {
         }
 
         //Search if the board exists
-        await Board.findOne({ _id: boardId })
+        Board.findOne({ _id: boardId })
             .then(board => {
                 //If the board exists
                 if (board) {
@@ -343,9 +343,23 @@ const BoardController = () => {
                                 if (req.body.isAdmin) {
                                     // add to admin collection
                                     Board.updateOne({ _id: boardId }, { $addToSet: { admins: memberId } })
+                                        .then(board => {
+                                            Board.findById(req.params.boardId)
+                                                .then(board => {
+                                                    res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
+                                                })
+                                                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+                                        })
                                         .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
                                 } else {
                                     Board.updateOne({ _id: boardId }, { $pull: { admins: memberId } })
+                                        .then(board => {
+                                            Board.findById(req.params.boardId)
+                                                .then(board => {
+                                                    res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
+                                                })
+                                                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+                                        })
                                         .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
                                 }
                             } else {
@@ -359,11 +373,6 @@ const BoardController = () => {
             })
             .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
 
-        Board.findById(req.params.boardId)
-            .then(board => {
-                res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
-            })
-            .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
     };
 
 
