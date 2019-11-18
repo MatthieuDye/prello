@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken");
+const jwtdecode = require("jwt-decode");
 const passport = require("passport");
 require('dotenv').config();
 
@@ -125,6 +126,40 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
                 res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
             }
         );
+
+    } catch (e) {
+        console.log("error")
+    }
+});
+
+
+app.get('/api/public/user/auth/polytech/callback', async (req, res) => {
+    try {
+        const access_token = req.body.access_token;
+        console.log("ici : " + access_token);
+
+        const decoded = jwtdecode(token);
+        console.log(decoded);
+
+        // const payload = {
+        //     id: user.id,
+        //     firstName: user.firstName,
+        //     lastName: user.lastName,
+        //     userName: user.userName,
+        //     email: user.email
+        // };
+        //
+        // jwt.sign(
+        //     payload,
+        //     process.env.SECRET_TOKEN,
+        //     {
+        //         expiresIn: 3600 // 1 hour in seconds
+        //     },
+        //     (err, token) => {
+        //         console.log("before : " + token);
+        //         res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
+        //     }
+        // );
 
     } catch (e) {
         console.log("error")

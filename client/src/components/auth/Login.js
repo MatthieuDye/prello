@@ -8,6 +8,7 @@ import classnames from "classnames";
 import Row from "react-bootstrap/Row";
 import { bindActionCreators } from "redux";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 class Login extends Component {
   constructor() {
@@ -15,23 +16,39 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      url: this.authPolytech()
     };
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Login page, should redirect them to dashboard
-    // if (this.props.auth.isAuthenticated) {
-    //   this.props.history.push("/:userName/boards");
-    // }
+   // If logged in and user navigates to Login page, should redirect them to dashboard
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/:userName/boards");
+    }
 
-    // if (this.props.location.search) {
-    //   const params = {};
-    //   window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
-    //     params[key] = value;
-    //   });
-    //   this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
-    // }
+    if (this.props.location.search) {
+      const params = {};
+      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+        params[key] = value;
+      });
+
+
+      //callback of polytech auth
+      if(params.state !== undefined && (params.state.localeCompare(localStorage.getItem("state")))) {
+
+        const data = {client_id: "prello", code: params.code};
+        axios
+            .post("http://oauth-dev.igpolytech.fr/token", data)
+            .then(res =>console.log(jwt_decode(res.data.access_token)))
+      }
+
+
+      //last step for google and polytech auth
+      if (params.token !== undefined) {
+        this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+      }
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -56,16 +73,8 @@ class Login extends Component {
     localStorage.setItem("state", state);
 
     const clientId = "prello";
-    const redirectUri = encodeURI("http://mydash.igpolytech.fr/student/dashboard");
-
-    axios
-        .get(`http://oauth-dev.igpolytech.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`, {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
-          }
-        });
-
-
+    const redirectUri = encodeURI("http://localhost:3000/login");
+    return `http://oauth-dev.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
 
   };
 
@@ -136,25 +145,25 @@ class Login extends Component {
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <Row>
-                {/*  <button*/}
-                {/*    style={{*/}
-                {/*      width: "150px",*/}
-                {/*      borderRadius: "3px",*/}
-                {/*      letterSpacing: "1.5px",*/}
-                {/*      marginTop: "1rem"*/}
-                {/*    }}*/}
-                {/*    type="submit"*/}
-                {/*    className="btn btn-large waves-effect waves-light hoverable blue accent-3"*/}
-                {/*  >*/}
-                {/*    Login*/}
-                {/*</button>*/}
+                  <button
+                    style={{
+                      width: "150px",
+                      borderRadius: "3px",
+                      letterSpacing: "1.5px",
+                      marginTop: "1rem"
+                    }}
+                    type="submit"
+                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                  >
+                    Login
+                </button>
 
-                  <Button onClick={this.authPolytech}>Login Polytech</Button>
-
+                  <a href={this.state.url}> Log in with polytech  </a>
                   <a href="http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
                 </Row>
               </div>
             </form>
+            <Button onClick={this.authPolytech}>Login Polytech</Button>
           </div>
         </div>
       </div>
