@@ -19,7 +19,7 @@ class MyTeams extends Component {
     render() {
         return (
             <Container>
-                <Header as='h3'>
+                <Header as='h2'>
                     <Icon name='users'/>
                     <Header.Content>My Teams</Header.Content>
                     <Link to='/add/team'>
