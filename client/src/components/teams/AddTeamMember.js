@@ -28,12 +28,27 @@ class AddTeamMember extends Component {
             isLoading: false,
             value: '',
             users: [],
-            team: this.props.currentTeam
+            team: this.props.currentTeam,
+            errors: {}
         };
     }
 
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.errors!==prevState.errors){
+            return { errors: nextProps.errors};
+        }
+        else return null;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.errors!==this.props.errors){
+            //Perform some operation here
+            console.log(this.props.errors);
+            this.setState({errors: this.props.errors});
+        }
+    }
+
     onSubmit = ()  => {
-        console.log(this.state);
         this.props.addMember(this.state.value,this.state.team._id)
     };
 
@@ -115,11 +130,13 @@ class AddTeamMember extends Component {
 
 AddTeamMember.propTypes = {
     currentTeam: PropTypes.object.isRequired,
-    addMember: PropTypes.func.isRequired
+    addMember: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     currentTeam: state.currentTeam,
+    errors: state.errors,
 });
 
 export default connect(
