@@ -167,6 +167,26 @@ describe('PUT /api/private/board/member/list/:listId/rename', () => {
             .send(wrongData)
             .expect(422, done);
     });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "aaa",
+        };
+        request(app)
+            .put(`/api/private/board/member/list/666/rename`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        const wrongData = {
+            name: "aaa",
+        };
+        request(app)
+            .put(`/api/private/board/member/list/000000000000000000000000/rename`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(404, done);
+    });
     it('should return 201 OK', (done) => {
         request(app)
             .put(`/api/private/board/member/list/${listData.id}/rename`)

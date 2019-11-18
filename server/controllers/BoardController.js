@@ -78,7 +78,7 @@ const BoardController = () => {
         // Board Id validation
         const { errors, idIsValid } = validateIdParam(id);
         if (!idIsValid) {
-          return res.status(422).json({ message: errors.name });
+            return res.status(422).json({ message: errors.name });
         }
 
         Board.findOne({ _id: Object(id) }).then(board => {
@@ -99,6 +99,11 @@ const BoardController = () => {
      */
     const updateBoard = async (req, res) => {
         const id = req.params.id;
+
+        // Board Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
 
         // Form validation
         const { errors, isValid } = validateCreateBoardInput(req.body);
@@ -134,6 +139,7 @@ const BoardController = () => {
                     return res.status(404).json({ message: "Board not found" })
                 }
             })
+            .catch(err => res.status(404).json({ message: "Board not found - " + err }))
     };
 
     const getBoardsByUserId = async (req, res) => {

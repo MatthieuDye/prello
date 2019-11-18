@@ -182,6 +182,20 @@ describe('PUT /api/private/team/admin/:teamId/update', () => {
             .send(wrongData)
             .expect(422, done);
     });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/666/update`)
+            .set('Authorization', token)
+            .send(newTeamData)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/000000000000000000000000/update`)
+            .set('Authorization', token)
+            .send(newTeamData)
+            .expect(404, done);
+    });
     it('should return 409 ERROR with a name already existing', (done) => {
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
@@ -265,17 +279,24 @@ describe('POST /api/private/team/admin/:teamId/add/user/:memberUserName', () => 
     });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
-            .post(`/api/private/team/admin/666/add/user/${otherUserData.userName}`)
+            .post(`/api/private/team/admin/000000000000000000000000/add/user/${otherUserData.userName}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR with a false userId', (done) => {
         request(app)
-            .post(`/api/private/team/admin/${teamData.id}/add/user/666`)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/000000000000000000000000`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
+    });
+    it('should return 422 ERROR with a false teamId', (done) => {
+        request(app)
+            .post(`/api/private/team/admin/666/add/user/${otherUserData.userName}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
     });
     it('should return 201 OK and not fill the members and admins lists', (done) => {
         request(app)
@@ -312,17 +333,31 @@ describe('DELETE /api/private/team/admin/:teamId/delete/user/:userId', () => {
     });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
-            .delete(`/api/private/team/admin/666/delete/user/${createdUserId}`)
+            .delete(`/api/private/team/admin/000000000000000000000000/delete/user/${createdUserId}`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR with a false userId', (done) => {
         request(app)
-            .delete(`/api/private/team/admin/${teamData.id}/delete/user/666`)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/000000000000000000000000`)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
+    });
+    it('should return 422 ERROR with a false teamId', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/666/delete/user/${createdUserId}`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR with a false userId', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/666`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
     });
     it('should return 201 OK and pull the members list but not the admins list', (done) => {
         request(app)

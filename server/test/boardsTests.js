@@ -160,6 +160,28 @@ describe('PUT /api/private/board/admin/:boardId/update', () => {
             .send(wrongData)
             .expect(422, done);
     });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            name: "aaa",
+            description: "test"
+        };
+        request(app)
+            .put(`/api/private/board/admin/666/update`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        const wrongData = {
+            name: "aaa",
+            description: "test"
+        };
+        request(app)
+            .put(`/api/private/board/admin/000000000000000000000000/update`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(404, done);
+    });
     it('should return 201 OK', (done) => {
         request(app)
             .put(`/api/private/board/admin/${boardData.id}/update`)

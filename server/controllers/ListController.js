@@ -138,6 +138,11 @@ const ListController = () => {
     const renameList = async (req, res) => {
         const id = req.params.id;
 
+        // List Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
+
         // Form validation
         const { errors, isValid } = validateCreateListInput(req.body);
 
@@ -170,7 +175,8 @@ const ListController = () => {
                 } else {
                     return res.status(404).json({ message: "List not found" })
                 }
-            });
+            })
+            .catch(err => res.status(404).json({ message: "List not found - " + err }));
     }
 
     /**
