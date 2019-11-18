@@ -76,8 +76,13 @@ const TeamController = () => {
      * @returns {Team.model} 201 - Team object
      */
     const getTeam = async (req, res) => {
-
         const id = req.params.id;
+
+        // Team Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+          return res.status(422).json({ message: errors.name });
+        }
 
         Team.findOne({ _id: Object(id) }).then(team => {
             if (team) {
@@ -143,6 +148,7 @@ const TeamController = () => {
 
     const getTeamsByUserId = async (req, res) => {
         const userId = req.params.userId;
+
         // User Id validation
         const { errors, idIsValid } = validateIdParam(userId);
         if (!idIsValid) {

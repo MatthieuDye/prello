@@ -14,6 +14,7 @@ var ObjectID = require('mongodb').ObjectID;
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 const validateUpdateUserInput = require("../validation/updateUser");
+const validateIdParam = require("../validation/idParam");
 
 // Load User model
 const User = require("../models/User");
@@ -132,8 +133,13 @@ const UserController = () => {
      * @returns {User.model} 201 - User object
      */
   const getUser = async (req, res) => {
-
     const id = req.params.id;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(id);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
 
     User.findOne({ _id: Object(id) }).then(user => {
       if (user) {

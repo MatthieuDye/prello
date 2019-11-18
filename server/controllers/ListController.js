@@ -70,6 +70,12 @@ const ListController = () => {
     const getList = async (req, res) => {
         const id = req.params.id;
 
+        // List Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
         List.findOne({ _id: Object(id) }).then(list => {
             if (list) {
                 return res.status(201).json({ list: list, message: "List found" })

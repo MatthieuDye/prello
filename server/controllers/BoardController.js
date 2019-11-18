@@ -73,8 +73,13 @@ const BoardController = () => {
      * @returns {Board.model} 201 - Board object
      */
     const getBoard = async (req, res) => {
-
         const id = req.params.id;
+
+        // Board Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+          return res.status(422).json({ message: errors.name });
+        }
 
         Board.findOne({ _id: Object(id) }).then(board => {
             if (board) {

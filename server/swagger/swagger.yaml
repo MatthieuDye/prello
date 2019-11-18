@@ -102,6 +102,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/user/{userName} :
     put:
@@ -209,6 +215,12 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -514,6 +526,12 @@ paths:
                 $ref: "#/components/schemas/Board"
         '404':
           description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
@@ -872,6 +890,12 @@ paths:
                 $ref: "#/components/schemas/List"
         '404':
           description: List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:

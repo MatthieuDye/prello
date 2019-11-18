@@ -125,10 +125,17 @@ describe('GET /api/private/board/member/list/:listId', () => {
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .get('/api/private/board/member/list/666')
+            .get('/api/private/board/member/list/000000000000000000000000')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/list/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
     });
     it('should return 201 OK', (done) => {
         request(app)
