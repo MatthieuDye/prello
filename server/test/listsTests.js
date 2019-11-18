@@ -173,3 +173,58 @@ describe('PUT /api/private/board/member/list/:listId/rename', () => {
             });
     });
 });
+
+describe('PUT /api/private/board/member/list/:listId/archive', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/archive`)
+            .send({ isArchived: false })
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/000000000000000000000000/archive`)
+            .send({ isArchived: false })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/666/archive`)
+            .send({ isArchived: false })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/archive`)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 201 OK when unarchived list', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/archive`)
+            .send({ isArchived: false })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.list.isArchived).is.false;
+                done();
+            });
+    });
+    it('should return 201 OK when archive a list', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/archive`)
+            .send({ isArchived: true })
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.list.isArchived).is.true;
+                done();
+            });
+    });
+});

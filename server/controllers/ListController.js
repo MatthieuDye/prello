@@ -83,17 +83,45 @@ const ListController = () => {
     /**
      * Archive or unarchive a list
      * @param {string} id.param.required - the list's id
-     * @param {boolean} value.query.required - the value (true = close, false = open)
+     * @param {boolean} isArchived.body.required - the value (true = close, false = open)
      * @returns {code} 201 - List updated
      */
     const archiveList = async (req, res) => {
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(422).json({ message: "This list id is not correct" });
+        }
+        if (req.body.isArchived != false && req.body.isArchived != true) {
+            return res.status(422).json({ message: "isArchived is invalid" });
+        }
 
+        //Search if the list exists
+        List.findOne({ _id: req.params.id })
+            .then(list => {
+                //If the list exists
+                if (list) {
+                    // update the list archived status
+                    List.update({ _id: req.params.id }, {
+                        isArchived: req.body.isArchived
+                    })
+                        .then(list => {
+                            List.findById(req.params.id)
+                                .then(list => {
+                                    res.status(201).send({ list: list, message: 'List archived status successfully updated' });
+                                })
+                                .catch(err => res.status(404).json({ message: "This list does not exists - " + err }));
+                        })
+                        .catch(err => res.status(404).json({ message: "This list does not exists - " + err }));
+                } else {
+                    return res.status(404).json({ message: "This list does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This list does not exists - " + err }))
     }
 
     /**
      * Rename a list
      * @param {string} id.param.required - the list's id
-     * @param {string} value.query.required - the name value
+     * @param {string} name.body.required - the name value
      * @returns {code} 201 - List updated
      */
     const renameList = async (req, res) => {

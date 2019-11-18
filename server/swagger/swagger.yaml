@@ -906,6 +906,52 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/list/{listId}/archive:
+    put:
+      summary: Archive or unarchive a list from a board
+      security:
+        - token: []
+      tags:
+        - lists
+      parameters:
+        - name: listId
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: if the list will be archived or unarchived
+        required: true
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isArchived:
+                  type: boolean
+              example:   # Sample object
+                isArchived: true
+      responses:
+        '201':
+          description: List archived status sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/List"
+        '404':
+          description: List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
