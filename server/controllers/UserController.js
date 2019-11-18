@@ -132,7 +132,6 @@ const UserController = () => {
 
     User.find({"userName": { $regex : `^${query}`, $options: 'i'}})
         .then(users => {
-          console.log(users);
           res.status(201).send({
             users: users,
             message: 'Users successfully fetched'

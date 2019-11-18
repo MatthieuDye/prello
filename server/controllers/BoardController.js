@@ -290,29 +290,50 @@ const BoardController = () => {
     // @access Auth users
 
     const updateMemberRole = async (req, res) => {
-
         if (!req.params.boardId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This board id is not correct" });
+            return res.status(422).json({ message: "This board id is not correct" });
         }
         if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(404).json({ message: "This user id is not correct" });
+            return res.status(422).json({ message: "This user id is not correct" });
+        }
+        if (req.body.isAdmin != false && req.body.isAdmin != true) {
+            return res.status(422).json({ message: "isAdmin is invalid" });
         }
 
-        if (req.body.isAdmin) {
-            // add to admin collection
-            await Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } })
-                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
-        } else {
-            await Board.updateOne({ _id: req.params.boardId }, { $pull: { admins: req.params.memberId } })
-                .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
-        }
+        //Search if the board exists
+        await Board.findOne({ _id: req.params.boardId })
+            .then(board => {
+                //If the board exists
+                if (board) {
+                    //Search if the user exists
+                    User.findOne({ _id: req.params.memberId })
+                        .then(user => {
+                            //If the user exists
+                            if (user) {
+                                if (req.body.isAdmin) {
+                                    // add to admin collection
+                                    Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } })
+                                        .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+                                } else {
+                                    Board.updateOne({ _id: req.params.boardId }, { $pull: { admins: req.params.memberId } })
+                                        .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
+                                }
+                            } else {
+                                return res.status(404).json({ message: "This user does not exists" })
+                            }
+                        })
+                        .catch(err => res.status(404).json({ message: "This user does not exists - " + err }))
+                } else {
+                    return res.status(404).json({ message: "This board does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
 
         Board.findById(req.params.boardId)
             .then(board => {
                 res.status(201).send({ board: board, message: 'User role successfully updated' });
             })
             .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
-
     };
 
 

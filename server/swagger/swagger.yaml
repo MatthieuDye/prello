@@ -559,6 +559,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/delete/user/{userId}:
     delete:
@@ -593,6 +599,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/admin/{boardId}/update/user/role/{userId}:
     put:
       summary: Change the role of a user in the board (admin or not)
@@ -638,6 +651,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
   /api/private/board/admin/{boardId}/add/team/{teamId}:
     post:
       summary: add a team to the board

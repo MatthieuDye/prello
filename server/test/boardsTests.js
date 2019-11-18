@@ -332,31 +332,55 @@ describe('PUT /api/private/board/admin/:boardId/update/user/role/:userId', () =>
     it('should return 401 ERROR', (done) => {
         request(app)
             .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/' + boardData.userId)
+            .send({isAdmin: false})
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/jkh')
+            .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/000000000000000000000000')
+            .send({isAdmin: false})
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .put('/api/private/board/admin/sdfsdf/update/user/role/'+boardData.userId)
+            .put('/api/private/board/admin/000000000000000000000000/update/user/role/'+boardData.userId)
+            .send({isAdmin: false})
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/jkh')
+            .send({isAdmin: false})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/sdfsdf/update/user/role/'+boardData.userId)
+            .send({isAdmin: false})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put('/api/private/board/admin/sdfsdf/update/user/role/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
     it('should return 201 OK', (done) => {
-
         request(app)
             .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
             .send({isAdmin: true})
             .set('Authorization', token)
             .then(
-
                 request(app)
                     .put('/api/private/board/admin/'+ boardData.id + '/update/user/role/' + userDataTwo.userId)
                     .send({isAdmin: false})
@@ -369,7 +393,6 @@ describe('PUT /api/private/board/admin/:boardId/update/user/role/:userId', () =>
                     }));
     });
     it('should return 201 OK', (done) => {
-
         request(app)
             .post('/api/private/board/admin/'+ boardData.id + '/add/user/' + userDataTwo.userId)
             .send({isAdmin: false})
