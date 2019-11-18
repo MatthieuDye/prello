@@ -4,7 +4,7 @@ const cors = require("cors");
 
 // Load input validation
 const validateCreateTeamInput = require("../validation/createTeam");
-
+const validateIdParam = require("../validation/idParam");
 
 // Load models
 const Team = require("../models/Team");
@@ -143,8 +143,10 @@ const TeamController = () => {
 
     const getTeamsByUserId = async (req, res) => {
         const userId = req.params.userId;
-        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(422).json({ message: "This user id is not correct" });
+        // User Id validation
+        const { errors, idIsValid } = validateIdParam(userId);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
         }
 
         User.findById(userId)
@@ -276,12 +278,18 @@ const TeamController = () => {
      * @returns {code} 201 - Team updated
      */
     const updateMemberRole = async (req, res) => {
-        if (!req.params.teamId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(422).json({ message: "This team id is not correct" });
+        const { teamId, memberId } = req.params;
+
+        // Team Id validation
+        if(!validateIdParam(teamId).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(teamId).errors.name });
         }
-        if (!req.params.memberId.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(422).json({ message: "This user id is not correct" });
+
+        // User Id validation
+        if(!validateIdParam(memberId).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(memberId).errors.name });
         }
+
         if (req.body.isAdmin != false && req.body.isAdmin != true) {
             return res.status(422).json({ message: "isAdmin is invalid" });
         }

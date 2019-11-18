@@ -9,6 +9,7 @@ let Board = require('../models/Board');
 
 // Load input validation
 const validateCreateListInput = require("../validation/createList.js");
+const validateIdParam = require("../validation/idParam");
 
 router.use(cors());
 
@@ -87,9 +88,13 @@ const ListController = () => {
      * @returns {code} 201 - List updated
      */
     const archiveList = async (req, res) => {
-        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(422).json({ message: "This list id is not correct" });
+        const id = req.params.id;
+        // List Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
         }
+
         if (req.body.isArchived != false && req.body.isArchived != true) {
             return res.status(422).json({ message: "isArchived is invalid" });
         }

@@ -420,17 +420,31 @@ describe('POST /api/private/board/admin/:boardId/add/team/:teamId', () => {
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/'+ boardData.id + '/add/team/jkh')
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/000000000000000000000000')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/sdfsdf/add/team/'+boardData.userId)
+            .post('/api/private/board/admin/000000000000000000000000/add/team/'+boardData.userId)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/sdfsdf/add/team/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
     });
     it('should return 201 OK', (done) => {
         teamData.name = "test add team to board"
@@ -462,17 +476,31 @@ describe('DELETE /api/private/board/admin/:boardId/delete/team/:teamId', () => {
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .delete('/api/private/board/admin/'+ boardData.id + '/delete/team/jkh')
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/team/000000000000000000000000')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .delete('/api/private/board/admin/sdfsdf/delete/team/'+boardData.userId)
+            .delete('/api/private/board/admin/000000000000000000000000/delete/team/'+boardData.userId)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/team/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/sdfsdf/delete/team/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
     });
     it('should return 201 OK', (done) => {
         teamData.name = "deuxieme test";

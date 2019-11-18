@@ -771,6 +771,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 
   /api/private/board/admin/{boardId}/delete/team/{teamId}:
@@ -802,6 +808,12 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
           content:
             application/json:
               schema:
