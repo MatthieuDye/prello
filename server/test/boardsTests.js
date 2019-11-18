@@ -227,9 +227,25 @@ describe('PUT /api/private/board/admin/:boardId/add/user/:userId', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
-    it('should return 404 ERROR', (done) => {
+    it('should return 422 ERROR', (done) => {
         request(app)
             .post('/api/private/board/admin/'+ boardData.id + '/add/user/jkh')
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/sdfsdf/add/user/'+boardData.userId)
+            .send({isAdmin: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/user/000000000000000000000000')
             .send({isAdmin: true})
             .set('Authorization', token)
             .expect('Content-Type', /json/)
@@ -237,7 +253,7 @@ describe('PUT /api/private/board/admin/:boardId/add/user/:userId', () => {
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/sdfsdf/add/user/'+boardData.userId)
+            .post('/api/private/board/admin/000000000000000000000000/add/user/'+boardData.userId)
             .send({isAdmin: true})
             .set('Authorization', token)
             .expect('Content-Type', /json/)
@@ -264,16 +280,30 @@ describe('DELETE /api/private/board/admin/:boardId/delete/user/:userId', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
-    it('should return 404 ERROR', (done) => {
+    it('should return 422 ERROR', (done) => {
         request(app)
             .delete('/api/private/board/admin/'+ boardData.id + '/delete/user/jkh')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/sdfsdf/delete/user/'+boardData.userId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete('/api/private/board/admin/'+ boardData.id + '/delete/user/000000000000000000000000')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .delete('/api/private/board/admin/sdfsdf/delete/user/'+boardData.userId)
+            .delete('/api/private/board/admin/000000000000000000000000/delete/user/'+boardData.userId)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
