@@ -1,5 +1,6 @@
 const privateRoutes = {
     //User
+    'GET /user/:id': 'UserController.getUser',
     'PUT /user/:userName': 'UserController.updateProfile',
     'GET /user/findByBeginName/:query': 'UserController.findByBeginName',
 

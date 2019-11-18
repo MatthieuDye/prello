@@ -75,6 +75,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/user/{userId} :
+    get:
+      summary: Get a user with an id
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: User sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/user/{userName} :
     put:
       summary: Update a user
@@ -160,7 +188,7 @@ paths:
 
   /api/private/team/member/{teamId} :
     get:
-      summary: Get a team
+      summary: Get a team with an id
       security:
         - token: []
       tags:
@@ -465,7 +493,7 @@ paths:
 
   /api/private/board/member/{boardId} :
     get:
-      summary: Get a board
+      summary: Get a board with an id
       security:
         - token: []
       tags:
