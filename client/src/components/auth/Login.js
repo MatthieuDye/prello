@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser, loginGoogleUser } from "../../actions/authActions";
+import { loginUser, loginGoogleUser, loginPolytechUser } from "../../actions/authActions";
 import { Button } from "semantic-ui-react";
 import classnames from "classnames";
 import Row from "react-bootstrap/Row";
@@ -40,7 +40,7 @@ class Login extends Component {
         const data = {client_id: "prello", code: params.code};
         axios
             .post("http://oauth-dev.igpolytech.fr/token", data)
-            .then(res =>console.log(jwt_decode(res.data.access_token)))
+            .then(res =>this.props.loginPolytechUser(res.data.access_token, this.props.history));
       }
 
 
@@ -173,6 +173,7 @@ class Login extends Component {
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   loginGoogleUser: PropTypes.func.isRequired,
+  loginPolytechUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -186,7 +187,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     loginUser,
     loginGoogleUser,
-
+    loginPolytechUser
   }, dispatch,
 );
 export default connect(

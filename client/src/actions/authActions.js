@@ -59,6 +59,30 @@ export const loginGoogleUser = (token, history) => dispatch => {
     history.push("/:userName/boards");
 };
 
+export const loginPolytechUser = (tokenPolytech, history) => dispatch => {
+
+    const decoded = jwt_decode(tokenPolytech);
+
+    const userName = decoded.firstname;
+
+
+    axios
+        .post("/api/public/login/polytech", {username : userName})
+        .then(res => {
+            const token = res.data.token;
+            localStorage.setItem("jwtToken", token);
+            // Set token to Auth header
+            setAuthToken(token);
+            // Decode token to get user data
+            const decoded = jwt_decode(token);
+            // Set current user
+            dispatch(setCurrentUser(decoded));
+            // Save user
+            dispatch(saveUser(decoded));
+            history.push("/:userName/boards");
+        })
+};
+
 // Set logged in user
 export const setCurrentUser = decoded => {
   return {
