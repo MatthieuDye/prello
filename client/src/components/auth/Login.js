@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser, loginGoogleUser } from "../../actions/authActions";
-import { Button } from "react-bootstrap";
+import { Button } from "semantic-ui-react";
 import classnames from "classnames";
-import GoogleButton from 'react-google-button'
 import Row from "react-bootstrap/Row";
 import { bindActionCreators } from "redux";
+import axios from "axios";
 
 class Login extends Component {
   constructor() {
@@ -21,17 +21,17 @@ class Login extends Component {
 
   componentDidMount() {
     // If logged in and user navigates to Login page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/:userName/boards");
-    }
+    // if (this.props.auth.isAuthenticated) {
+    //   this.props.history.push("/:userName/boards");
+    // }
 
-    if (this.props.location.search) {
-      const params = {};
-      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
-        params[key] = value;
-      });
-      this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
-    }
+    // if (this.props.location.search) {
+    //   const params = {};
+    //   window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
+    //     params[key] = value;
+    //   });
+    //   this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,6 +48,25 @@ class Login extends Component {
 
   onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
+  };
+
+  authPolytech = () => {
+
+    let state = Math.random().toString(36).substring(7);
+    localStorage.setItem("state", state);
+
+    const clientId = "prello";
+    const redirectUri = encodeURI("http://mydash.igpolytech.fr/student/dashboard");
+
+    axios
+        .get(`http://oauth-dev.igpolytech.fr/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`, {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
+
+
+
   };
 
   onSubmit = e => {
@@ -117,18 +136,20 @@ class Login extends Component {
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                 <Row>
-                  <button
-                    style={{
-                      width: "150px",
-                      borderRadius: "3px",
-                      letterSpacing: "1.5px",
-                      marginTop: "1rem"
-                    }}
-                    type="submit"
-                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                  >
-                    Login
-                </button>
+                {/*  <button*/}
+                {/*    style={{*/}
+                {/*      width: "150px",*/}
+                {/*      borderRadius: "3px",*/}
+                {/*      letterSpacing: "1.5px",*/}
+                {/*      marginTop: "1rem"*/}
+                {/*    }}*/}
+                {/*    type="submit"*/}
+                {/*    className="btn btn-large waves-effect waves-light hoverable blue accent-3"*/}
+                {/*  >*/}
+                {/*    Login*/}
+                {/*</button>*/}
+
+                  <Button onClick={this.authPolytech}>Login Polytech</Button>
 
                   <a href="http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
                 </Row>
