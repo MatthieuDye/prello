@@ -370,7 +370,7 @@ describe('PUT /api/private/board/admin/:boardId/update/user/role/:userId', () =>
     });
     it('should return 422 ERROR', (done) => {
         request(app)
-            .put('/api/private/board/admin/sdfsdf/update/user/role/'+boardData.userId)
+            .put('/api/private/board/admin/' + boardData.id + '/update/user/role/'+boardData.userId)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(422, done);

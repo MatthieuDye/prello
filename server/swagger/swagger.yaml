@@ -341,6 +341,58 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/team/admin/{teamId}/update/user/role/{userId}:
+    put:
+      summary: Change the role of a user in the team (admin or not)
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: teamId
+          in: path
+          description: Team ID
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: if the user will be admin or not
+        required: false
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isAdmin:
+                  type: boolean
+              example:   # Sample object
+                isAdmin: true
+      responses:
+        '201':
+          description: User role sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        '404':
+          description: User or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/team/admin/delete/{teamId} :
     delete:
       summary: Delete a team
@@ -644,7 +696,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: "#/components/schemas/Board"
         '404':
           description: User or Board not found
           content:
@@ -657,7 +709,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
+
   /api/private/board/admin/{boardId}/add/team/{teamId}:
     post:
       summary: add a team to the board

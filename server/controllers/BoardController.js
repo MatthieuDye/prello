@@ -331,7 +331,7 @@ const BoardController = () => {
 
         Board.findById(req.params.boardId)
             .then(board => {
-                res.status(201).send({ board: board, message: 'User role successfully updated' });
+                res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
             })
             .catch(err => res.status(404).json({ message: "This Board does not exists - " + err }));
     };
