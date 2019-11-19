@@ -19,7 +19,7 @@ class MyTeams extends Component {
     render() {
         return (
             <Container>
-                <Header as='h3'>
+                <Header as='h2'>
                     <Icon name='users'/>
                     <Header.Content>My Teams</Header.Content>
                     <Link to='/add/team'>
@@ -29,6 +29,9 @@ class MyTeams extends Component {
                         </Button>
                     </Link>
                 </Header>
+
+                <br/>
+                
                 <Divider />
                 <Card.Group stackable doubling itemsPerRow={4}>
                     {this.props.teams.map(({_id, name, description, members}) => (

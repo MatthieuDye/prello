@@ -9,6 +9,7 @@ let Board = require('../models/Board');
 
 // Load input validation
 const validateCreateListInput = require("../validation/createList.js");
+const validateIdParam = require("../validation/idParam");
 
 router.use(cors());
 
@@ -16,7 +17,7 @@ const ListController = () => {
 
     /**
      * Create a list
-     * @param {string} id.param.required - the board's id
+     * @param {string} boardId.param.required - the board's id
      * @returns {List} 201 - List created
      */
     const createList = async (req, res) => {
@@ -69,6 +70,12 @@ const ListController = () => {
     const getList = async (req, res) => {
         const id = req.params.id;
 
+        // List Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
         List.findOne({ _id: Object(id) }).then(list => {
             if (list) {
                 return res.status(201).json({ list: list, message: "List found" })
@@ -83,21 +90,58 @@ const ListController = () => {
     /**
      * Archive or unarchive a list
      * @param {string} id.param.required - the list's id
-     * @param {boolean} value.query.required - the value (true = close, false = open)
+     * @param {boolean} isArchived.body.required - the value (true = close, false = open)
      * @returns {code} 201 - List updated
      */
     const archiveList = async (req, res) => {
+        const id = req.params.id;
+        // List Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
 
+        if (req.body.isArchived != false && req.body.isArchived != true) {
+            return res.status(422).json({ message: "isArchived is invalid" });
+        }
+
+        //Search if the list exists
+        List.findOne({ _id: req.params.id })
+            .then(list => {
+                //If the list exists
+                if (list) {
+                    // update the list archived status
+                    List.update({ _id: req.params.id }, {
+                        isArchived: req.body.isArchived
+                    })
+                        .then(list => {
+                            List.findById(req.params.id)
+                                .then(list => {
+                                    res.status(201).send({ list: list, message: 'List archived status successfully updated' });
+                                })
+                                .catch(err => res.status(404).json({ message: "This list does not exists - " + err }));
+                        })
+                        .catch(err => res.status(404).json({ message: "This list does not exists - " + err }));
+                } else {
+                    return res.status(404).json({ message: "This list does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This list does not exists - " + err }))
     }
 
     /**
      * Rename a list
      * @param {string} id.param.required - the list's id
-     * @param {string} value.query.required - the name value
+     * @param {string} name.body.required - the name value
      * @returns {code} 201 - List updated
      */
     const renameList = async (req, res) => {
         const id = req.params.id;
+
+        // List Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
 
         // Form validation
         const { errors, isValid } = validateCreateListInput(req.body);
@@ -131,7 +175,8 @@ const ListController = () => {
                 } else {
                     return res.status(404).json({ message: "List not found" })
                 }
-            });
+            })
+            .catch(err => res.status(404).json({ message: "List not found - " + err }));
     }
 
     /**

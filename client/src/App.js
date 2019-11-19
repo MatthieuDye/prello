@@ -19,9 +19,11 @@ import CreateTeam from "./components/teams/CreateTeam";
 import CreateBoard from "./components/boards/CreateBoard";
 import AddTeamMember from "./components/teams/AddTeamMember";
 import AddBoardMember from "./components/boards/AddBoardMember";
+import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
+import AddBoardTeam from "./components/boards/AddBoardTeam";
 
-import { Menu, Dropdown } from 'semantic-ui-react'
+import { Menu, Dropdown, Icon } from 'semantic-ui-react'
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -56,76 +58,77 @@ class App extends Component {
     render() {
         const { activeItem } = this.state
         const DefaultContainer = () => (
-            <div>
-                <div className="container">
-                    <Menu inverted>
-                        <Menu.Item>
-                            <img src={require('./prello_icon.png')} alt="Prello logo" />
-                        </Menu.Item>
+            <React.Fragment>
+            <Menu inverted>
+                    <Menu.Item>
+                        <img src={require('./assets/prello_icon.png')} alt="Prello logo" />
+                    </Menu.Item>
 
-                        <Menu.Item
-                            name='boards'
-                            active={activeItem === 'boards'}
-                            onClick={this.handleItemClick}
-                        >
-                            <Link to="/:userName/boards" className="nav-link">Boards</Link>
-                        </Menu.Item>
+                    <Menu.Item
+                        name='boards'
+                        active={activeItem === 'boards'}
+                        onClick={this.handleItemClick}
+                    >
+                        <Link to="/:userName/boards" className="nav-link">Boards</Link>
+                    </Menu.Item>
 
-                        <Menu.Item
-                            name='teams'
-                            active={activeItem === 'teams'}
-                            onClick={this.handleItemClick}
-                        >
-                            <Link to="/:userName/teams" className="nav-link">Teams</Link>
-                        </Menu.Item>
-                        <Menu.Menu position='right'>
-                            <Dropdown item text='+'>
-                                <Dropdown.Menu className="dropDownMenu">
-                                    <Dropdown.Item>
-                                        <Link to="/board/create" className="nav-link">Create a board</Link>
-                                    </Dropdown.Item>
-                                    <Dropdown.Item>
-                                        <Link to="/add/team" className="nav-link">Create a team</Link>
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            <Dropdown item text='Profile'>
-                                <Dropdown.Menu className="dropDownMenu">
-                                    <Dropdown.Item>
-                                        <Link to="/:userName" className="nav-link">My profile</Link>
-                                    </Dropdown.Item>
-                                    <Dropdown.Item>
-                                        <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </Menu.Menu>
-                    </Menu>                    
-                    <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
-                    <PrivateRoute exact path="/board/create" component={CreateBoard} />
-                    <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
-                    <PrivateRoute exact path="/:userName" component={Profile} />
-                    <PrivateRoute exact path="/add/team" component={CreateTeam} />
-                    <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
-                    <PrivateRoute exact path='/team/:teamId' component={TeamView} />
-                    <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
-                </div>
-            </div>
+                    <Menu.Item
+                        name='teams'
+                        active={activeItem === 'teams'}
+                        onClick={this.handleItemClick}
+                    >
+                        <Link to="/:userName/teams" className="nav-link">Teams</Link>
+                    </Menu.Item>
+                    <Menu.Menu position='right'>
+                        <Dropdown item icon='plus circle'>
+                            <Dropdown.Menu className="dropDownMenu">
+                                <Dropdown.Item>
+                                    <Link to="/board/create" className="nav-link">Create a board</Link>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                    <Link to="/add/team" className="nav-link">Create a team</Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown item icon='user'>
+                            <Dropdown.Menu className="dropDownMenu">
+                                <Dropdown.Item>
+                                    <Link to="/:userName" className="nav-link">My profile</Link>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Menu.Menu>
+                </Menu>
+                
+                <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
+                <PrivateRoute exact path="/board/create" component={CreateBoard} />
+                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember} />
+                <PrivateRoute exact path="/:userName" component={Profile} />
+                <PrivateRoute exact path="/add/team" component={CreateTeam} />
+                <PrivateRoute exact path="/add/board" component={CreateBoard} />
+                <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
+                <PrivateRoute exact path='/team/:teamId' component={TeamView} />
+                <PrivateRoute exact path='/board/:boardId' component={BoardView} />
+                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember} />
+                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam} />
+                </React.Fragment>
         )
         return (
             <Provider store={store}>
                 <Router>
+                    
                     <div className="container">
-
-                        <br />
                         <Route path="/login" component={Login} />
                         <Route exact path="/" component={Login} />
                         <Route exact path="/register" component={Register} />
-                        <Switch>
-                            
-                            <PrivateRoute component={DefaultContainer} />
-                        </Switch>
                     </div>
+                    <Switch>
+                        <PrivateRoute component={DefaultContainer} />
+                    </Switch>
+
                 </Router>
             </Provider>
         );

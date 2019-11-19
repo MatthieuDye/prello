@@ -24,6 +24,24 @@ const otherData = {
     password2: 'azerty',
 };
 
+const userForGet = {
+    firstName: 'userForGet',
+    lastName: 'userForGet',
+    userName: 'userForGet',
+    email: 'userForGet@user.fr',
+    password: 'azerty',
+    password2: 'azerty',
+}
+let userForGetId;
+
+const boardData = {
+    name: "hkhkjhkjh",
+    description: "board description",
+    userId: "",
+    id:""
+};
+
+
 let token = null;
 
 describe('POST /api/public/register', () => {
@@ -257,6 +275,52 @@ describe('PUT /api/private/user/:username', () => {
     });
 });
 
+describe('GET /api/private/user/:userId', () => {
+
+
+    before((done) => {
+        boardData.userId = userForGetId;
+        request(app)
+            .post('/api/public/register')
+            .send(userForGet)
+            .then((res) => {
+                userForGetId = res.body.user._id;
+                done()
+            })
+    })
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/' + userForGetId)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/000000000000000000000000')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .get('/api/private/user/666')
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/user/' + userForGetId)
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.user).to.not.be.undefined;
+                expect(res.body.user.userName).equals(userForGet.userName);
+                done();
+            });
+    });
+});
+
 describe('GET /api/private/user/findByBeginName/:query', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
@@ -271,9 +335,39 @@ describe('GET /api/private/user/findByBeginName/:query', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                console.log("users : " + res.body.users);
                 expect(res.body.users.length === 1);
                 done();
             })
+    });
+});
+describe('PUT /api/private/user/:userId/board/favorite/:boardId', () => {
+    before((done) => {
+        request(app)
+            .post('/api/private/board/create')
+            .send(boardData)
+            .set('Authorization', token)
+            .then((res) => {
+                boardData.id = res.body.board._id;
+                done()
+            })
+    });
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/user/${userForGetId}/board/favorite/${boardData.id}`)
+            .send({isFavorite: true})
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/user/${userForGetId}/board/favorite/${boardData.id}`)
+            .send({isFavorite: true})
+            .set('Authorization', token)
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                console.log(res.body);
+                expect(res.body.user.favoriteBoards).to.have.lengthOf(1);
+                done();
+            });
     });
 });

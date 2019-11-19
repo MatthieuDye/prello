@@ -41,7 +41,8 @@
     "query-string": "^6.9.0",
     "swagger-ui-express": "^4.1.2",
     "validator": "^11.1.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "mongodb": "latest"
   },
   "devDependencies": {
     "chai": "^4.2.0",

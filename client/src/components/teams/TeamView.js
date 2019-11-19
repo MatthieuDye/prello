@@ -14,7 +14,7 @@ class TeamView extends Component {
     }
 
     redirectionAddTeamMember = (teamId) => {
-        this.props.history.push(`/team/${teamId}/add`);
+        this.props.history.push(`/team/${teamId}/add/member`);
     };
 
     render() {
