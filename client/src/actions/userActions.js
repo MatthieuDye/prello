@@ -22,7 +22,7 @@ export const updateUser = (userName, userData, history) => dispatch => {
       const decoded = jwt_decode(token);
       console.log(decoded)*/
       dispatch(updateUserProfile(userData));
-      history.push("/dashboard");
+      history.push("/:userName/boards");
     })
     .catch(err =>
       dispatch({

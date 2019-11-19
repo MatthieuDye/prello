@@ -178,50 +178,40 @@ const BoardController = () => {
     // @desc add a user to the team
     // @access Auth users
     const addMember = async (req, res) => {
-        const { boardId, memberId } = req.params;
+        const { boardId, memberUserName } = req.params;
 
         // Board Id validation
         if (!validateIdParam(boardId).idIsValid) {
             return res.status(422).json({ message: validateIdParam(boardId).errors.name });
         }
 
-        // User Id validation
-        if (!validateIdParam(memberId).idIsValid) {
-            return res.status(422).json({ message: validateIdParam(memberId).errors.name });
-        }
-
-        if (req.body.isAdmin) {
-            // add to admin collection
-            await Board.updateOne({ _id: req.params.boardId }, { $addToSet: { admins: req.params.memberId } });
-        }
-
         //Search if the board exists
-        Board.findOne({ _id: req.params.boardId })
+        Board.findOne({ _id: boardId })
             .then(board => {
                 //If the board exists
                 if (board) {
                     //Search if the user exists
-                    User.findOne({ _id: req.params.memberId })
+                    User.findOne({ userName: memberUserName })
                         .then(user => {
                             //If the user exists
                             if (user) {
                                 //Add the user to the board
                                 Board
-                                    .findOneAndUpdate({ _id: req.params.boardId }, {
+                                    .findOneAndUpdate({ _id: boardId }, {
                                         $addToSet: {
-                                            guestMembers: req.params.memberId,
+                                            guestMembers: user._id,
                                         },
                                     })
                                     .then(board => {
-                                        //Add the team to the user team list
-                                        User.updateOne({ _id: req.params.memberId }, {
+                                        //Add the board to the user guestBoards list
+                                        User.updateOne({ userName: memberUserName }, {
                                             $addToSet: {
-                                                boards: req.params.boardId,
+                                                guestBoards: boardId,
                                             }
                                         })
                                             .then(e => {
                                                 //Get the board to return
-                                                Board.findById(req.params.boardId)
+                                                Board.findById(boardId)
                                                     .then(board => {
                                                         res.status(201).send({ board: board, message: 'User successfully added to the board' })
                                                     })
@@ -279,10 +269,10 @@ const BoardController = () => {
                                     }
                                 })
                                     .then(board => {
-                                        //Delete the team to the user team list
+                                        //Delete the board from guestBoards list
                                         User.updateOne({ _id: memberId }, {
                                             $pull: {
-                                                boards: boardId
+                                                guestBoards: boardId
                                             }
                                         })
                                             .then(e => {
