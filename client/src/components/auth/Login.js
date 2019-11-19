@@ -37,9 +37,9 @@ class Login extends Component {
       //callback of polytech auth
       if(params.state !== undefined && (params.state.localeCompare(localStorage.getItem("state")))) {
 
-        const data = {client_id: "prello", code: params.code};
+        const data = {client_id: "566e7eb0-0081-4171-9cef-de9e92e84901", code: params.code};
         axios
-            .post("http://oauth-dev.igpolytech.fr/token", data)
+            .post("http://oauth.igpolytech.fr/token", data)
             .then(res =>this.props.loginPolytechUser(res.data.access_token, this.props.history));
       }
 
@@ -72,9 +72,9 @@ class Login extends Component {
     let state = Math.random().toString(36).substring(7);
     localStorage.setItem("state", state);
 
-    const clientId = "prello";
+    const clientId = "566e7eb0-0081-4171-9cef-de9e92e84901";
     const redirectUri = encodeURI("http://localhost:3000/login");
-    return `http://oauth-dev.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
+    return `http://oauth.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
 
   };
 
