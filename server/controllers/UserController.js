@@ -18,6 +18,7 @@ const validateIdParam = require("../validation/idParam");
 
 // Load User model
 const User = require("../models/User");
+const Board = require("../models/Board");
 
 router.use(cors());
 
@@ -230,6 +231,62 @@ const UserController = () => {
       res.status(404).json({ message: "User not found " + err });
     });
   };
+  //put /user/:userId/board/favorite/:boardId
+
+  const updateFavoriteBoards = async (req, res) => {
+
+    const {boardId, userId} = req.params;
+    const isFavorite = req.body.isFavorite;
+
+    // Board Id validation
+    if (!validateIdParam(boardId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(boardId).errors.name});
+    }
+
+    // User Id validation
+    if (!validateIdParam(userId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(userId).errors.name});
+    }
+
+    User.findOne({_id: userId}).then(user => {
+          if (user) {
+            Board.findOne({_id: boardId}).then(board => {
+              if (board) {
+                if (isFavorite) {
+                  User.updateOne({_id: user._id}, {
+                    $addToSet: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: user._id})
+                          .then(userFounded => {
+                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                              }
+                          ))
+                } else {
+                  User.updateOne({_id: user.userId}, {
+                    $pull: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: userId})
+                          .then(userFounded => {
+                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                              }
+                          ))
+                }
+              } else {
+                return res.status(404).json({message: "This board does not exists"})
+              }
+            })
+          } else {
+            return res.status(404).json({message: "This user does not exists"})
+          }
+        }
+    )
+  };
 
   const findByBeginName = async (req, res) => {
 
@@ -347,6 +404,7 @@ const UserController = () => {
     updateProfile,
     findByBeginName,
     loginPolytech,
+    updateFavoriteBoards,
     getBoardsByUserId,
     getTeamsByUserId
   };
