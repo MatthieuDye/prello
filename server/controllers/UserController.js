@@ -241,7 +241,7 @@ const UserController = () => {
         })
       })
       .catch(err => {
-        return res.status(404).json({ message: "This query is not right" + err });
+        return res.status(404).json({ message: "This query found no user - " + err });
       })
   };
 

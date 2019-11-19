@@ -8,6 +8,7 @@ const privateRoutes = {
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
+    'GET /team/findByBeginName/:query': 'TeamController.findByBeginName',
     
     //Board
     'POST /board/create': 'BoardController.createBoard',

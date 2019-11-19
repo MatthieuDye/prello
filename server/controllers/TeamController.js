@@ -397,6 +397,22 @@ const TeamController = () => {
             .catch(err => res.status(500).json({ message: "Server error - " + err }))
     };
 
+    const findByBeginName = async (req, res) => {
+
+        const query = req.params.query;
+
+        Team.find({ "name": { $regex: `^${query}`, $options: 'i' } })
+            .then(teams => {
+                res.status(201).send({
+                    teams: teams,
+                    message: 'Teams successfully fetched'
+                })
+            })
+            .catch(err => {
+                return res.status(404).json({ message: "This query found no user - " + err });
+            })
+    };
+
     return {
         createTeam,
         getTeam,
@@ -404,7 +420,8 @@ const TeamController = () => {
         addMember,
         deleteMember,
         updateMemberRole,
-        deleteTeam
+        deleteTeam,
+        findByBeginName
     };
 };
 

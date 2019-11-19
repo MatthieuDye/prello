@@ -11,10 +11,13 @@ import * as Yup from 'yup'
 
 import { addTeam } from "../../actions/boardActions";
 
-const SearchTeamSchema = Yup.object().shape({
-    teamName: Yup.string()
-        .required('Team name is required')
-});
+const getSuggestionValue = suggestion => suggestion.name;
+
+const renderSuggestion = suggestion => (
+    <div id={suggestion._id}>
+        {suggestion.name}
+    </div>
+);
 
 class AddBoardTeam extends Component {
 
@@ -23,6 +26,8 @@ class AddBoardTeam extends Component {
 
         this.state = {
             isLoading: false,
+            value: "",
+            teams: [],
             board: this.props.currentBoard,
             errors: {}
         };
@@ -42,10 +47,60 @@ class AddBoardTeam extends Component {
         }
     }
 
+    onSubmit = ()  => {
+        this.props.addTeam(this.state.value,this.state.board._id)
+    };
+
+    //__________AUTOCOMPLETE_________
+
+
+    loadSuggestions(value) {
+        // Cancel the previous request
+        if (this.lastRequestId !== null) {
+            clearTimeout(this.lastRequestId);
+        }
+
+        this.setState({
+            isLoading: true
+        });
+
+        this.lastRequestId = setTimeout(() => {
+            axios
+                .get(`/api/private/team/findByBeginName/${value}`)
+                .then(res => {
+                    this.setState({
+                        isLoading: false,
+                        teams: res.data.teams
+                    });
+                })
+        });
+    };
+
+    onChange = (event, { newValue }) => {
+        this.setState({
+            value: newValue
+        });
+    };
+
+    onSuggestionsFetchRequested = ({value}) => {
+        this.loadSuggestions(value)
+    };
+
+    onSuggestionsClearRequested = () => {
+        this.setState({
+            teams: []
+        });
+    };
+
     render() {
 
-        const { value, isLoading } = this.state;
+        const { value, teams, isLoading } = this.state;
 
+        const inputProps = {
+            placeholder: 'Choose team name',
+            value,
+            onChange: this.onChange
+        };
         const status = (isLoading ? 'Loading...' : 'Type to load teams');
         return (
             <div style={{ marginTop: 40, marginLeft: 50 }}>
@@ -56,26 +111,16 @@ class AddBoardTeam extends Component {
                     <strong>Status:</strong> {status}
                 </div>
 
-                <Formik
-                    initialValues={{
-                        teamName: ''
-                    }}
-                    validationSchema={SearchTeamSchema}
-                    onSubmit={values => {
-                        this.props.addTeam(values.teamName, this.state.board._id)
-                    }}
-                >
-                    {({ handleChange, handleSubmit, values, errors, touched }) => (
-                        <Form onSubmit={handleSubmit}>
-                            <Input
-                                placeholder='Search team...'
-                                value={values.teamName}
-                                onChange={handleChange('teamName')}
-                            />
-                            <Button className="ui button" onPress={handleSubmit}>Submit</Button>
-                        </Form>
-                    )}
-                </Formik>
+                <Autosuggest
+                    suggestions={teams}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    getSuggestionValue={getSuggestionValue}
+                    renderSuggestion={renderSuggestion}
+                    inputProps={inputProps}
+                />
+
+                <Button className="ui button" onClick={() => this.onSubmit()}>Submit</Button>
 
             </div>
         );
