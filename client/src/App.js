@@ -58,7 +58,7 @@ class App extends Component {
         const { activeItem } = this.state
         const DefaultContainer = () => (
             <React.Fragment>
-                <Menu inverted>
+            <Menu inverted>
                     <Menu.Item>
                         <img src={require('./prello_icon.png')} alt="Prello logo" />
                     </Menu.Item>
@@ -101,6 +101,7 @@ class App extends Component {
                         </Dropdown>
                     </Menu.Menu>
                 </Menu>
+                
                 <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
                 <PrivateRoute exact path="/board/create" component={CreateBoard} />
                 <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
@@ -111,21 +112,20 @@ class App extends Component {
                 <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                 <PrivateRoute exact path='/board/:boardId' component={BoardView} />
                 <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
-
-            </React.Fragment>
+                </React.Fragment>
         )
         return (
             <Provider store={store}>
                 <Router>
-                    <Switch>
-                        <PrivateRoute component={DefaultContainer} />
-                    </Switch>
+                    
                     <div className="container">
-                        <br />
                         <Route path="/login" component={Login} />
                         <Route exact path="/" component={Login} />
                         <Route exact path="/register" component={Register} />
                     </div>
+                    <Switch>
+                        <PrivateRoute component={DefaultContainer} />
+                    </Switch>
 
                 </Router>
             </Provider>
