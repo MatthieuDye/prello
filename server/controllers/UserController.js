@@ -131,7 +131,8 @@ const UserController = () => {
   const loginPolytech = async (req, res) => {
 
 
-    const username = req.body.username;
+    const user = req.body.user ;
+    const username = user.firstName + "." + user.lastName;
 
     let userId = new ObjectID();
 
@@ -142,8 +143,8 @@ const UserController = () => {
           if (!existingUser) {
             new User({
               _id: userId,
-              firstName: username.split(".")[0],
-              lastName: username.split(".")[1],
+              firstName: user.firstname,
+              lastName: user.lastname,
               userName: username,
               email: username + "@etu.umontpellier.fr",
               password: "polytech"
@@ -152,11 +153,11 @@ const UserController = () => {
                 .then(a => {
                   // Create JWT Payload
                   const payload = {
-                    id: userId,
-                    firstName: username.split(".")[0],
-                    lastName: username.split(".")[1],
+                    _id: userId,
+                    firstName: user.firstname,
+                    lastName: user.lastname,
                     userName: username,
-                    email: username + "@etu.umontpellier.fr"
+                    email: username + "@etu.umontpellier.fr",
                   };
 
                   // Sign token
