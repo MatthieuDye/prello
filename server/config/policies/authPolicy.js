@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 // "Authorization: Bearer [token]" or "token: [token]"
 module.exports = (req, res, next) => {
   let tokenToVerify;
-  //console.log(req.header("Authorization"));
   if (req.header("Authorization")) {
     const parts = req.header("Authorization").split(" ");
 

@@ -325,7 +325,6 @@ describe('GET /api/private/user/findByBeginName/:query', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                console.log("users : " + res.body.users);
                 expect(res.body.users.length === 1);
                 done();
             })

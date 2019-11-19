@@ -242,7 +242,7 @@ const UserController = () => {
         })
       })
       .catch(err => {
-        return res.status(404).json({ message: "This query is not right" + err });
+        return res.status(404).json({ message: "This query found no user - " + err });
       })
   };
 
@@ -285,13 +285,69 @@ const UserController = () => {
     });
   };
 
+  const getBoardsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('boards')
+      .populate([{
+        path: 'guestBoards',
+        select: ['name', 'description']
+      }, {
+        path: 'teams',
+        select: ['name'],
+        populate: ({
+          path: 'boards',
+          select: ['name', 'description']
+        })
+      }
+      ])
+      .then(user => res.status(201).send({
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        message: 'Boards successfully fetched'
+      }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
+  const getTeamsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('teams')
+      .populate({
+        path: 'teams',
+        select: ['name', 'description', 'members']
+      })
+      .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
   return {
     register,
     login,
     getUser,
     updateProfile,
     findByBeginName,
-    loginPolytech
+    loginPolytech,
+    getBoardsByUserId,
+    getTeamsByUserId
   };
 };
 
