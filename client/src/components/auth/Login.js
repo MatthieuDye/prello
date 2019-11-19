@@ -57,9 +57,10 @@ class Login extends Component {
             //this.props.history.push("/dashboard");
         }
 
-        if (nextProps.errors) {
+        if (nextProps.errors.message !== undefined) {
+
             this.setState({
-                errors: nextProps.errors
+                errors: nextProps.errors.message
             });
         }
     }
@@ -76,7 +77,7 @@ class Login extends Component {
     };
 
     render() {
-        const {errors} = this.state.errors;
+        const {errors} = this.state;
 
         return (
             <Container>
