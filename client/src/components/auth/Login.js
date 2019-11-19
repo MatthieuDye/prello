@@ -98,8 +98,8 @@ class Login extends Component {
                             onSubmit={values => {
 
                                 const userData = {
-                                    email: this.state.email,
-                                    password: this.state.password
+                                    email: values.email,
+                                    password: values.password
                                 };
 
                                 this.props.loginUser(userData, this.props.history);
@@ -125,6 +125,7 @@ class Login extends Component {
                                             iconPosition='left'
                                             label='Password'
                                             placeholder='password'
+                                            type='password'
                                             value={values.password}
                                             onChange={handleChange('password')}
                                             error={errors.password && {content: errors.password}}

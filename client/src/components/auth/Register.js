@@ -23,7 +23,7 @@ class Register extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+        if (nextProps.errors.message !== undefined) {
             this.setState({
                 errors: nextProps.errors.message
             });
