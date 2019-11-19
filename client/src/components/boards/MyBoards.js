@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Divider, Icon, Header, Container, Button, Image } from "semantic-ui-react";
+import { Card, Divider, Icon, Header, Container, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 import { fetchBoards } from "../../actions/boardActions";
@@ -72,7 +72,6 @@ class MyBoards extends Component {
               <Card.Content textAlign='center' header={name} />
               <Card.Content description={description} />
               <Card.Content extra>
-                <Icon name='user' />
                 {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
                 <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
               </Card.Content>
@@ -98,7 +97,6 @@ class MyBoards extends Component {
                       <Card.Content textAlign='center' header={name} />
                       <Card.Content description={description} />
                       <Card.Content extra>
-                        <Icon name='user' />
                         {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
                         <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
                       </Card.Content>

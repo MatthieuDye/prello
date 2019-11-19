@@ -142,38 +142,6 @@ const BoardController = () => {
             .catch(err => res.status(404).json({ message: "Board not found - " + err }))
     };
 
-    const getBoardsByUserId = async (req, res) => {
-        const userId = req.params.userId;
-        // User Id validation
-        const { errors, idIsValid } = validateIdParam(userId);
-        if (!idIsValid) {
-            return res.status(422).json({ message: errors.name });
-        }
-
-        User.findById(userId)
-            .select('boards')
-            .populate([{
-                path: 'guestBoards',
-                select: ['name', 'description']
-            }, {
-                path: 'teams',
-                select: ['name'],
-                populate: ({
-                    path: 'boards',
-                    select: ['name', 'description']
-                })
-            }
-            ])
-            .then(user => res.status(201).send({
-                boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
-                message: 'Boards successfully fetched'
-            }))
-            .catch(err => {
-                return res.status(404).json({ message: "This user does not exists" });
-            })
-
-    };
-
     // @route PUT api/private/board/admin/:boardId/add/user/:memberId
     // @desc add a user to the team
     // @access Auth users
@@ -371,16 +339,11 @@ const BoardController = () => {
     // @access Auth users
 
     const addTeam = async (req, res) => {
-        const { boardId, teamId } = req.params;
+        const { boardId, teamName } = req.params;
 
         // Board Id validation
         if (!validateIdParam(boardId).idIsValid) {
             return res.status(422).json({ message: validateIdParam(boardId).errors.name });
-        }
-
-        // Team Id validation
-        if (!validateIdParam(teamId).idIsValid) {
-            return res.status(422).json({ message: validateIdParam(teamId).errors.name });
         }
 
         Board.findOne({ _id: boardId })
@@ -388,19 +351,19 @@ const BoardController = () => {
                 //If the board exists
                 if (board) {
                     //Search if the team exists
-                    Team.findOne({ _id: teamId })
+                    Team.findOne({ name: teamName })
                         .then(team => {
                             //If the team exists
                             if (team) {
                                 Board
                                     .updateOne({ _id: boardId }, {
                                         $set: {
-                                            "team": teamId
+                                            "team": team._id
                                         },
                                     })
                                     .then(board => {
                                         //Add the team to the user team list
-                                        Team.updateOne({ _id: teamId }, {
+                                        Team.updateOne({ name: teamName }, {
                                             $addToSet: {
                                                 boards: boardId
                                             }
@@ -591,7 +554,6 @@ const BoardController = () => {
         createBoard,
         getBoard,
         updateBoard,
-        getBoardsByUserId,
         addList,
         getLists,
         addLabel,

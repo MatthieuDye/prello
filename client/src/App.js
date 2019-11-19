@@ -21,6 +21,7 @@ import AddTeamMember from "./components/teams/AddTeamMember";
 import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
+import AddBoardTeam from "./components/boards/AddBoardTeam";
 
 import { Menu, Dropdown, Icon } from 'semantic-ui-react'
 
@@ -60,7 +61,7 @@ class App extends Component {
             <React.Fragment>
             <Menu inverted>
                     <Menu.Item>
-                        <img src={require('./prello_icon.png')} alt="Prello logo" />
+                        <img src={require('./assets/prello_icon.png')} alt="Prello logo" />
                     </Menu.Item>
 
                     <Menu.Item
@@ -104,14 +105,15 @@ class App extends Component {
                 
                 <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
                 <PrivateRoute exact path="/board/create" component={CreateBoard} />
-                <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
+                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember} />
                 <PrivateRoute exact path="/:userName" component={Profile} />
                 <PrivateRoute exact path="/add/team" component={CreateTeam} />
                 <PrivateRoute exact path="/add/board" component={CreateBoard} />
                 <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
                 <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                 <PrivateRoute exact path='/board/:boardId' component={BoardView} />
-                <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
+                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember} />
+                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam} />
                 </React.Fragment>
         )
         return (

@@ -155,6 +155,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /api/private/user/findByBeginName{query} :
+    get:
+      summary: Get all users with a name beginning by a query
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: query
+          in: path
+          description: Begin of the name
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Users sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        '404':
+          description: The query found no user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   
   /api/private/team/create:
     post:
@@ -467,6 +495,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/team/findByBeginName{query} :
+    get:
+      summary: Get all teams with a name beginning by a query
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: query
+          in: path
+          description: Begin of the name
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Teams sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams"
+        '404':
+          description: The query found no team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/create:
     post:
       summary: Add a board
@@ -744,7 +800,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/board/admin/{boardId}/add/team/{teamId}:
+  /api/private/board/admin/{boardId}/add/team/{teamName}:
     post:
       summary: add a team to the board
       security:
@@ -758,9 +814,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: teamId
+        - name: teamName
           in: path
-          description: Team ID
+          description: Team Name
           required: true
           schema:
             type: string
@@ -1034,6 +1090,11 @@ components:
           type: string
         password2:
           type: string
+
+    Users:
+      type: array
+        items:
+          $ref: "#/components/schemas/User"
 
     UpdateUser:
       required:

@@ -79,7 +79,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Email or password invalid" });
+      return res.status(422).json({ message: errors});
     }
 
     const email = req.body.email;
@@ -133,7 +133,8 @@ const UserController = () => {
 
 
     const user = req.body.user ;
-    const username = user.firstName + "." + user.lastName;
+    const username = user.firstname + "." + user.lastname;
+    console.log(username);
 
     let userId = new ObjectID();
 
@@ -299,7 +300,7 @@ const UserController = () => {
         })
       })
       .catch(err => {
-        return res.status(404).json({ message: "This query is not right" + err });
+        return res.status(404).json({ message: "This query found no user - " + err });
       })
   };
 
@@ -342,6 +343,60 @@ const UserController = () => {
     });
   };
 
+  const getBoardsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('boards')
+      .populate([{
+        path: 'guestBoards',
+        select: ['name', 'description']
+      }, {
+        path: 'teams',
+        select: ['name'],
+        populate: ({
+          path: 'boards',
+          select: ['name', 'description']
+        })
+      }
+      ])
+      .then(user => res.status(201).send({
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        message: 'Boards successfully fetched'
+      }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
+  const getTeamsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('teams')
+      .populate({
+        path: 'teams',
+        select: ['name', 'description', 'members']
+      })
+      .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
   return {
     register,
     login,
@@ -349,7 +404,9 @@ const UserController = () => {
     updateProfile,
     findByBeginName,
     loginPolytech,
-    updateFavoriteBoards
+    updateFavoriteBoards,
+    getBoardsByUserId,
+    getTeamsByUserId
   };
 };
 
