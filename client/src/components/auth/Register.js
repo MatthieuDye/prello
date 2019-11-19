@@ -1,211 +1,212 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, {Component} from "react";
+import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { registerUser } from "../../actions/authActions";
+import {connect} from "react-redux";
+import {registerUser} from "../../actions/authActions";
 import classnames from "classnames";
+import {Formik} from "formik";
+import * as Yup from "yup";
+import {Button, Image, Container, Divider, Form, Grid, Header, Segment, Message} from "semantic-ui-react";
+
+const RegisterSchema = Yup.object().shape({
+    firstName: Yup.string()
+        .required("First name is required")
+        .min(2, 'First name must be between 2 and 50 characters')
+        .max(50, 'First name must be between 2 and 50 characters'),
+    lastName: Yup.string()
+        .required("Last name is required")
+        .min(2, 'Last name must be between 2 and 50 characters')
+        .max(50, 'Last name must be between 2 and 50 characters'),
+    userName: Yup.string()
+        .required("Username is required")
+        .min(3, 'Username must be between 3 and 30 characters')
+        .max(30, 'Username must be between 3 and 30 characters'),
+    email: Yup.string().email()
+        .required("Email is required"),
+    password: Yup.string()
+        .required("Password is required"),
+    password2: Yup.string()
+        .required("Password confirmation is required"),
+});
 
 class Register extends Component {
-  constructor() {
-    super();
-    this.state = {
-      firstName: "",
-      lastName: "",
-      name: "",
-      email: "",
-      password: "",
-      password2: "",
-      errors: {}
-    };
-  }
-
-  componentDidMount() {
-    // If logged in and user navigates to Register page, should redirect them to dashboard
-    if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/:userName/boards");
+    constructor() {
+        super();
+        this.state = {
+            errors: {}
+        };
     }
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
+    componentDidMount() {
+        // If logged in and user navigates to Register page, should redirect them to dashboard
+        if (this.props.auth.isAuthenticated) {
+            this.props.history.push("/:userName/boards");
+        }
     }
-  }
 
-  onChange = e => {
-    this.setState({ [e.target.id]: e.target.value });
-  };
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errors) {
+            this.setState({
+                errors: nextProps.errors
+            });
+        }
+    }
 
-  onSubmit = e => {
-    e.preventDefault();
+    render() {
+        const {errors} = this.state;
 
-    const newUser = {
-      firstName: this.state.firstName,
-      lastName: this.state.lastName,
-      userName: this.state.userName,
-      email: this.state.email,
-      password: this.state.password,
-      password2: this.state.password2
-    };
+        return (
+            <Container>
 
-    console.log(`Form submitted:`);
-    console.log(`User first name: ${this.state.firstName}`);
-    console.log(`User last name: ${this.state.lastName}`);
-    console.log(`User name: ${this.state.userName}`);
-    console.log(`User email: ${this.state.email}`);
-    console.log(`User password: ${this.state.password}`);
-    console.log(`User password 2: ${this.state.password2}`);
+                <Grid centered textAlign='center' verticalAlign='middle'>
+                    <Grid.Column style={{maxWidth: 800}}>
+                        <Message attached>
+                            <Header as='h3'>
+                                TO DO ADD LOGO
+                                <Image src='../../../public/logo192.png'/>
+                                <Header.Content>Register to Prello</Header.Content>
+                            </Header>
+                        </Message>
+                        <Formik
+                            initialValues={{
+                                description: ''
+                            }}
+                            validationSchema={RegisterSchema}
+                            onSubmit={values => {
 
-    this.props.registerUser(newUser, this.props.history);
-  };
+                                const newUser = {
+                                    firstName: values.firstName,
+                                    lastName: values.lastName,
+                                    userName: values.userName,
+                                    email: values.email,
+                                    password: values.password,
+                                    password2: values.password2
+                                };
 
-  render() {
-    const { errors } = this.state;
+                                this.props.registerUser(newUser, this.props.history);
+                            }}
+                        >
 
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col s8 offset-s2">
-            <Link to="/" className="btn-flat waves-effect">
-              <i className="material-icons left">keyboard_backspace</i> Back to
-              home
-            </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-              <h4>
-                <b>Register</b> below
-              </h4>
-              <p className="grey-text text-darken-1">
-                Already have an account? <Link to="/login">Log in</Link>
-              </p>
-            </div>
-            <form noValidate onSubmit={this.onSubmit}>
+                            {({handleChange, handleSubmit, values, yupErrors}) => (
 
-            <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.firstName}
-                  error={errors.firstName}
-                  id="firstName"
-                  type="text"
-                  className={classnames("", {
-                    invalid: errors.firstName
-                  })}
-                />
-                <label htmlFor="name">First Name</label>
-                <span className="red-text">{errors.firstName}</span>
-                </div>
 
-                <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.lastName}
-                  error={errors.lastName}
-                  id="lastName"
-                  type="text"
-                  className={classnames("", {
-                    invalid: errors.lastName
-                  })}
-                />
-                <label htmlFor="name">Last Name</label>
-                <span className="red-text">{errors.lastName}</span>
-                </div>
+                                <Segment>
 
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.userName}
-                  error={errors.userName}
-                  id="userName"
-                  type="text"
-                  className={classnames("", {
-                    invalid: errors.userName
-                  })}
-                />
-                <label htmlFor="name">User Name</label>
-                <span className="red-text">{errors.userName}</span>
-              </div>
+                                    <Form onSubmit={handleSubmit}>
+                                        <Form.Group widths='equal'>
+                                            <Form.Input
+                                                required
+                                                label='First Name'
+                                                placeholder='firstname'
+                                                value={values.firstName}
+                                                onChange={handleChange('firstName')}
+                                                className={classnames("", {
+                                                    invalid: errors.firstName
+                                                })}
+                                                error={errors.firstName && {content: errors.firstName}}
+                                            />
+                                            <Form.Input
+                                                label='Last Name'
+                                                placeholder='lastname'
+                                                value={values.lastName}
+                                                onChange={handleChange('lastName')}
+                                                className={classnames("", {
+                                                    invalid: errors.lastName
+                                                })}
+                                                error={errors.lastName && {content: errors.lastName}}
+                                            />
+                                        </Form.Group>
 
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.email}
-                  error={errors.email}
-                  id="email"
-                  type="email"
-                  className={classnames("", {
-                    invalid: errors.email
-                  })}
-                />
-                <label htmlFor="email">Email</label>
-                <span className="red-text">{errors.email}</span>
-              </div>
+                                        <Form.Group widths='equal'>
+                                            <Form.Input
+                                                required
+                                                icon='user'
+                                                iconPosition='left'
+                                                label='Username'
+                                                placeholder='username'
+                                                value={values.userName}
+                                                onChange={handleChange('userName')}
+                                                className={classnames("", {
+                                                    invalid: errors.userName
+                                                })}
+                                                error={errors.userName && {content: errors.userName}}
+                                            />
+                                            <Form.Input
+                                                required
+                                                icon='at'
+                                                iconPosition='left'
+                                                label='Email'
+                                                placeholder='email'
+                                                value={values.email}
+                                                onChange={handleChange('email')}
+                                                className={classnames("", {
+                                                    invalid: errors.email
+                                                })}
+                                                error={errors.email && {content: errors.email}}
+                                            />
+                                        </Form.Group>
 
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.password}
-                  error={errors.password}
-                  id="password"
-                  type="password"
-                  className={classnames("", {
-                    invalid: errors.password
-                  })}
-                />
-                <label htmlFor="password">Password</label>
-                <span className="red-text">{errors.password}</span>
-              </div>
+                                        <Form.Group widths='equal'>
+                                            <Form.Input
+                                                required
+                                                icon='lock'
+                                                iconPosition='left'
+                                                label='Password'
+                                                type='password'
+                                                placeholder='password'
+                                                value={values.password}
+                                                onChange={handleChange('password')}
+                                                className={classnames("", {
+                                                    invalid: errors.password
+                                                })}
+                                                error={errors.password && {content: errors.password}}
+                                            />
+                                            <Form.Input
+                                                required
+                                                icon='lock'
+                                                iconPosition='left'
+                                                label='Confirm Password'
+                                                type='password'
+                                                placeholder='password2'
+                                                value={values.password2}
+                                                onChange={handleChange('password2')}
+                                                className={classnames("", {
+                                                    invalid: errors.password2
+                                                })}
+                                                error={errors.password2 && {content: errors.password2}}
+                                            />
+                                        </Form.Group>
 
-              <div className="input-field col s12">
-                <input
-                  onChange={this.onChange}
-                  value={this.state.password2}
-                  error={errors.password2}
-                  id="password2"
-                  type="password"
-                  className={classnames("", {
-                    invalid: errors.password2
-                  })}
-                />
-                <label htmlFor="password2">Confirm Password</label>
-                <span className="red-text">{errors.password2}</span>
-              </div>
-              
-              <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                <button
-                  style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem"
-                  }}
-                  type="submit"
-                  className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                >
-                  Sign up
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                                        <Button type='submit' primary>Register</Button>
+                                    </Form>
+
+                                </Segment>
+                            )}
+                        </Formik>
+
+                        <Message attached='bottom' color='blue'>
+                            Already have an account? <Link to="/login"> LOG IN</Link>
+                        </Message>
+
+                    </Grid.Column>
+                </Grid>
+            </Container>
+        );
+    }
 }
 
 Register.propTypes = {
-  registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+    registerUser: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
+    auth: state.auth,
+    errors: state.errors
 });
 
 export default connect(
-  mapStateToProps,
-  { registerUser }
+    mapStateToProps,
+    {registerUser}
 )(withRouter(Register));
