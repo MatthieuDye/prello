@@ -1032,6 +1032,46 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/card/create:
+    post:
+      summary: Add a card in a list
+      security:
+        - token: []
+      tags:
+        - cards
+      requestBody:
+        description: Card name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        '201':
+          description: Card create successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: List or card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -1258,4 +1298,35 @@ components:
       properties:
         name:
           type: string
+
+    Card:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        dueDate:
+          $ref: "#/components/schemas/DueDate"
+        isArchived:
+          type: boolean
+          default: false
+        members:
+          $ref: "#/components/schemas/Users"
+
+    Cards:
+      type: array
+        items:
+          $ref: "#/components/schemas/Card"
+
+    DueDate:
+      required:
+        - date
+      properties:
+        date:
+          type: date
+        isDone:
+          type: boolean
+          default: false
     

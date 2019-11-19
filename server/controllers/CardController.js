@@ -7,7 +7,12 @@ let mongoose = require('mongoose');
 
 // Load models
 const Card = require("../models/Card");
+const List = require("../models/List");
 let Label = require('../models/Label');
+
+// Load input validation
+const validateCreateCardInput = require("../validation/createCard.js");
+const validateIdParam = require("../validation/idParam");
 
 router.use(cors());
 
@@ -16,10 +21,52 @@ const CardController = () => {
     /**
      * Create a card
      * @param {Card.model} card.body.required - card's information.
+     * @param {string} listId.body.required - the list's id
      * @returns {Card.model} 201 - Card created
      */
     const createCard = async (req, res) => {
-        
+        const { listId, name } = req.body
+
+        // Form validation
+        const { errors, isValid } = validateCreateCardInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: errors });
+        }
+
+        // List Id validation
+        if (!listId) {
+            return res.status(422).json({ message: "Invalid team id" });
+        }
+
+        //Search if the list exists
+        List.findById(listId)
+            .then(existingList => {
+                //If the list is not null
+                if (existingList) {
+                    //Create the new card
+                    const newCard = new Card({
+                        name: name
+                    });
+                    newCard
+                        .save()
+                        .then(createdCard => {
+                            //Add the card to the cards array in the list
+                            List.updateOne({ _id: listId }, {
+                                $addToSet: {
+                                    cards: createdCard._id,
+                                }
+                            })
+                                .then(listWithCard => res.status(201).send({ card: createdCard, message: 'Card successfully created' }))
+                                .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                        })
+                        .catch(err => res.status(500).json({ message: "Server error - " + err }));
+                } else {
+
+                }
+            })
+            .catch(err => res.status(404).json({ message: "List not found - " + err }))
     }
 
     /**

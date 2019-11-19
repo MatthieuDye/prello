@@ -30,10 +30,10 @@ const ListController = () => {
         }
 
         if (!req.body.boardId) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: "Invalid board id" });
         }
 
-        //Serach if the board exists
+        //Search if the board exists
         Board.findById(req.body.boardId)
             .then(board => {
                 //If the board is not null
