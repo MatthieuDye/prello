@@ -72,7 +72,6 @@ class AddBoardTeam extends Component {
                                 value={values.teamName}
                                 onChange={handleChange('teamName')}
                             />
-                            <Input icon='users' iconPosition='left' placeholder='Search team...' onChange={this.onChange} value={value} />
                             <Button className="ui button" onPress={handleSubmit}>Submit</Button>
                         </Form>
                     )}

@@ -50,14 +50,6 @@ class Register extends Component {
       password2: this.state.password2
     };
 
-    console.log(`Form submitted:`);
-    console.log(`User first name: ${this.state.firstName}`);
-    console.log(`User last name: ${this.state.lastName}`);
-    console.log(`User name: ${this.state.userName}`);
-    console.log(`User email: ${this.state.email}`);
-    console.log(`User password: ${this.state.password}`);
-    console.log(`User password 2: ${this.state.password2}`);
-
     this.props.registerUser(newUser, this.props.history);
   };
 

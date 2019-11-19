@@ -49,12 +49,6 @@ class Profile extends Component {
       email: this.state.email
     };
 
-    console.log(`Form submitted:`);
-    console.log(`User first name: ${this.state.firstName}`);
-    console.log(`User last name: ${this.state.lastName}`);
-    console.log(`User name: ${this.state.userName}`);
-    console.log(`User email: ${this.state.email}`);
-
     this.props.updateUser(this.props.user.userName, updatedUser, this.props.history);
   };
 
