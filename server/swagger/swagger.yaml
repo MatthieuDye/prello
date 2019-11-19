@@ -744,7 +744,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/board/admin/{boardId}/add/team/{teamId}:
+  /api/private/board/admin/{boardId}/add/team/{teamName}:
     post:
       summary: add a team to the board
       security:
@@ -758,9 +758,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: teamId
+        - name: teamName
           in: path
-          description: Team ID
+          description: Team Name
           required: true
           schema:
             type: string

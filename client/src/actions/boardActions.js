@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, CREATE_BOARD_SUCCESS, FETCH_BOARDS_SUCCESS, ADD_BOARD_MEMBER_SUCCESS, FETCH_BOARD_SUCCESS } from "./types";
+import { GET_ERRORS, CREATE_BOARD_SUCCESS, FETCH_BOARDS_SUCCESS, ADD_BOARD_MEMBER_SUCCESS, FETCH_BOARD_SUCCESS, ADD_BOARD_TEAM_SUCCESS } from "./types";
 
 
 // _______ CREATE BOARD _______
@@ -86,3 +86,23 @@ export const fetchBoard = (boardId) => dispatch => {
         );
 };
 
+// _______ ADD TEAM_______
+
+export const addTeamSuccessAction = board => ({
+    type: ADD_BOARD_TEAM_SUCCESS,
+    payload: {
+        board,
+    },
+});
+
+export const addTeam = (teamName, boardId) => dispatch => {
+    axios
+        .post(`/api/private/board/admin/${boardId}/add/team/${teamName}`)
+        .then(res => dispatch(addTeamSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};

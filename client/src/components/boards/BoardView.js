@@ -14,15 +14,19 @@ class BoardView extends Component {
     }
 
     redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add`);
+        this.props.history.push(`/board/${boardId}/add/member`);
+    };
+
+    redirectionAddBoardTeam = (boardId) => {
+        this.props.history.push(`/board/${boardId}/add/team`);
     };
 
     render() {
         return (
             <div>
                 Board name : {this.props.currentBoard.name}
-
                 <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
+                <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
             </div>
         )
     }

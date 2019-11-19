@@ -17,7 +17,7 @@ const ListController = () => {
 
     /**
      * Create a list
-     * @param {string} id.param.required - the board's id
+     * @param {string} boardId.param.required - the board's id
      * @returns {List} 201 - List created
      */
     const createList = async (req, res) => {

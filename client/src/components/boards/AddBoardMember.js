@@ -43,14 +43,11 @@ class AddBoardMember extends Component {
     componentDidUpdate(prevProps, prevState) {
         if(prevProps.errors!==this.props.errors){
             //Perform some operation here
-            console.log(this.props.errors);
             this.setState({errors: this.props.errors});
         }
     }
 
     onSubmit = ()  => {
-        console.log(this.state.value)
-        console.log(this.state.board._id)
         this.props.addMember(this.state.value,this.state.board._id)
     };
 
