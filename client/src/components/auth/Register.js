@@ -3,15 +3,13 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {registerUser} from "../../actions/authActions";
-import classnames from "classnames";
 import {Formik} from "formik";
-import * as Yup from "yup";
-import {Button, Image, Container, Form, Grid, Header, Segment, Message, Label} from "semantic-ui-react";
-import logo from '../../prello_icon.png'
+import {Button, Container, Divider, Form, Grid, Header, Image, Label, Message, Segment} from "semantic-ui-react";
+import logo from '../../assets/prello_icon.png'
 
 class Register extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             errors: {}
         };
@@ -25,7 +23,7 @@ class Register extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.errors) {
+        if (nextProps.errors.message !== undefined) {
             this.setState({
                 errors: nextProps.errors.message
             });
@@ -40,10 +38,12 @@ class Register extends Component {
 
                 <Grid centered textAlign='center' verticalAlign='middle'>
                     <Grid.Column style={{maxWidth: 700}}>
+                        <Divider hidden/>
                         <Header as='h3' textAlign='center'>
                             <Image src={logo}/>
                             <Header.Content>Register to Prello</Header.Content>
                         </Header>
+                        <Divider hidden/>
                         <Formik
                             initialValues={{
                                 firstName: '',
@@ -134,7 +134,7 @@ class Register extends Component {
                                             />
                                         </Form.Group>
 
-                                        <Button type='submit' primary>Register</Button>
+                                        <Button type='submit' content='Register' primary />
                                     </Form>
 
                                 </Segment>
