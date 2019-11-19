@@ -84,27 +84,33 @@ class MyBoards extends Component {
 
         {this.props.teamBoards.map(({ name, boards }) => (
           <React.Fragment>
-  <Divider horizontal>
-              <Header as='h3'>
-                <Icon name='users' />
-                {name}
-              </Header>
-            </Divider>
-            <Card.Group stackable doubling itemsPerRow={4}>
-              {boards.map(({ _id, name, description, isFavorite }) => (
+            {boards.length > 0 ? (
+              <React.Fragment>
+                <Divider horizontal>
+                  <Header as='h3'>
+                    <Icon name='users' />
+                    {name}
+                  </Header>
+                </Divider>
+                <Card.Group stackable doubling itemsPerRow={4}>
+                  {boards.map(({ _id, name, description, isFavorite }) => (
+                    <Card>
+                      <Card.Content textAlign='center' header={name} />
+                      <Card.Content description={description} />
+                      <Card.Content extra>
+                        <Icon name='user' />
+                        {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
+                        <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                </Card.Group>
+              </React.Fragment>
+            ) : (
+                <p></p>
+              )}
 
-                <Card>
-                  <Card.Content textAlign='center' header={name} />
-                  <Card.Content description={description} />
-                  <Card.Content extra>
-                    <Icon name='user' />
-                    {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
-                    <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
-                  </Card.Content>
-                </Card>
-              ))}
-            </Card.Group>
-            
+
           </React.Fragment>
 
         ))}
