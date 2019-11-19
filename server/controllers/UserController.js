@@ -133,11 +133,13 @@ const UserController = () => {
 
     const username = req.body.username;
 
+    let userId = new ObjectID();
+
     // Find user by email
     User.findOne({userName: username}).then(existingUser => {
       if (!existingUser) {
         new User({
-
+          _id: userId,
           firstName: username.split(".")[0],
           lastName: username.split(".")[1],
           userName: username,
@@ -148,32 +150,29 @@ const UserController = () => {
       }
     }).then(a => {
 
-      User.findOne({userName: username}).then(user => {
+      // Create JWT Payload
+      const payload = {
+        id: userId,
+        firstName: username.split(".")[0],
+        lastName: username.split(".")[1],
+        userName: username,
+        email: username + "@etu.umontpellier.fr"
+      };
 
-        // Create JWT Payload
-        const payload = {
-          id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          userName: user.userName,
-          email: user.email
-        };
-
-        // Sign token
-        jwt.sign(
-            payload,
-            process.env.SECRET_TOKEN,
-            {
-              expiresIn: 3600 // 1 hour in seconds
-            },
-            (err, token) => {
-              res.status(201).json({
-                success: true,
-                token: "Bearer " + token
-              });
-            }
-        );
-      })
+      // Sign token
+      jwt.sign(
+          payload,
+          process.env.SECRET_TOKEN,
+          {
+            expiresIn: 3600 // 1 hour in seconds
+          },
+          (err, token) => {
+            res.status(201).json({
+              success: true,
+              token: "Bearer " + token
+            });
+          }
+      );
     })
   };
 
