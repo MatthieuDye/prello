@@ -60,7 +60,7 @@ class App extends Component {
             <React.Fragment>
             <Menu inverted>
                     <Menu.Item>
-                        <img src={require('./prello_icon.png')} alt="Prello logo" />
+                        <img src={require('./assets/prello_icon.png')} alt="Prello logo" />
                     </Menu.Item>
 
                     <Menu.Item

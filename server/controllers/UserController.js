@@ -78,7 +78,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Email or password invalid" });
+      return res.status(422).json({ message: errors});
     }
 
     const email = req.body.email;
