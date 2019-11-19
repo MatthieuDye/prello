@@ -39,7 +39,7 @@ class Login extends Component {
 
         const data = {client_id: "566e7eb0-0081-4171-9cef-de9e92e84901", code: params.code};
         axios
-            .post("http://oauth.igpolytech.fr/token", data)
+            .post("https://oauth.igpolytech.fr/token", data)
             .then(res =>this.props.loginPolytechUser(res.data.access_token, this.props.history));
       }
 
