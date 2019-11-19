@@ -612,7 +612,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/board/admin/{boardId}/add/user/{userId}:
+  /api/private/board/admin/{boardId}/add/user/{memberUserName}:
     post:
       summary: Add a member to a board
       security:
@@ -626,24 +626,12 @@ paths:
           required: true
           schema:
             type: string
-        - name: userId
+        - name: memberUserName
           in: path
-          description: User ID
+          description: User Name
           required: true
           schema:
             type: string
-      requestBody:
-        description: is the user admin
-        required: false
-        content:
-          application/json:
-            schema:      # Request body contents
-              type: object
-              properties:
-                isAdmin:
-                  type: boolean
-              example:   # Sample object
-                isAdmin: true
       responses:
         '201':
           description: Board sucessfully updated

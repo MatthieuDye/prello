@@ -19,6 +19,7 @@ import CreateTeam from "./components/teams/CreateTeam";
 import CreateBoard from "./components/boards/CreateBoard";
 import AddTeamMember from "./components/teams/AddTeamMember";
 import AddBoardMember from "./components/boards/AddBoardMember";
+import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 
 import { Menu, Dropdown, Icon } from 'semantic-ui-react'
@@ -105,9 +106,12 @@ class App extends Component {
                 <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
                 <PrivateRoute exact path="/:userName" component={Profile} />
                 <PrivateRoute exact path="/add/team" component={CreateTeam} />
+                <PrivateRoute exact path="/add/board" component={CreateBoard} />
                 <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
                 <PrivateRoute exact path='/team/:teamId' component={TeamView} />
+                <PrivateRoute exact path='/board/:boardId' component={BoardView} />
                 <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
+
             </React.Fragment>
         )
         return (
