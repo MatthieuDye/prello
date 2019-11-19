@@ -142,38 +142,6 @@ const BoardController = () => {
             .catch(err => res.status(404).json({ message: "Board not found - " + err }))
     };
 
-    const getBoardsByUserId = async (req, res) => {
-        const userId = req.params.userId;
-        // User Id validation
-        const { errors, idIsValid } = validateIdParam(userId);
-        if (!idIsValid) {
-            return res.status(422).json({ message: errors.name });
-        }
-
-        User.findById(userId)
-            .select('boards')
-            .populate([{
-                path: 'guestBoards',
-                select: ['name', 'description']
-            }, {
-                path: 'teams',
-                select: ['name'],
-                populate: ({
-                    path: 'boards',
-                    select: ['name', 'description']
-                })
-            }
-            ])
-            .then(user => res.status(201).send({
-                boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
-                message: 'Boards successfully fetched'
-            }))
-            .catch(err => {
-                return res.status(404).json({ message: "This user does not exists" });
-            })
-
-    };
-
     // @route PUT api/private/board/admin/:boardId/add/user/:memberId
     // @desc add a user to the team
     // @access Auth users
@@ -591,7 +559,6 @@ const BoardController = () => {
         createBoard,
         getBoard,
         updateBoard,
-        getBoardsByUserId,
         addList,
         getLists,
         addLabel,

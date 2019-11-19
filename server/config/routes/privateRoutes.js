@@ -3,14 +3,14 @@ const privateRoutes = {
     'GET /user/:id': 'UserController.getUser',
     'PUT /user/:userName': 'UserController.updateProfile',
     'GET /user/findByBeginName/:query': 'UserController.findByBeginName',
+    'GET /user/:userId/teams': 'UserController.getTeamsByUserId',
+    'GET /user/:userId/boards': 'UserController.getBoardsByUserId',
 
     //Team
     'POST /team/create': 'TeamController.createTeam',
-    'GET /user/:userId/teams': 'TeamController.getTeamsByUserId',
     
     //Board
     'POST /board/create': 'BoardController.createBoard',
-    'GET /user/:userId/boards': 'BoardController.getBoardsByUserId',
 
 };
 

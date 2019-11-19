@@ -137,55 +137,30 @@ const UserController = () => {
 
 
     // Find user by email
-    User.findOne({userName: username})
-        .then(existingUser => {
-          if (!existingUser) {
-            new User({
-              _id: userId,
-              firstName: username.split(".")[0],
-              lastName: username.split(".")[1],
-              userName: username,
-              email: username + "@etu.umontpellier.fr",
-              password: "polytech"
-            })
-                .save()
-                .then(a => {
-                  // Create JWT Payload
-                  const payload = {
-                    id: userId,
-                    firstName: username.split(".")[0],
-                    lastName: username.split(".")[1],
-                    userName: username,
-                    email: username + "@etu.umontpellier.fr"
-                  };
+    User.findOne({ userName: username })
+      .then(existingUser => {
+        if (!existingUser) {
+          new User({
+            _id: userId,
+            firstName: username.split(".")[0],
+            lastName: username.split(".")[1],
+            userName: username,
+            email: username + "@etu.umontpellier.fr",
+            password: "polytech"
+          })
+            .save()
+            .then(a => {
+              // Create JWT Payload
+              const payload = {
+                id: userId,
+                firstName: username.split(".")[0],
+                lastName: username.split(".")[1],
+                userName: username,
+                email: username + "@etu.umontpellier.fr"
+              };
 
-                  // Sign token
-                  jwt.sign(
-                      payload,
-                      process.env.SECRET_TOKEN,
-                      {
-                        expiresIn: 3600 // 1 hour in seconds
-                      },
-                      (err, token) => {
-                        res.status(201).json({
-                          success: true,
-                          token: "Bearer " + token
-                        });
-                      }
-                  );
-                })
-          } else {
-            // Create JWT Payload
-            const payload = {
-              id: existingUser._id,
-              firstName: existingUser.firstName,
-              lastName: existingUser.lastName,
-              userName: existingUser.userName,
-              email: existingUser.email
-            };
-
-            // Sign token
-            jwt.sign(
+              // Sign token
+              jwt.sign(
                 payload,
                 process.env.SECRET_TOKEN,
                 {
@@ -197,10 +172,35 @@ const UserController = () => {
                     token: "Bearer " + token
                   });
                 }
-            );
+              );
+            })
+        } else {
+          // Create JWT Payload
+          const payload = {
+            id: existingUser._id,
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            userName: existingUser.userName,
+            email: existingUser.email
+          };
 
-          }
-        })
+          // Sign token
+          jwt.sign(
+            payload,
+            process.env.SECRET_TOKEN,
+            {
+              expiresIn: 3600 // 1 hour in seconds
+            },
+            (err, token) => {
+              res.status(201).json({
+                success: true,
+                token: "Bearer " + token
+              });
+            }
+          );
+
+        }
+      })
   };
 
 
@@ -284,13 +284,69 @@ const UserController = () => {
     });
   };
 
+  const getBoardsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('boards')
+      .populate([{
+        path: 'guestBoards',
+        select: ['name', 'description']
+      }, {
+        path: 'teams',
+        select: ['name'],
+        populate: ({
+          path: 'boards',
+          select: ['name', 'description']
+        })
+      }
+      ])
+      .then(user => res.status(201).send({
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        message: 'Boards successfully fetched'
+      }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
+  const getTeamsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('teams')
+      .populate({
+        path: 'teams',
+        select: ['name', 'description', 'members']
+      })
+      .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
   return {
     register,
     login,
     getUser,
     updateProfile,
     findByBeginName,
-    loginPolytech
+    loginPolytech,
+    getBoardsByUserId,
+    getTeamsByUserId
   };
 };
 
