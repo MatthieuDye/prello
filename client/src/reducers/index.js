@@ -6,6 +6,7 @@ import userReducer from "./userReducer";
 import teamReducer from "./teamReducer";
 import currentTeamReducer from "./currentTeamReducer";
 import boardReducer from "./boardReducer";
+import currentBoardReducer from "./currentBoardReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -13,6 +14,7 @@ export default combineReducers({
   user: userReducer,
   teams: teamReducer,
   boards: boardReducer,
-  currentTeam: currentTeamReducer
+  currentTeam: currentTeamReducer,
+  currentBoard: currentBoardReducer
 
 });

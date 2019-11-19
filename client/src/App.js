@@ -105,6 +105,7 @@ class App extends Component {
                 <PrivateRoute exact path='/board/:boardId/add' component={AddBoardMember} />
                 <PrivateRoute exact path="/:userName" component={Profile} />
                 <PrivateRoute exact path="/add/team" component={CreateTeam} />
+                <PrivateRoute exact path="/add/board" component={CreateBoard} />
                 <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
                 <PrivateRoute exact path='/team/:teamId' component={TeamView} />
                 <PrivateRoute exact path='/team/:teamId/add' component={AddTeamMember} />
