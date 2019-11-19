@@ -5,6 +5,7 @@ info:
 
 servers:
   - url: http://localhost:5000
+  - url: https://prello-ig-back.igpolytech.fr/
 
 paths:
   /api/public/register:
