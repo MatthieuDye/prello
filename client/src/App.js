@@ -24,8 +24,7 @@ import TeamView from "./components/teams/TeamView";
 import { Menu, Dropdown, Icon } from 'semantic-ui-react'
 
 // Check for token to keep user logged in
-if (window.location.href != "http://localhost:5000/api/public/user/auth/google" && localStorage.jwtToken) {
-    console.log(window.location.href)
+if (localStorage.jwtToken) {
     // Set auth token header auth
     const token = localStorage.jwtToken;
     setAuthToken(token);
@@ -115,7 +114,6 @@ class App extends Component {
             <Provider store={store}>
                 <Router>
                     <Switch>
-
                         <PrivateRoute component={DefaultContainer} />
                     </Switch>
                     <div className="container">

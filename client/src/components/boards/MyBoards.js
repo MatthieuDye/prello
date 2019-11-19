@@ -1,15 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
 import { Card, Divider, Icon, Header, Container, Button, Image } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
+import { fetchBoards } from "../../actions/boardActions";
+
 class MyBoards extends Component {
 
-  onLogoutClick = e => {
-    e.preventDefault();
-    this.props.logoutUser();
+  componentDidMount() {
+    this.props.fetchBoards(this.props.auth.user.id);
+  }
+
+  redirectionBoard = (boardId) => {
+    this.props.history.push(`/board/${boardId}`);
   };
 
   render() {
@@ -25,6 +29,8 @@ class MyBoards extends Component {
                     </Button>
           </Link>
         </Header>
+
+        <br />
 
         <Divider horizontal>
           <Header as='h3'>
@@ -49,74 +55,59 @@ class MyBoards extends Component {
           </Card>
         </Card.Group>
 
+        <br />
+
         <Divider horizontal>
           <Header as='h3'>
             <Icon name='user' />
             Personal boards
       </Header>
         </Divider>
+
+
         <Card.Group stackable doubling itemsPerRow={4}>
-          <Card>
-            <Card.Content textAlign='center' header="Board 1" />
-            <Card.Content description="Description for board 1" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
-          <Card>
-            <Card.Content textAlign='center' header="Board 2" />
-            <Card.Content description="Description for board 2" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
-          <Card>
-            <Card.Content textAlign='center' header="Board 3" />
-            <Card.Content description="Description for board 3" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
+          {this.props.guestBoards.map(({ _id, name, description, isFavorite }) => (
+
+            <Card>
+              <Card.Content textAlign='center' header={name} />
+              <Card.Content description={description} />
+              <Card.Content extra>
+                <Icon name='user' />
+                {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
+                <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
+              </Card.Content>
+            </Card>
+          ))}
         </Card.Group>
 
-        <Divider horizontal>
-          <Header as='h3'>
-            <Icon name='users' />
-            Team 1 boards
-      </Header>
-        </Divider>
-        <Card.Group stackable doubling itemsPerRow={4}>
-          <Card>
-            <Card.Content textAlign='center' header="Board 1" />
-            <Card.Content description="Description for board 1" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
-        </Card.Group>
+        <br />
 
-        <Divider horizontal>
-          <Header as='h3'>
-            <Icon name='users' />
-            Team 2 boards
-      </Header>
-        </Divider>
-        <Card.Group stackable doubling itemsPerRow={4}>
-          <Card>
-            <Card.Content textAlign='center' header="Board 1" />
-            <Card.Content description="Description for board 1" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
-          <Card>
-            <Card.Content textAlign='center' header="Board 2" />
-            <Card.Content description="Description for board 2" />
-            <Card.Content extra>
-              <Icon name='heart outline' />
-            </Card.Content>
-          </Card>
-        </Card.Group>
+        {this.props.teamBoards.map(({ name, boards }) => (
+          <React.Fragment>
+  <Divider horizontal>
+              <Header as='h3'>
+                <Icon name='users' />
+                {name}
+              </Header>
+            </Divider>
+            <Card.Group stackable doubling itemsPerRow={4}>
+              {boards.map(({ _id, name, description, isFavorite }) => (
+
+                <Card>
+                  <Card.Content textAlign='center' header={name} />
+                  <Card.Content description={description} />
+                  <Card.Content extra>
+                    <Icon name='user' />
+                    {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
+                    <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
+                  </Card.Content>
+                </Card>
+              ))}
+            </Card.Group>
+            
+          </React.Fragment>
+
+        ))}
 
       </Container>
     );
@@ -124,17 +115,24 @@ class MyBoards extends Component {
 }
 
 MyBoards.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  //auth: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
+  guestBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  teamBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fetchBoards: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+};
+
+MyBoards.defaultProps = {
+  guestBoards: [],
+  teamBoards: []
 };
 
 const mapStateToProps = state => ({
-  //auth: state.auth,
-  user: state.user
+  guestBoards: state.boards.guestBoards,
+  teamBoards: state.boards.teamsBoards,
+  auth: state.auth
 });
 
 export default connect(
   mapStateToProps,
-  { logoutUser }
+  { fetchBoards }
 )(MyBoards);

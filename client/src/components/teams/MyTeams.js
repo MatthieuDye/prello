@@ -29,6 +29,9 @@ class MyTeams extends Component {
                         </Button>
                     </Link>
                 </Header>
+
+                <br/>
+                
                 <Divider />
                 <Card.Group stackable doubling itemsPerRow={4}>
                     {this.props.teams.map(({_id, name, description, members}) => (
