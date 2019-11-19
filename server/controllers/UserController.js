@@ -132,7 +132,8 @@ const UserController = () => {
 
 
     const user = req.body.user ;
-    const username = user.firstName + "." + user.lastName;
+    const username = user.firstname + "." + user.lastname;
+    console.log(username);
 
     let userId = new ObjectID();
 
