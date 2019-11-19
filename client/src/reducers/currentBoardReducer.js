@@ -7,7 +7,7 @@ const currentBoardReducer = (state =  [], action) => {
     switch (action.type) {
 
         case types.FETCH_BOARD_SUCCESS: {
-            return action.payload.team
+            return action.payload.board
         }
 
 
