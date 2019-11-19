@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { loginUser, loginGoogleUser } from "../../actions/authActions";
-import { Button } from "react-bootstrap";
+import { loginUser, loginGoogleUser, loginPolytechUser } from "../../actions/authActions";
+import { Button } from "semantic-ui-react";
 import classnames from "classnames";
-import GoogleButton from 'react-google-button'
 import Row from "react-bootstrap/Row";
 import { bindActionCreators } from "redux";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 class Login extends Component {
   constructor() {
@@ -15,12 +16,13 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      url: this.authPolytech()
     };
   }
 
   componentDidMount() {
-    // If logged in and user navigates to Login page, should redirect them to dashboard
+   // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/:userName/boards");
     }
@@ -30,7 +32,22 @@ class Login extends Component {
       window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_, key, value) => {
         params[key] = value;
       });
-      this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+
+
+      //callback of polytech auth
+      if(params.state !== undefined && (params.state.localeCompare(localStorage.getItem("state")))) {
+
+        const data = {client_id: "prello", code: params.code};
+        axios
+            .post("http://oauth-dev.igpolytech.fr/token", data)
+            .then(res =>this.props.loginPolytechUser(res.data.access_token, this.props.history));
+      }
+
+
+      //last step for google and polytech auth
+      if (params.token !== undefined) {
+        this.props.loginGoogleUser("Bearer ".concat(params.token.replace("#", "")), this.props.history)
+      }
     }
   }
 
@@ -48,6 +65,17 @@ class Login extends Component {
 
   onChange = e => {
     this.setState({ [e.target.id]: e.target.value });
+  };
+
+  authPolytech = () => {
+
+    let state = Math.random().toString(36).substring(7);
+    localStorage.setItem("state", state);
+
+    const clientId = "prello";
+    const redirectUri = encodeURI("http://localhost:3000/login");
+    return `http://oauth-dev.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
+
   };
 
   onSubmit = e => {
@@ -130,10 +158,12 @@ class Login extends Component {
                     Login
                 </button>
 
+                  <a href={this.state.url}> Log in with polytech  </a>
                   <a href="http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
                 </Row>
               </div>
             </form>
+            <Button onClick={this.authPolytech}>Login Polytech</Button>
           </div>
         </div>
       </div>
@@ -143,6 +173,7 @@ class Login extends Component {
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   loginGoogleUser: PropTypes.func.isRequired,
+  loginPolytechUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };
@@ -156,7 +187,7 @@ const mapDispatchToProps = dispatch => bindActionCreators(
   {
     loginUser,
     loginGoogleUser,
-
+    loginPolytechUser
   }, dispatch,
 );
 export default connect(

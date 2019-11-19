@@ -127,6 +127,57 @@ const UserController = () => {
     });
   };
 
+
+  const loginPolytech = async (req, res) => {
+
+
+    const username = req.body.username;
+
+    // Find user by email
+    User.findOne({userName: username}).then(existingUser => {
+      if (!existingUser) {
+        new User({
+
+          firstName: username.split(".")[0],
+          lastName: username.split(".")[1],
+          userName: username,
+          email: username + "@etu.umontpellier.fr",
+          password: "polytech"
+        })
+            .save()
+      }
+    }).then(a => {
+
+      User.findOne({userName: username}).then(user => {
+
+        // Create JWT Payload
+        const payload = {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userName: user.userName,
+          email: user.email
+        };
+
+        // Sign token
+        jwt.sign(
+            payload,
+            process.env.SECRET_TOKEN,
+            {
+              expiresIn: 3600 // 1 hour in seconds
+            },
+            (err, token) => {
+              res.status(201).json({
+                success: true,
+                token: "Bearer " + token
+              });
+            }
+        );
+      })
+    })
+  };
+
+
   /**
      * Get a user by id
      * @param {string} id.path.required - user's id.
@@ -212,7 +263,8 @@ const UserController = () => {
     login,
     getUser,
     updateProfile,
-    findByBeginName
+    findByBeginName,
+    loginPolytech
   };
 };
 
