@@ -2,78 +2,83 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createBoard } from "../../actions/boardActions";
-import Autocomplete from "react-autocomplete";
-import axios from "axios";
+import {Button, Divider, Header, Icon, Label, Input, Form, Grid, Container, TextArea} from "semantic-ui-react";
+import {Formik} from 'formik'
+import * as Yup from 'yup'
 
-// _______ CREATE BOARD _______
+const CreateBoardSchema = Yup.object().shape({
+    boardName: Yup.string()
+        .required('Board name is required')
+});
 
-class CreateBoard extends Component {
+const CreateBoard = (props) => (
 
-    constructor(props) {
-        super(props);
+    <Container>
 
-        this.state = {
-            boardName: '',
-            description: ''
-        }
-    }
+        <Header as='h3'>
+            <Icon name='columns'/>
+            <Header.Content>Create a Board</Header.Content>
+        </Header>
+        <Divider/>
 
-    onChange = e => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
+        <Grid centered textAlign='center' verticalAlign='middle'>
+            <Grid.Column style={{maxWidth: 500}}>
+                <Formik
+                    initialValues={{
+                        boardName: '',
+                        description: ''
+                    }}
+                    validationSchema={CreateBoardSchema}
+                    onSubmit={values => {
+                        const boardData = {
+                            name: values.boardName,
+                            description: values.description,
+                            userId: props.auth.user.id
+                        };
 
-    onSubmit = e => {
-        e.preventDefault();
+                        props.createBoard(boardData, props.history);
+                    }}
+                >
 
-        const boardInfo = {
-            name: this.state.boardName,
-            description: this.state.description,
-            userId: this.props.auth.user.id
-        };
+                    {({handleChange, handleSubmit, values, errors, touched}) => (
 
-        this.props.createBoard(boardInfo,  this.props.history);
-    };
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Field required>
+                                <Header as='h4'>Board Name</Header>
+                                <Input
+                                    placeholder='name'
+                                    value={values.boardName}
+                                    onChange={handleChange('boardName')}
+                                />
+                                {errors.boardName && touched.boardName &&
+                                <Label basic prompt pointing>
+                                    {errors.boardName}
+                                </Label>}
+                            </Form.Field>
 
-    render() {
-        return (
-            <div style={{marginTop: 10}}>
-                <h3>Create a Board</h3>
+                            <Form.Field>
+                                <Header as='h4'>Description</Header>
+                                <TextArea
+                                    placeholder='enter board description'
+                                    value={values.description}
+                                    style={{minHeight: 100}}
+                                    onChange={handleChange('description')}
+                                />
+                            </Form.Field>
 
-                <form onSubmit={this.onSubmit}>
-
-                    <div className="form-group">
-                        <label>Board Name:  </label>
-                        <input
-                            onChange={this.onChange}
-                            value = {this.state.boardName}
-                            id="boardName"
-                            type="text"
-                            className="form-control"
-                            required={true}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Description: </label>
-                        <input
-                            onChange={this.onChange}
-                            value = {this.state.description}
-                            id="description"
-                            type="text"
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Create the board" className="btn btn-primary"/>
-                    </div>
-                </form>
-            </div>
-        )
-    }
-}
+                            <Button primary onPress={handleSubmit}>
+                                Create the Board
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
+            </Grid.Column>
+        </Grid>
+    </Container>
+);
 
 CreateBoard.propTypes = {
-    createTeam: PropTypes.func.isRequired,
+    createBoard: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
