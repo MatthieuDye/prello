@@ -22,12 +22,7 @@ const userReducer = (state = [], action) => {
             }
         }
 
-        case FAVORITE_BOARD_SUCCESS: {
-            return {
-                ...state,
-                favoriteBoards: state.favoriteBoards.concat(action.payload)
-            }
-        }
+
 
         default:
             return state;

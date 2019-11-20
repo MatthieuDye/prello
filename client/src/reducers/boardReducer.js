@@ -1,4 +1,5 @@
 import * as types from '../actions/types';
+import {FAVORITE_BOARD_SUCCESS} from "../actions/types";
 
 
 const boardReducer = (state =  [], action) => {
@@ -10,6 +11,13 @@ const boardReducer = (state =  [], action) => {
         // }
         case types.FETCH_BOARDS_SUCCESS: {
             return action.payload.boards
+        }
+
+        case FAVORITE_BOARD_SUCCESS: {
+            return {
+                ...state,
+                favoriteBoards: action.payload.favoriteBoards
+            }
         }
 
         default:

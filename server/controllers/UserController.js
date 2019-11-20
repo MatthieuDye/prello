@@ -260,20 +260,28 @@ const UserController = () => {
                   }).then(() =>
                       User
                           .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 } else {
-                  User.updateOne({_id: user.userId}, {
+                  User.updateOne({_id: user._id}, {
                     $pull: {
                       favoriteBoards: board._id
                     }
                   }).then(() =>
                       User
-                          .findOne({_id: userId})
+                          .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 }

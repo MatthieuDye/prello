@@ -43,7 +43,7 @@ export const favoriteBoardsSuccessAction = favoriteBoards => ({
 export const favoriteBoard = (userId, boardId, isFavorite) => dispatch => {
     axios
         .put(`/api/private/user/${userId}/board/favorite/${boardId}`, {isFavorite : isFavorite})
-        .then(res => dispatch(favoriteBoardsSuccessAction(res.data.user.favoriteBoards)))
+        .then(res => dispatch(favoriteBoardsSuccessAction(res.data.favoriteBoards)))
         .catch(err =>
             dispatch({
                 type: GET_ERRORS,
