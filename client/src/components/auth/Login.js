@@ -8,7 +8,6 @@ import classnames from "classnames";
 import Row from "react-bootstrap/Row";
 import { bindActionCreators } from "redux";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 
 class Login extends Component {
   constructor() {

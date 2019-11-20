@@ -3,9 +3,7 @@ import Autosuggest from 'react-autosuggest';
 import axios from "axios";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Input, Form } from 'semantic-ui-react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import { Button } from 'semantic-ui-react'
 
 //______ACTIONS______
 

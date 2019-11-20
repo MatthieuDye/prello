@@ -3,9 +3,7 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
 import {registerUser} from "../../actions/authActions";
-import classnames from "classnames";
 import {Formik} from "formik";
-import * as Yup from "yup";
 import {Button, Image, Container, Form, Grid, Header, Segment, Message, Label} from "semantic-ui-react";
 import logo from '../../prello_icon.png'
 
