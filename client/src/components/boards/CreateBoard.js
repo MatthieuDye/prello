@@ -9,6 +9,9 @@ import * as Yup from 'yup'
 const CreateBoardSchema = Yup.object().shape({
     boardName: Yup.string()
         .required('Board name is required')
+        .max(50, 'Board name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
 });
 
 const CreateBoard = (props) => (
@@ -20,6 +23,7 @@ const CreateBoard = (props) => (
             <Header.Content>Create a Board</Header.Content>
         </Header>
         <Divider/>
+        <Divider hidden/>
 
         <Grid centered textAlign='center' verticalAlign='middle'>
             <Grid.Column style={{maxWidth: 500}}>
@@ -55,7 +59,7 @@ const CreateBoard = (props) => (
                                     {errors.boardName}
                                 </Label>}
                             </Form.Field>
-
+                            <Divider hidden/>
                             <Form.Field>
                                 <Header as='h4'>Description</Header>
                                 <TextArea
@@ -64,6 +68,10 @@ const CreateBoard = (props) => (
                                     style={{minHeight: 100}}
                                     onChange={handleChange('description')}
                                 />
+                                {errors.description && touched.description &&
+                                <Label basic prompt pointing>
+                                    {errors.description}
+                                </Label>}
                             </Form.Field>
 
                             <Button primary onPress={handleSubmit}>
