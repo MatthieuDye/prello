@@ -9,6 +9,9 @@ import * as Yup from 'yup'
 const CreateTeamSchema = Yup.object().shape({
     teamName: Yup.string()
         .required('Team name is required')
+        .max(50, 'Team name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
 });
 
 const CreateTeam = (props) => (
@@ -20,6 +23,7 @@ const CreateTeam = (props) => (
             <Header.Content>Create a Team</Header.Content>
         </Header>
         <Divider/>
+        <Divider hidden/>
 
         <Grid centered textAlign='center' verticalAlign='middle'>
             <Grid.Column style={{maxWidth: 500}}>
@@ -55,7 +59,7 @@ const CreateTeam = (props) => (
                                     {errors.teamName}
                                 </Label>}
                             </Form.Field>
-
+                            <Divider hidden/>
                             <Form.Field>
                                 <Header as='h4'>Description</Header>
                                 <TextArea
@@ -64,6 +68,10 @@ const CreateTeam = (props) => (
                                     style={{minHeight: 100}}
                                     onChange={handleChange('description')}
                                 />
+                                {errors.description && touched.description &&
+                                <Label basic prompt pointing>
+                                    {errors.description}
+                                </Label>}
                             </Form.Field>
 
                             <Button primary onPress={handleSubmit}>
