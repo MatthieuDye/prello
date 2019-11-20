@@ -131,38 +131,7 @@ describe('POST /api/private/team/create', () => {
     });
 });
 
-describe('GET /api/private/team/member/:teamId', () => {
-    it('should return 401 ERROR', (done) => {
-        request(app)
-            .get('/api/private/team/member/' + teamData.id)
-            .expect('Content-Type', /json/)
-            .expect(401, done);
-    });
-    it('should return 404 ERROR', (done) => {
-        request(app)
-            .get('/api/private/team/member/000000000000000000000000')
-            .set('Authorization', token)
-            .expect('Content-Type', /json/)
-            .expect(404, done);
-    });
-    it('should return 422 ERROR', (done) => {
-        request(app)
-            .get('/api/private/team/member/666')
-            .set('Authorization', token)
-            .expect('Content-Type', /json/)
-            .expect(422, done);
-    });
-    it('should return 201 OK', (done) => {
-        request(app)
-            .get('/api/private/team/member/' + teamData.id)
-            .set('Authorization', token)
-            .expect('Content-Type', /json/)
-            .expect(201, (err, res) => {
-                expect(res.body.team).to.not.be.undefined;
-                done();
-            });
-    });
-});
+
 
 describe('PUT /api/private/team/admin/:teamId/update', () => {
     it('should return 401 ERROR', (done) => {
@@ -483,6 +452,57 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
                 expect(res.body.team.members.includes(createdUserId));
                 expect(res.body.team.admins).lengthOf(1);
                 expect(res.body.team.members).lengthOf(2);
+                done();
+            });
+    });
+});
+describe('GET /api/private/team/member/:teamId', () => {
+    let currentTeamId3;
+    before((done) => {
+        request(app)
+            .post('/api/private/team/create')
+            .send({ name: teamData.name + "33", description: teamData.description, userId: createdUserId})
+            .set('Authorization', token)
+            .end((err, res) => {
+                currentTeamId3 = res.body.team._id;
+                done();
+            });
+
+    });
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/' + teamData.id)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/' + currentTeamId3)
+            .set({'Authorization' : token2, 'teamId': currentTeamId3})
+            .expect('Content-Type', /json/)
+            .expect(403, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/000000000000000000000000')
+            .set({'Authorization' : token, 'teamId': "000000000000000000000000"})
+            .expect('Content-Type', /json/)
+            .expect(404, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .get('/api/private/team/member/666')
+            .set({'Authorization' : token, 'teamId': "666"})
+            .expect('Content-Type', /json/)
+            .expect(422, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .get('/api/private/team/member/' + currentTeamId3)
+            .set({'Authorization' : token, 'teamId': currentTeamId3})
+            .expect('Content-Type', /json/)
+            .expect(201, (err, res) => {
+                expect(res.body.team).to.not.be.undefined;
                 done();
             });
     });
