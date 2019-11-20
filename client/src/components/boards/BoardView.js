@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
-import {connect} from "react-redux";
+import React, { Component } from 'react';
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import {Button, Card, Icon, Container} from "semantic-ui-react";
-
+import { Button, Card, Icon, Container } from "semantic-ui-react";
 
 //________ACTIONS________
-import {fetchBoard, fetchLists} from "../../actions/boardActions";
+import { fetchBoard } from "../../actions/boardActions";
 import AddBoardList from "../modals/AddBoardList";
 
 class BoardView extends Component {
@@ -24,85 +23,53 @@ class BoardView extends Component {
 
     render() {
 
-        function EmptyList(props) {
-
-            return <Container>
-                <div style={{display: 'inline-block'}}>
-                    <Card>
-                        <Card.Content>
-                            <Card.Header>Hi, I'm a new list !</Card.Header>
-                        </Card.Content>
-                        <Card.Content>
-                            <Card color={"grey"}>
-                                <Card.Content header="Hi ! I'm a new Card" />
-                                <Card.Content description="I'm here to make you remember what you have to do..." />
-                                <Card.Content extra>
-                                    <Icon name='calendar' />Due date
-                                    <Icon name='archive' />Archived ?
-                                </Card.Content>
-                            </Card>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <button>
-                                <Icon name={"add circle"}/> Add a new card
-                            </button>
-                        </Card.Content>
-                    </Card>
-                </div>
-                <div style={{display: 'inline-block'}}>
-                    <Card>
-                        <Card.Content>
-                            <Card.Header>Hi, I'm a second new list !</Card.Header>
-                        </Card.Content>
-                        <Card.Content>
-                            <Card color={"grey"}>
-                                <Card.Content header="Hi ! I'm a new Card" />
-                                <Card.Content description="I'm here to make you remember what you have to do..." />
-                                <Card.Content extra>
-                                    <Icon name='calendar' />Due date
-                                    <Icon name='archive' />Archived ?
-                                </Card.Content>
-                            </Card>
-                        </Card.Content>
-                        <Card.Content>
-                            <Card color={"grey"}>
-                                <Card.Content header="Hi ! I'm a second new Card" />
-                                <Card.Content description="I'm here to make you remember what you have to do a second time..." />
-                                <Card.Content extra>
-                                    <Icon name='calendar' />Due date
-                                    <Icon name='archive' />Archived ?
-                                </Card.Content>
-                            </Card>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <button>
-                                <Icon name={"add circle"}/> Add a new card
-                            </button>
-                        </Card.Content>
-                    </Card>
-                </div>
-                <div style={{display: 'inline-block'}}>
-                    <Card link >
-                           <AddBoardList />
-                    </Card>
-                </div>
-            </Container>
-
-        }
+        console.log(this.props.currentBoard)
 
         return (
             <div>
                 <div className={"header"}>
-                <section>
-                    {this.props.name.toUpperCase()} | {}
-                    <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
-                    <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
-                </section>
+                    <section>
+                        {this.props.name.toUpperCase()} | {}
+                        <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
+                        <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
+                    </section>
                 </div>
-                {this.props.lists.length <= 0 ? <EmptyList /> : this.props.lists.map(list => (
-                list.name
-                    )
-                )}                
+                {console.log("LISTES : " + this.props.lists.length)}
+                {/*this.props.lists.length <= 0 ? <EmptyList /> : */this.props.lists.map(list => (
+                    <Container>
+                        <div style={{ display: 'inline-block' }}>
+                            <Card>
+                                <Card.Content>
+                                    <Card.Header>{list.name}</Card.Header>
+                                </Card.Content>
+                                {list.cards.map(card => (
+                                    <Card.Content>
+                                    <Card color={"grey"}>
+                                        <Card.Content header={card.name} />
+                                        <Card.Content description={card.description} />
+                                        <Card.Content extra>
+                                            <Icon name='calendar' />Due date
+                                        <Icon name='archive' />Archived ?
+                                    </Card.Content>
+                                    </Card>
+                                </Card.Content>
+                                ))}
+                                
+                                <Card.Content extra>
+                                    <button>
+                                        <Icon name={"add circle"} /> Add a new card
+                                </button>
+                                </Card.Content>
+                            </Card>
+                        </div>
+                        <div style={{ display: 'inline-block' }}>
+                            <Card link >
+                                <AddBoardList />
+                            </Card>
+                        </div>
+                    </Container>
+                )
+                )}
             </div>
         )
     }
@@ -110,21 +77,24 @@ class BoardView extends Component {
 
 BoardView.propTypes = {
     currentBoard: PropTypes.object.isRequired,
-    lists: PropTypes.array.isRequired,
+    lists: PropTypes.arrayOf(PropTypes.object).isRequired,
     name: PropTypes.string.isRequired,
     fetchBoard: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    fetchLists: PropTypes.func.isRequired
 };
 
 BoardView.defaultProps = {
-    /**currentBoard: {
+    /*currentBoard: {
         labelNames: "",
         admins: [],
         guestMembers: [],
         isArchived: false,
-        lists: []
-    } **/
+        lists: [],
+        id: "",
+        name: "",
+        description: "",
+        _id: ""
+    },*/
     name: "",
     lists: []
 };
@@ -138,5 +108,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchBoard, fetchLists}
+    { fetchBoard }
 )(BoardView);

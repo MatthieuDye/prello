@@ -460,7 +460,7 @@ const BoardController = () => {
      * @returns {Board.model} 201 - Board object
      */
     const getAllBoardInfo = async (req, res) => {
-        const boardId = req.params.id;
+        const boardId = req.params.boardId;
 
         // Board Id validation
         const { errors, idIsValid } = validateIdParam(boardId);
@@ -479,24 +479,27 @@ const BoardController = () => {
                 path: 'cards',
                 select: ['name', 'description', 'dueDate', 'lables', 'members', 'isArchived']
             }])
-            .then(board => res.status(201).send({
-                board: board,
-                message: 'Boards information successfully fetched'
-            }))
+            .then(board => {
+                console.log(board)
+                res.status(201).send({
+                    board: board,
+                    message: 'Boards information successfully fetched'
+                })
+            })
             .catch(err => {
                 return res.status(404).json({ message: "This board does not exists - " + err });
             })
-/*
-        Board.findOne({ _id: Object(boardId) }).then(board => {
-            if (board) {
-                return res.status(201).json({ board: board, message: "Board found" })
-            } else {
-                return res.status(404).json({ message: "Board not found" });
-            }
-        }).catch(err => {
-            res.status(404).json({ message: "Board not found " + err });
-        });
-        */
+        /*
+                Board.findOne({ _id: Object(boardId) }).then(board => {
+                    if (board) {
+                        return res.status(201).json({ board: board, message: "Board found" })
+                    } else {
+                        return res.status(404).json({ message: "Board not found" });
+                    }
+                }).catch(err => {
+                    res.status(404).json({ message: "Board not found " + err });
+                });
+                */
     };
 
     /**

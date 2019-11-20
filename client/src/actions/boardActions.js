@@ -75,8 +75,9 @@ export const fetchBoardSuccessAction = board => ({
 });
 
 export const fetchBoard = (boardId) => dispatch => {
+    console.log(boardId)
     axios
-        .get(`/api/private/board/member/${boardId}`)
+        .get(`/api/private/board/member/${boardId}/all`)
         .then(res => dispatch(fetchBoardSuccessAction(res.data.board)))
         .catch(err =>
             dispatch({
