@@ -72,7 +72,7 @@ class Login extends Component {
 
         const clientId = "566e7eb0-0081-4171-9cef-de9e92e84901";
         const redirectUri = encodeURI("http://localhost:3000/login");
-        return `http://oauth.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
+        return `https://oauth.igpolytech.fr/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`
 
     };
 

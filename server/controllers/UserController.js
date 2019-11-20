@@ -131,6 +131,12 @@ const UserController = () => {
 
   const loginPolytech = async (req, res) => {
 
+     const verify = jwt.verify(req.body.token, process.env.AUTH_POLYTECH_SECRET);
+
+     if (!verify) {
+         return res.status(401).json({ message: "Unauthorized request"});
+     }
+
 
     const user = req.body.user ;
     const username = user.firstname.toLowerCase() + "." + user.lastname.toLowerCase();
