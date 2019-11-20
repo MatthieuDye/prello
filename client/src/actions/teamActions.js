@@ -1,5 +1,5 @@
 import axios from "axios";
-import { GET_ERRORS, CREATE_TEAM_SUCCESS, FETCH_TEAMS_SUCCESS, FETCH_TEAM_SUCCESS, ADD_MEMBER_SUCCESS } from "./types";
+import { GET_ERRORS, CREATE_TEAM_SUCCESS, FETCH_TEAMS_SUCCESS, FETCH_TEAM_SUCCESS, ADD_MEMBER_SUCCESS, UPDATE_MEMBER_ROLE_SUCCESS } from "./types";
 
 
 // _______ CREATE TEAM _______
@@ -80,6 +80,27 @@ export const addMember = (userName, teamId) => dispatch => {
     axios
         .post(`/api/private/team/admin/${teamId}/add/user/${userName}`)
         .then(res => dispatch(addMemberSuccessAction(res.data.team)))
+        .catch(err =>
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+// _______ UPDATE MEMBER ROLE _____
+
+export const updateMemberRoleSuccessAction = team => ({
+    type: UPDATE_MEMBER_ROLE_SUCCESS,
+    payload: {
+        team,
+    },
+});
+
+export const updateMemberRole = (userId, teamId, isAdmin) => dispatch => {
+    axios
+        .put(`/api/private/team/admin/${teamId}/update/user/role/${userId}`, {isAdmin: isAdmin} )
+        .then(res => dispatch(updateMemberRoleSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
                 type: GET_ERRORS,

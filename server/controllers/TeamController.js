@@ -355,6 +355,16 @@ const TeamController = () => {
                                     })
                                         .then(team => {
                                             Team.findById(req.params.teamId)
+                                                .populate(
+                                                    [{
+                                                        path: 'members',
+                                                        select: ['userName', 'firstName', 'lastName']
+                                                    },{
+                                                        path: 'boards',
+                                                        select: ['name']
+                                                    }
+                                                    ]
+                                                )
                                                 .then(team => {
                                                     res.status(201).send({ team: team, message: 'User role successfully updated in the team' });
                                                 })
