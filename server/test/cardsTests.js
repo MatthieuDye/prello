@@ -12,6 +12,14 @@ const cardData = {
     id: ""
 };
 
+const newCardData = {
+    newName: "new card name",
+    newDescription: "",
+    newDueDate: "",
+    newDueDateIsDone: false,
+    newIsArchived: false
+};
+
 const userData = {
     firstName: 'test',
     lastName: 'user',
@@ -125,7 +133,6 @@ describe('POST /api/private/board/member/card/create', () => {
     });
 });
 
-
 describe('GET /api/private/board/member/card/:cardId', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
@@ -155,6 +162,50 @@ describe('GET /api/private/board/member/card/:cardId', () => {
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
                 expect(res.body.card.name).is.equal(cardData.name);
+                done();
+            });
+    });
+});
+
+describe('PUT /api/private/board/member/card/:cardId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/card/${cardData.id}`)
+            .send(newCardData)
+            .expect(401, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        const wrongData = {
+            newName: "",
+        };
+        request(app)
+            .put(`/api/private/board/member/card/${cardData.id}`)
+            .set('Authorization', token)
+            .send(wrongData)
+            .expect(422, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/card/666`)
+            .set('Authorization', token)
+            .send(newCardData)
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/card/000000000000000000000000`)
+            .set('Authorization', token)
+            .send(newCardData)
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .put(`/api/private/board/member/card/${cardData.id}`)
+            .send(newCardData)
+            .set('Authorization', token)
+            .expect(201, (err, res) => {
+                expect(res.body.card).to.not.be.undefined;
+                expect(res.body.card.name).is.equal(newCardData.newName);
                 done();
             });
     });

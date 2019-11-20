@@ -1106,6 +1106,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Card details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCard'
+      responses:
+        '201':
+          description: Card sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   securitySchemes:
@@ -1362,6 +1401,27 @@ components:
         date:
           type: date
         isDone:
+          type: boolean
+          default: false
+
+    UpdateCard:
+      required:
+        - newName
+        - newDescription
+        - newDueDate
+        - newDueDateIsDone
+        - newIsArchived
+      properties:
+        newName:
+          type: string
+        newDescription:
+          type: string
+        newDueDate:
+          type: date
+        newDueDateIsDone:
+          type: boolean
+          default: false
+        newIsArchived:
           type: boolean
           default: false
     
