@@ -78,7 +78,7 @@ export const addMemberSuccessAction = team => ({
 
 export const addMember = (userName, teamId) => dispatch => {
     axios
-        .post(`/api/private/team/admin/${teamId}/add/user/${userName}`)
+        .post(`/api/private/team/admin/${teamId}/add/user/${userName}`,undefined, {headers : {"teamId" : teamId}})
         .then(res => dispatch(addMemberSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
