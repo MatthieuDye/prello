@@ -309,7 +309,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Invalid input" });
+      return res.status(422).json({ message: errors });
     }
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {

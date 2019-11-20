@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { expect, assert } = require('chai');
+const { expect } = require('chai');
 
 const app = require("../server")
 const List = require('../models/List');
