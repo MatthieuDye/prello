@@ -41,20 +41,17 @@ class MyBoards extends Component {
       </Header>
         </Divider>
         <Card.Group stackable doubling itemsPerRow={4}>
-          <Card>
-            <Card.Content textAlign='center' header="Board 1" />
-            <Card.Content description="Description for board 1" />
-            <Card.Content extra>
-              <Icon name='heart' />
-            </Card.Content>
-          </Card>
-          <Card>
-            <Card.Content textAlign='center' header="Board 2" />
-            <Card.Content description="Description for board 2" />
-            <Card.Content extra>
-              <Icon name='heart' />
-            </Card.Content>
-          </Card>
+          {this.props.favoriteBoards.map(({ _id, name, description, isFavorite }) => (
+
+              <Card>
+                <Card.Content textAlign='center' header={name} />
+                <Card.Content description={description} />
+                <Card.Content extra>
+                  {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
+                  <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
+                </Card.Content>
+              </Card>
+          ))}
         </Card.Group>
 
         <br />
@@ -125,17 +122,20 @@ MyBoards.propTypes = {
   teamBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
   fetchBoards: PropTypes.func.isRequired,
   favoriteBoard: PropTypes.func.isRequired,
+  favoriteBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
   auth: PropTypes.object.isRequired,
 };
 
 MyBoards.defaultProps = {
   guestBoards: [],
-  teamBoards: []
+  teamBoards: [],
+  favoriteBoards: []
 };
 
 const mapStateToProps = state => ({
   guestBoards: state.boards.guestBoards,
   teamBoards: state.boards.teamsBoards,
+  favoriteBoards: state.boards.favoriteBoards,
   auth: state.auth
 });
 
