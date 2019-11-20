@@ -36,13 +36,12 @@ class MyTeams extends Component {
                 <Card.Group stackable doubling itemsPerRow={4}>
                     {this.props.teams.map(({_id, name, description, members}) => (
 
-                        <Card>
+                        <Card onClick={() => this.redirectionTeam(_id)} color='blue'>
                             <Card.Content textAlign='center' header={name}/>
                             <Card.Content description={description}/>
                             <Card.Content extra>
                                 <Icon name='user'/>
                                 {members.length > 1 ? members.length + ' members' : members.length + ' member'}
-                                <Button onClick={() => this.redirectionTeam(_id)}> go team </Button>
                             </Card.Content>
                         </Card>
                     ))}
