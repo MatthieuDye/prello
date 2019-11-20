@@ -84,7 +84,18 @@ const TeamController = () => {
             return res.status(422).json({ message: errors.name });
         }
 
-        Team.findOne({ _id: Object(id) }).then(team => {
+        Team.findOne({ _id: Object(id) })
+            .populate(
+                [{
+                    path: 'members',
+                    select: ['userName', 'firstName', 'lastName']
+                },{
+                    path: 'boards',
+                    select: ['name']
+                }
+                ]
+            )
+            .then(team => {
             if (team) {
                 return res.status(201).json({ team: team, message: "Team found" })
             } else {

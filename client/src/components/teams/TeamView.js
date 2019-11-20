@@ -1,24 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {
-    Button,
-    Container,
-    Divider,
-    Grid,
-    Header,
-    Icon,
-    List,
-    Message,
-    Segment,
-    Accordion,
-    Input, TextArea, Form
-} from "semantic-ui-react";
-
-
+import {Button, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
 //________ACTIONS________
 import {fetchTeam} from "../../actions/teamActions";
-import {Link} from "react-router-dom";
 import AddTeamMember from "./AddTeamMember";
 
 class TeamView extends Component {
@@ -27,7 +12,6 @@ class TeamView extends Component {
         super(props);
         this.state = {
             editingMode: false,
-            activeIndex: 0
         };
         this.handleEditing = this.handleEditing.bind(this)
     }
@@ -43,8 +27,6 @@ class TeamView extends Component {
     };
 
     render() {
-        const {activeIndex} = this.state;
-
         return (
             <Container>
                 <Form>
@@ -54,8 +36,8 @@ class TeamView extends Component {
                             <Icon name='users'/>
                             <Header.Content>
                                 {this.state.editingMode
-                                    ? <Form.Input value='fjkdsfbsdkjhf'/>
-                                    : 'Team fjkdsfbsdkjhf' + this.props.currentTeam.name
+                                    ? <Form.Input value={this.props.currentTeam.name}/>
+                                    : 'Team ' + this.props.currentTeam.name
                                 }
                             </Header.Content>
                             {this.state.editingMode
@@ -79,10 +61,10 @@ class TeamView extends Component {
                             ?
                             <Form.TextArea
                                 rows={4}
-                                placeholder='enter team description'
-                                value='la balbekjzlfbljkfbd sf dsklqfhjsldfj'
+                                placeholder='Enter team description'
+                                value={this.props.currentTeam.description}
                             />
-                            : 'bla balbekjzlfbljkfbd sf dsklqfhjsldfjk' + this.props.currentTeam.description
+                            : this.props.currentTeam.description ? this.props.currentTeam.description : 'No description yet ...'
                         }
                     </Container>
 
@@ -93,41 +75,29 @@ class TeamView extends Component {
                             <Divider horizontal>
                                 <Header as='h4'>
                                     <Icon name='users'/>
-                                    5 Members
+                                    {this.props.members.length > 1
+                                        ? this.props.members.length + ' Members'
+                                        : this.props.members.length + ' Member'
+                                    }
                                 </Header>
                             </Divider>
 
-                            <AddTeamMember />
+                            <Divider hidden/>
+                            <AddTeamMember/>
+                            <Divider hidden/>
 
                             <List selection relaxed>
-                                <List.Item>
-                                    <Icon name='user' color='grey'/>
-                                    <List.Content>
-                                        <List.Header>Alia CHAWAF</List.Header>
-                                        <List.Content>alia.chawaf</List.Content>
-                                    </List.Content>
-                                </List.Item>
-                                <List.Item>
-                                    <Icon name='user outline' color='blue'/>
-                                    <List.Content>
-                                        <List.Header>Alia fdsfsdfsdfsdfdsfsdfdsCHAWAF</List.Header>
-                                        <List.Content>alia.chawaf</List.Content>
-                                    </List.Content>
-                                </List.Item>
-                                <List.Item>
-                                    <Icon name='user' color='grey'/>
-                                    <List.Content>
-                                        <List.Header>Alia CHAWAF</List.Header>
-                                        <List.Content>alia.chfdsdfsfsawaf</List.Content>
-                                    </List.Content>
-                                </List.Item>
-                                <List.Item>
-                                    <Icon name='user' color='grey'/>
-                                    <List.Content>
-                                        <List.Header>Alia CHAWAF</List.Header>
-                                        <List.Content>alia.chawaf</List.Content>
-                                    </List.Content>
-                                </List.Item>
+                                {this.props.members.map(({_id, firstName, lastName, userName}) => (
+
+                                    <List.Item>
+                                        <Icon name='user' color='grey'/>
+                                        <List.Content>
+                                            <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
+                                            <List.Content>{userName}</List.Content>
+                                        </List.Content>
+                                    </List.Item>
+
+                                ))}
                             </List>
 
                         </Grid.Column>
@@ -137,7 +107,10 @@ class TeamView extends Component {
                             <Divider horizontal>
                                 <Header as='h4'>
                                     <Icon name='columns'/>
-                                    5 Boards
+                                    {this.props.boards.length > 1
+                                        ? this.props.boards.length + ' Boards'
+                                        : this.props.boards.length + ' Board'
+                                    }
                                 </Header>
                             </Divider>
                         </Grid.Column>
@@ -152,11 +125,20 @@ TeamView.propTypes = {
     currentTeam: PropTypes.object.isRequired,
     fetchTeam: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
+    members: PropTypes.array.isRequired,
+    boards: PropTypes.array.isRequired
+};
+
+TeamView.defaultProps = {
+    members: [],
+    boards: []
 };
 
 const mapStateToProps = state => ({
     currentTeam: state.currentTeam,
-    auth: state.auth
+    auth: state.auth,
+    members: state.currentTeam.members,
+    boards: state.currentTeam.boards
 });
 
 export default connect(
