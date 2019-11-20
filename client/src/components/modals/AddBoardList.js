@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import { Card, Modal, Container} from 'semantic-ui-react'
+import { Card, Modal} from 'semantic-ui-react'
 
 //______ACTIONS______
 
 import {addBoardList} from "../../actions/boardActions";
-
-
-
 
 class AddBoardList extends Component {
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {Button, Card, Icon} from "semantic-ui-react";
+import {Button, Card, Icon, Container} from "semantic-ui-react";
 
 
 //________ACTIONS________
