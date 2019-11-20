@@ -39,11 +39,23 @@ const otherUserData = {
     password2: 'azerty',
 };
 
+const userNotAdminData = {
+    firstName: 'notAdmin',
+    lastName: 'notAdmin',
+    userName: 'notAdmin',
+    email: 'notadmin@user.fr',
+    password: 'notAdmin',
+    password2: 'notAdmin',
+};
+
 let token = null;
 let createdUserId = null;
 let token2 = null;
 let createdUserId2 = null;
 let createdUserName2 = null;
+
+let idNotAdmin = null;
+let tokenNotAdmin = null;
 
 describe('POST /api/private/team/create', () => {
     before((done) => {
@@ -134,11 +146,36 @@ describe('POST /api/private/team/create', () => {
 
 
 describe('PUT /api/private/team/admin/:teamId/update', () => {
+
+    before((done) => {
+        request(app)
+            .post('/api/public/register')
+            .send(userNotAdminData)
+            .then(res => {
+                idNotAdmin = res.body.user._id;
+                request(app)
+                    .post('/api/public/login')
+                    .send({ email: userNotAdminData.email, password: userNotAdminData.password })
+                    .end((err, response) => {
+                        tokenNotAdmin = response.body.token;
+                        console.log(tokenNotAdmin);
+                        done();
+                    });
+            });
+    });
+
     it('should return 401 ERROR', (done) => {
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
             .send(newTeamData)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/team/admin/${teamData.id}/update`)
+            .send(newTeamData)
+            .set({'Authorization': tokenNotAdmin, "teamId": teamData.id})
+            .expect(403,done);
     });
     it('should return 422 ERROR', (done) => {
         const wrongData = {
@@ -147,28 +184,28 @@ describe('PUT /api/private/team/admin/:teamId/update', () => {
         };
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .send(wrongData)
             .expect(422, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)
             .put(`/api/private/team/admin/666/update`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : 666})
             .send(newTeamData)
             .expect(422, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
             .put(`/api/private/team/admin/000000000000000000000000/update`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "000000000000000000000000"})
             .send(newTeamData)
             .expect(404, done);
     });
     it('should return 409 ERROR with a name already existing', (done) => {
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .send(otherTeamData)
             .expect(409, done);
     });
@@ -176,7 +213,7 @@ describe('PUT /api/private/team/admin/:teamId/update', () => {
         request(app)
             .put(`/api/private/team/admin/${teamData.id}/update`)
             .send(newTeamData)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
                 expect(res.body.team.name).is.equal(newTeamData.name);
@@ -246,31 +283,38 @@ describe('POST /api/private/team/admin/:teamId/add/user/:memberUserName', () => 
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
+            .send(newTeamData)
+            .set({'Authorization': tokenNotAdmin, "teamId": teamData.id})
+            .expect(403,done);
+    });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
             .post(`/api/private/team/admin/000000000000000000000000/add/user/${otherUserData.userName}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "000000000000000000000000"})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR with a false userId', (done) => {
         request(app)
             .post(`/api/private/team/admin/${teamData.id}/add/user/000000000000000000000000`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 422 ERROR with a false teamId', (done) => {
         request(app)
             .post(`/api/private/team/admin/666/add/user/${otherUserData.userName}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "666"})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
     it('should return 201 OK and not fill the members and admins lists', (done) => {
         request(app)
             .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -282,7 +326,7 @@ describe('POST /api/private/team/admin/:teamId/add/user/:memberUserName', () => 
     it('should return 201 OK and fill the members list but not the admins list', (done) => {
         request(app)
             .post(`/api/private/team/admin/${teamData.id}/add/user/${otherUserData.userName}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -300,38 +344,44 @@ describe('DELETE /api/private/team/admin/:teamId/delete/user/:userId', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId}`)
+            .set({'Authorization': tokenNotAdmin, "teamId": teamData.id})
+            .expect(403,done);
+    });
     it('should return 404 ERROR with a false teamId', (done) => {
         request(app)
             .delete(`/api/private/team/admin/000000000000000000000000/delete/user/${createdUserId}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "000000000000000000000000"})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR with a false userId', (done) => {
         request(app)
             .delete(`/api/private/team/admin/${teamData.id}/delete/user/000000000000000000000000`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 422 ERROR with a false teamId', (done) => {
         request(app)
             .delete(`/api/private/team/admin/666/delete/user/${createdUserId}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "666"})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
     it('should return 422 ERROR with a false userId', (done) => {
         request(app)
             .delete(`/api/private/team/admin/${teamData.id}/delete/user/666`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
     it('should return 201 OK and pull the members list but not the admins list', (done) => {
         request(app)
             .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId2}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -343,7 +393,7 @@ describe('DELETE /api/private/team/admin/:teamId/delete/user/:userId', () => {
     it('should return 201 OK and not update members and admins lists', (done) => {
         request(app)
             .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId2}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -355,7 +405,7 @@ describe('DELETE /api/private/team/admin/:teamId/delete/user/:userId', () => {
     it('should return 201 OK and pull members and admins lists', (done) => {
         request(app)
             .delete(`/api/private/team/admin/${teamData.id}/delete/user/${createdUserId}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : teamData.id})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team).to.not.be.undefined;
@@ -388,11 +438,18 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/' + createdUserId)
+            .send({ isAdmin: false })
+            .set({'Authorization': tokenNotAdmin, "teamId": currentTeamId})
+            .expect(403,done);
+    });
     it('should return 404 ERROR', (done) => {
         request(app)
             .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/000000000000000000000000')
             .send({ isAdmin: false })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : currentTeamId})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
@@ -400,7 +457,7 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
         request(app)
             .put('/api/private/team/admin/000000000000000000000000/update/user/role/' + createdUserId)
             .send({ isAdmin: false })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "000000000000000000000000"})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
@@ -408,7 +465,7 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
         request(app)
             .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/jkh')
             .send({ isAdmin: false })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : currentTeamId})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
@@ -416,14 +473,14 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
         request(app)
             .put('/api/private/team/admin/sdfsdf/update/user/role/' + createdUserId)
             .send({ isAdmin: false })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : "sdfsdf"})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)
             .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/' + createdUserId)
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : currentTeamId})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
@@ -431,13 +488,13 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
         request(app)
             .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/' + createdUserId2)
             .send({ isAdmin: true })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : currentTeamId})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.team.admins.includes(createdUserId2));
                 expect(res.body.team.members.includes(createdUserId2));
                 expect(res.body.team.admins).lengthOf(2);
-                expect(res.body.team.members).lengthOf(2);
+                expect(res.body.team.members).lengthOf(1);
                 done();
             });
     });
@@ -445,13 +502,13 @@ describe('PUT /api/private/team/admin/:teamId/update/user/role/:userId', () => {
         request(app)
             .put('/api/private/team/admin/' + currentTeamId + '/update/user/role/' + createdUserId)
             .send({ isAdmin: false })
-            .set('Authorization', token)
+            .set({'Authorization': token, "teamId" : currentTeamId})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(!res.body.team.admins.includes(createdUserId));
                 expect(res.body.team.members.includes(createdUserId));
                 expect(res.body.team.admins).lengthOf(1);
-                expect(res.body.team.members).lengthOf(2);
+                expect(res.body.team.members).lengthOf(1);
                 done();
             });
     });
