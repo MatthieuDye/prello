@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {Button, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
+import {Button, Checkbox, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
 //________ACTIONS________
 import {fetchTeam} from "../../actions/teamActions";
 import AddTeamMember from "./AddTeamMember";
@@ -35,17 +35,21 @@ class TeamView extends Component {
                         <Segment.Inline>
                             <Icon name='users'/>
                             <Header.Content>
-                                {this.state.editingMode
+                                {this.props.currentTeam.admins
+                                && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                                && this.state.editingMode
                                     ? <Form.Input value={this.props.currentTeam.name}/>
                                     : 'Team ' + this.props.currentTeam.name
                                 }
                             </Header.Content>
                             {this.state.editingMode
-                                ? <Button color='green' size='mini' floated='right' onClick={this.handleEditing}>
-                                    <Icon name='check'/>SAVE
-                                </Button>
+                                ? <Button.Group size='mini' floated='right'>
+                                    <Button onClick={this.handleEditing}>Cancel</Button>
+                                    <Button.Or/>
+                                    <Button positive onClick={this.handleEditing}>Save</Button>
+                                </Button.Group>
                                 : <Button primary size='mini' floated='right' onClick={this.handleEditing}>
-                                    <Icon name='edit'/>EDIT
+                                    <Icon name='edit'/>Edit
                                 </Button>
                             }
 
@@ -83,19 +87,34 @@ class TeamView extends Component {
                             </Divider>
 
                             <Divider hidden/>
-                            <AddTeamMember/>
+                            {this.props.currentTeam.admins
+                            && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                            && <AddTeamMember/>
+                            }
                             <Divider hidden/>
 
                             <List selection relaxed>
                                 {this.props.members.map(({_id, firstName, lastName, userName}) => (
 
                                     <List.Item>
+                                        {this.state.editingMode &&
+                                        <List.Content floated='right' verticalAlign='middle'>
+                                            <Icon color='red' name='trash' link/>
+                                            <Checkbox
+                                                fitted slider
+                                                label='admin'
+                                                defaultChecked={this.props.currentTeam.admins.includes(_id)}
+                                            />
+                                        </List.Content>
+                                        }
                                         <Icon
                                             name={this.props.currentTeam.admins.includes(_id) ? 'user' : 'user outline'}
                                             color={this.props.currentTeam.admins.includes(_id) ? 'red' : 'grey'}/>
                                         <List.Content>
                                             <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
-                                            <List.Content>{userName}</List.Content>
+                                            <List.Content>
+                                                {userName}
+                                            </List.Content>
                                         </List.Content>
                                     </List.Item>
 
