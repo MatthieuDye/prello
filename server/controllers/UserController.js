@@ -356,7 +356,13 @@ const UserController = () => {
       .populate([{
         path: 'guestBoards',
         select: ['name', 'description']
-      }, {
+      },
+        {
+        path: 'favoriteBoards',
+        select: ['name', 'description']
+      },
+
+        {
         path: 'teams',
         select: ['name'],
         populate: ({
@@ -366,7 +372,7 @@ const UserController = () => {
       }
       ])
       .then(user => res.status(201).send({
-        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams, favoriteBoards: user.favoriteBoards },
         message: 'Boards successfully fetched'
       }))
       .catch(err => {
