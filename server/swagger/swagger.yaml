@@ -1145,6 +1145,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Card sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card or List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid card id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
 components:
   securitySchemes:

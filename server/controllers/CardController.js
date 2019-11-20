@@ -163,11 +163,40 @@ const CardController = () => {
      * @returns {Card.model} 201 - Card deleted
      */
     const deleteCard = async (req, res) => {
-        /* req.card.remove();
-         req.card.save((err) => {
-             if (err) return res.status(500).json({ message: 'Unexpected internal error' })
-             return res.status(200).json({ message: 'Card successfully deleted' })
-         });*/
+        const id = req.params.id;
+
+        // Card Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
+
+        //Search if the card exists
+        Card.findById(id)
+            .then(existingCard => {
+                if (existingCard) {
+                    //Delete the card
+                    Card
+                        .deleteOne({ _id: id })
+                        .then(deletedCard => {
+                            //Delete the card to the list card array
+                            List.update({}, {
+                                $pull: {
+                                    lists: id,
+                                }
+                            }, {
+                                multi: true
+                            })
+                                .then(end => {
+                                    res.status(201).send({ card: deletedCard, message: 'Card successfully deleted' })
+                                })
+                                .catch(err => res.status(404).json({ message: "This list does not exists - " + err }))
+                        })
+                        .catch(err => console.log(err));
+                } else {
+                    return res.status(404).json({ message: "This card does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This card does not exists - " + err }))
     }
 
     /**
