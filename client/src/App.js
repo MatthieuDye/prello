@@ -22,7 +22,7 @@ import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 
-import { Menu, Dropdown, Icon } from 'semantic-ui-react'
+import { Menu, Dropdown } from 'semantic-ui-react'
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {

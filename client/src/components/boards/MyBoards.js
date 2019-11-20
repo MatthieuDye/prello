@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Divider, Icon, Header, Container, Button, Image } from "semantic-ui-react";
+import { Card, Divider, Icon, Header, Container, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
 import { fetchBoards } from "../../actions/boardActions";

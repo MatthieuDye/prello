@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { createBoard } from "../../actions/boardActions";
-import Autocomplete from "react-autocomplete";
-import axios from "axios";
 
 // _______ CREATE BOARD _______
 

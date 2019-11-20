@@ -23,17 +23,16 @@ const ListController = () => {
     const createList = async (req, res) => {
         // Form validation
         const { errors, isValid } = validateCreateListInput(req.body);
-
         // Check validation
         if (!isValid) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: errors });
         }
 
         if (!req.body.boardId) {
             return res.status(422).json({ message: "Invalid input" });
         }
 
-        //Serach if the board exists
+        //Search if the board exists
         Board.findById(req.body.boardId)
             .then(board => {
                 //If the board is not null
@@ -187,7 +186,7 @@ const ListController = () => {
      */
     const moveList = async (req, res) => {
 
-    }
+    };
 
     return {
         createList,

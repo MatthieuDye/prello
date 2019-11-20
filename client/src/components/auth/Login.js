@@ -5,10 +5,10 @@ import { connect } from "react-redux";
 import { loginUser, loginGoogleUser, loginPolytechUser } from "../../actions/authActions";
 import { Button } from "semantic-ui-react";
 import classnames from "classnames";
-import Row from "react-bootstrap/Row";
 import { bindActionCreators } from "redux";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import {GridRow} from "semantic-ui-react";
+
 
 class Login extends Component {
   constructor() {
@@ -144,7 +144,7 @@ class Login extends Component {
                 </span>
               </div>
               <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                <Row>
+                <GridRow>
                   <button
                     style={{
                       width: "150px",
@@ -160,7 +160,7 @@ class Login extends Component {
 
                   <a href={this.state.url}> Log in with polytech  </a>
                   <a href="http://localhost:5000/api/public/user/auth/google"> Log in with google  </a>
-                </Row>
+                </GridRow>
               </div>
             </form>
             <Button onClick={this.authPolytech}>Login Polytech</Button>

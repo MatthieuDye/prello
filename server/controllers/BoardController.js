@@ -506,28 +506,28 @@ const BoardController = () => {
      * @security JWT
      */
     const addList = async (req, res) => {
-        /*req.body.idBoard = req.params.id;
- 
-        Board.findById(req.params.id)
-            .exec(function (err, board) {
-                if (err) debug('POST boards/:id/lists error : ' + err);
-                if (!board)
-                    return res.status(404).json({ message: 'Board not found' });
- 
-                let newList = new List(req.body);
-                newList.validate(function (err) {
-                    if (err) return res.status(400).json({ message: err });
- 
-                    newList.save(function (err) {
-                        if (err) {
-                            debug('POST boards/:id/lists error : ' + err);
-                            return res.status(500).json({ message: 'Unexpected internal error' });
-                        }
-                        res.status(201).json(newList);
+            /*req.body.idBoard = req.params.id;
+
+            Board.findById(req.params.id)
+                .exec(function (err, board) {
+                    if (err) debug('POST boards/:id/lists error : ' + err);
+                    if (!board)
+                        return res.status(404).json({ message: 'Board not found' });
+
+                    let newList = new List(req.body);
+                    newList.validate(function (err) {
+                        if (err) return res.status(400).json({ message: err });
+
+                        newList.save(function (err) {
+                            if (err) {
+                                debug('POST boards/:id/lists error : ' + err);
+                                return res.status(500).json({ message: 'Unexpected internal error' });
+                            }
+                            res.status(201).json(newList);
+                        });
                     });
-                });
-            }).then();*/
-    }
+                }).then();*/
+        }
 
     /**
      * Get lists of the board
