@@ -36,18 +36,6 @@ class TeamView extends Component {
         this.props.fetchTeam(this.props.match.params.teamId);
     }
 
-    redirectionAddTeamMember = (teamId) => {
-        this.props.history.push(`/team/${teamId}/add`);
-    };
-
-    handleClick = (e, titleProps) => {
-        const {index} = titleProps
-        const {activeIndex} = this.state
-        const newIndex = activeIndex === index ? -1 : index
-
-        this.setState({activeIndex: newIndex})
-    };
-
     handleEditing = (e) => {
         this.setState({
             editingMode: !this.state.editingMode
@@ -109,7 +97,7 @@ class TeamView extends Component {
                                 </Header>
                             </Divider>
 
-                            <AddTeamMember/>
+                            <AddTeamMember />
 
                             <List selection relaxed>
                                 <List.Item>

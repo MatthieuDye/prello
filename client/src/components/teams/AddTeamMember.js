@@ -12,16 +12,11 @@ import {addMember} from "../../actions/teamActions";
 
 const getSuggestionValue = suggestion => suggestion.userName;
 
-
 const renderSuggestion = suggestion => (
     <div id={suggestion._id}>
         {suggestion.userName}
     </div>
 );
-
-const renderInputComponent = inputProps => {
-    return (<Input {...inputProps}/>)
-};
 
 class AddTeamMember extends Component {
 
@@ -52,6 +47,19 @@ class AddTeamMember extends Component {
 
     onSubmit = () => {
         this.props.addMember(this.state.value, this.props.currentTeam._id)
+    };
+
+    renderInputComponent = inputProps => {
+        return (
+            <Input
+                fluid
+                action={{
+                    onClick: () => this.onSubmit(),
+                    icon: 'add'
+                }}
+                {...inputProps}
+            />
+        )
     };
 
     //__________AUTOCOMPLETE_________
@@ -117,9 +125,8 @@ class AddTeamMember extends Component {
                     getSuggestionValue={getSuggestionValue}
                     renderSuggestion={renderSuggestion}
                     inputProps={inputProps}
-                    renderInputComponent={renderInputComponent}
+                    renderInputComponent={this.renderInputComponent}
                 />
-                <Button onClick={this.onSubmit} content='add'/>
             </Container>
         );
     }
