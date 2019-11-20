@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {Button, Checkbox, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
+import {Button, Card, Checkbox, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
 //________ACTIONS________
 import {fetchTeam} from "../../actions/teamActions";
 import AddTeamMember from "./AddTeamMember";
@@ -26,6 +26,10 @@ class TeamView extends Component {
         })
     };
 
+    redirectionBoard = (boardId) => {
+        this.props.history.push(`/board/${boardId}`);
+    };
+
     render() {
         return (
             <Container>
@@ -42,7 +46,9 @@ class TeamView extends Component {
                                     : 'Team ' + this.props.currentTeam.name
                                 }
                             </Header.Content>
-                            {this.state.editingMode
+                            {this.props.currentTeam.admins
+                            && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                            && (this.state.editingMode
                                 ? <Button.Group size='mini' floated='right'>
                                     <Button onClick={this.handleEditing}>Cancel</Button>
                                     <Button.Or/>
@@ -51,7 +57,7 @@ class TeamView extends Component {
                                 : <Button primary size='mini' floated='right' onClick={this.handleEditing}>
                                     <Icon name='edit'/>Edit
                                 </Button>
-                            }
+                            )}
 
                         </Segment.Inline>
                     </Header>
@@ -93,7 +99,7 @@ class TeamView extends Component {
                             }
                             <Divider hidden/>
 
-                            <List selection relaxed>
+                            <List selection relaxed='very'>
                                 {this.props.members.map(({_id, firstName, lastName, userName}) => (
 
                                     <List.Item>
@@ -117,13 +123,13 @@ class TeamView extends Component {
                                             </List.Content>
                                         </List.Content>
                                     </List.Item>
-
                                 ))}
                             </List>
-
                         </Grid.Column>
+
                         <Grid.Column style={{maxWidth: 70}}>
                         </Grid.Column>
+
                         <Grid.Column style={{maxWidth: 400}}>
                             <Divider horizontal>
                                 <Header as='h4'>
@@ -134,6 +140,16 @@ class TeamView extends Component {
                                     }
                                 </Header>
                             </Divider>
+
+                            <Divider hidden/>
+
+                            <List selection relaxed='very'>
+                                {this.props.boards.map(({_id, name}) => (
+                                    <Card.Group>
+                                        <Card fluid color='blue' header={name} link onClick={() => this.redirectionBoard(_id)}/>
+                                    </Card.Group>
+                                ))}
+                            </List>
                         </Grid.Column>
                     </Grid>
                 </Form>
