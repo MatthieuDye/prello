@@ -70,7 +70,7 @@ describe('POST /api/private/board/member/card/create', () => {
                 request(app)
                     .post('/api/private/board/member/list/create')
                     .send({ name: listData.name, boardId: createdBoardId })
-                    .set('Authorization', token)
+                    .set({'Authorization': token, "boardId" :createdBoardId})
                     .end((err, res) => {
                         createdListId = res.body.list._id;
                         done();
@@ -86,7 +86,7 @@ describe('POST /api/private/board/member/card/create', () => {
         request(app)
             .post('/api/private/board/member/card/create')
             .send({ name: cardData.name, listId: createdListId })
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
@@ -106,7 +106,7 @@ describe('POST /api/private/board/member/card/create', () => {
         request(app)
             .post('/api/private/board/member/card/create')
             .send({ name: cardData.name, listId: createdListId })
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
@@ -119,7 +119,7 @@ describe('POST /api/private/board/member/card/create', () => {
         request(app)
             .post('/api/private/board/member/card/create')
             .send(wrongData)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
@@ -127,7 +127,7 @@ describe('POST /api/private/board/member/card/create', () => {
         request(app)
             .post('/api/private/board/member/card/create')
             .send({ name: cardData.name })
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
@@ -143,21 +143,21 @@ describe('GET /api/private/board/member/card/:cardId', () => {
     it('should return 404 ERROR', (done) => {
         request(app)
             .get('/api/private/board/member/card/000000000000000000000000')
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)
             .get('/api/private/board/member/card/666')
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(422, done);
     });
     it('should return 201 OK', (done) => {
         request(app)
             .get('/api/private/board/member/card/' + cardData.id)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
@@ -180,29 +180,29 @@ describe('PUT /api/private/board/member/card/:cardId', () => {
         };
         request(app)
             .put(`/api/private/board/member/card/${cardData.id}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .send(wrongData)
             .expect(422, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)
             .put(`/api/private/board/member/card/666`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .send(newCardData)
             .expect(422, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
             .put(`/api/private/board/member/card/000000000000000000000000`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .send(newCardData)
             .expect(404, done);
     });
     it('should return 201 OK', (done) => {
         request(app)
             .put(`/api/private/board/member/card/${cardData.id}`)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .send(newCardData)
-            .set('Authorization', token)
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
                 expect(res.body.card.name).is.equal(newCardData.newName);
@@ -220,19 +220,19 @@ describe('DELETE /api/private/board/member/card/:cardId', () => {
     it('should return 422 ERROR', (done) => {
         request(app)
             .delete(`/api/private/board/member/card/666`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect(422, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
             .delete(`/api/private/board/member/card/000000000000000000000000`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect(404, done);
     });
     it('should return 201 OK', (done) => {
         request(app)
             .delete(`/api/private/board/member/card/${cardData.id}`)
-            .set('Authorization', token)
+            .set({'Authorization': token, "boardId" :createdBoardId})
             .expect(201, (err, res) => {
                 expect(res.body.card).to.not.be.undefined;
                 expect(res.body.card.name).is.equal(cardData.newName);
