@@ -34,7 +34,7 @@ class MyBoards extends Component {
 
         <Divider horizontal>
           <Header as='h3'>
-            <Icon name='heart' />
+            <Icon  name='heart' />
             Favorite boards
       </Header>
         </Divider>
