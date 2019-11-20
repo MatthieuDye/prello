@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {Card, Divider, Icon, Header, Container, Button} from "semantic-ui-react";
+import {Card, Divider, Icon, Header, Container, Button, Segment} from "semantic-ui-react";
 import {Link} from "react-router-dom";
 
-import{fetchTeams} from "../../actions/teamActions";
+import {fetchTeams} from "../../actions/teamActions";
 
 class MyTeams extends Component {
 
@@ -19,20 +19,23 @@ class MyTeams extends Component {
     render() {
         return (
             <Container>
+                <Divider hidden/>
                 <Header as='h2'>
-                    <Icon name='users'/>
-                    <Header.Content>My Teams</Header.Content>
-                    <Link to='/add/team'>
-                        <Button primary size='mini' floated='right'>
-                            <Icon name='add'/>
-                            ADD
-                        </Button>
-                    </Link>
+                    <Segment.Inline>
+                        <Icon name='users'/>
+                        <Header.Content>My Teams</Header.Content>
+                        <Link to='/add/team'>
+                            <Button primary size='mini' floated='right'>
+                                <Icon name='add'/>
+                                ADD
+                            </Button>
+                        </Link>
+                    </Segment.Inline>
                 </Header>
 
-                <br/>
-                
-                <Divider />
+                <Divider/>
+                <Divider hidden/>
+
                 <Card.Group stackable doubling itemsPerRow={4}>
                     {this.props.teams.map(({_id, name, description, members}) => (
 
