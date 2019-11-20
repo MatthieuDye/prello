@@ -57,7 +57,7 @@ export const fetchTeamSuccessAction = team => ({
 
 export const fetchTeam = (teamId) => dispatch => {
     axios
-        .get(`/api/private/team/member/${teamId}`, {headers.teamId : teamId})
+        .get(`/api/private/team/member/${teamId}`, {headers : {teamId : teamId}})
         .then(res => dispatch(fetchTeamSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
