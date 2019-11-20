@@ -90,7 +90,9 @@ class TeamView extends Component {
                                 {this.props.members.map(({_id, firstName, lastName, userName}) => (
 
                                     <List.Item>
-                                        <Icon name='user' color='grey'/>
+                                        <Icon
+                                            name={this.props.currentTeam.admins.includes(_id) ? 'user' : 'user outline'}
+                                            color={this.props.currentTeam.admins.includes(_id) ? 'red' : 'grey'}/>
                                         <List.Content>
                                             <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
                                             <List.Content>{userName}</List.Content>
