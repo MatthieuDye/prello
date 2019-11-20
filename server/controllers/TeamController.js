@@ -201,6 +201,16 @@ const TeamController = () => {
                                             .then(team => {
                                                 //Get the team to return
                                                 Team.findById(teamId)
+                                                    .populate(
+                                                        [{
+                                                            path: 'members',
+                                                            select: ['userName', 'firstName', 'lastName']
+                                                        },{
+                                                            path: 'boards',
+                                                            select: ['name']
+                                                        }
+                                                        ]
+                                                    )
                                                     .then(team => {
                                                         res.status(201).send({ team: team, message: 'User successfully added to the team' })
 
@@ -272,6 +282,16 @@ const TeamController = () => {
                                                     .then(board => {
                                                         //Get the team to return
                                                         Team.findById(teamId)
+                                                            .populate(
+                                                                [{
+                                                                    path: 'members',
+                                                                    select: ['userName', 'firstName', 'lastName']
+                                                                },{
+                                                                    path: 'boards',
+                                                                    select: ['name']
+                                                                }
+                                                                ]
+                                                            )
                                                             .then(team => res.status(201).send({ team: team, message: 'User successfully deleted from the team' }))
                                                             .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
                                                     })
