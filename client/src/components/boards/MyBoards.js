@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { Card, Divider, Icon, Header, Container, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
+//_______ ACTIONS_______
 import { fetchBoards } from "../../actions/boardActions";
+import { favoriteBoard } from "../../actions/userActions";
 
 class MyBoards extends Component {
 
@@ -122,6 +124,7 @@ MyBoards.propTypes = {
   guestBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
   teamBoards: PropTypes.arrayOf(PropTypes.object).isRequired,
   fetchBoards: PropTypes.func.isRequired,
+  favoriteBoard: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
 };
 
@@ -138,5 +141,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { fetchBoards }
+  { fetchBoards, favoriteBoard }
 )(MyBoards);

@@ -1,4 +1,4 @@
-import { UPDATE_USER_PROFILE, SAVE_USER } from '../actions/types';
+import {UPDATE_USER_PROFILE, SAVE_USER, FAVORITE_BOARD_SUCCESS} from '../actions/types';
 
 const userReducer = (state = [], action) => {
     switch (action.type) {
@@ -19,6 +19,13 @@ const userReducer = (state = [], action) => {
                 lastName: action.payload.lastName,
                 userName: action.payload.userName,
                 email: action.payload.email
+            }
+        }
+
+        case FAVORITE_BOARD_SUCCESS: {
+            return {
+                ...state,
+                favoriteBoards: state.favoriteBoards.concat(action.payload)
             }
         }
 
