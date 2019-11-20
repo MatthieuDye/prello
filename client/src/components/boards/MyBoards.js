@@ -34,7 +34,7 @@ class MyBoards extends Component {
 
         <Divider horizontal>
           <Header as='h3'>
-            <Icon name='heart' />
+            <Icon  name='heart' />
             Favorite boards
       </Header>
         </Divider>
@@ -72,7 +72,6 @@ class MyBoards extends Component {
               <Card.Content textAlign='center' header={name} />
               <Card.Content description={description} />
               <Card.Content extra>
-                <Icon name='user' />
                 {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
                 <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
               </Card.Content>
@@ -98,7 +97,6 @@ class MyBoards extends Component {
                       <Card.Content textAlign='center' header={name} />
                       <Card.Content description={description} />
                       <Card.Content extra>
-                        <Icon name='user' />
                         {isFavorite ? <Icon name='heart' /> : <Icon name='heart outline' />}
                         <Button onClick={() => this.redirectionBoard(_id)}> go board </Button>
                       </Card.Content>

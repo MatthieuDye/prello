@@ -18,6 +18,7 @@ const validateIdParam = require("../validation/idParam");
 
 // Load User model
 const User = require("../models/User");
+const Board = require("../models/Board");
 
 router.use(cors());
 
@@ -33,7 +34,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Invalid input" });
+      return res.status(422).json({ message: errors });
     }
 
     User.findOne({ email: req.body.email }).then(user => {
@@ -78,7 +79,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Email or password invalid" });
+      return res.status(422).json({ message: errors});
     }
 
     const email = req.body.email;
@@ -131,7 +132,8 @@ const UserController = () => {
   const loginPolytech = async (req, res) => {
 
 
-    const username = req.body.username;
+    const user = req.body.user ;
+    const username = user.firstname.toLowerCase() + "." + user.lastname.toLowerCase();
 
     let userId = new ObjectID();
 
@@ -142,8 +144,8 @@ const UserController = () => {
           if (!existingUser) {
             new User({
               _id: userId,
-              firstName: username.split(".")[0],
-              lastName: username.split(".")[1],
+              firstName: user.firstname,
+              lastName: user.lastname,
               userName: username,
               email: username + "@etu.umontpellier.fr",
               password: "polytech"
@@ -152,11 +154,11 @@ const UserController = () => {
                 .then(a => {
                   // Create JWT Payload
                   const payload = {
-                    id: userId,
-                    firstName: username.split(".")[0],
-                    lastName: username.split(".")[1],
+                    _id: userId,
+                    firstName: user.firstname,
+                    lastName: user.lastname,
                     userName: username,
-                    email: username + "@etu.umontpellier.fr"
+                    email: username + "@etu.umontpellier.fr",
                   };
 
                   // Sign token
@@ -228,6 +230,62 @@ const UserController = () => {
       res.status(404).json({ message: "User not found " + err });
     });
   };
+  //put /user/:userId/board/favorite/:boardId
+
+  const updateFavoriteBoards = async (req, res) => {
+
+    const {boardId, userId} = req.params;
+    const isFavorite = req.body.isFavorite;
+
+    // Board Id validation
+    if (!validateIdParam(boardId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(boardId).errors.name});
+    }
+
+    // User Id validation
+    if (!validateIdParam(userId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(userId).errors.name});
+    }
+
+    User.findOne({_id: userId}).then(user => {
+          if (user) {
+            Board.findOne({_id: boardId}).then(board => {
+              if (board) {
+                if (isFavorite) {
+                  User.updateOne({_id: user._id}, {
+                    $addToSet: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: user._id})
+                          .then(userFounded => {
+                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                              }
+                          ))
+                } else {
+                  User.updateOne({_id: user.userId}, {
+                    $pull: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: userId})
+                          .then(userFounded => {
+                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                              }
+                          ))
+                }
+              } else {
+                return res.status(404).json({message: "This board does not exists"})
+              }
+            })
+          } else {
+            return res.status(404).json({message: "This user does not exists"})
+          }
+        }
+    )
+  };
 
   const findByBeginName = async (req, res) => {
 
@@ -241,7 +299,7 @@ const UserController = () => {
         })
       })
       .catch(err => {
-        return res.status(404).json({ message: "This query is not right" + err });
+        return res.status(404).json({ message: "This query found no user - " + err });
       })
   };
 
@@ -251,7 +309,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Invalid input" });
+      return res.status(422).json({ message: errors });
     }
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
@@ -284,13 +342,70 @@ const UserController = () => {
     });
   };
 
+  const getBoardsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('boards')
+      .populate([{
+        path: 'guestBoards',
+        select: ['name', 'description']
+      }, {
+        path: 'teams',
+        select: ['name'],
+        populate: ({
+          path: 'boards',
+          select: ['name', 'description']
+        })
+      }
+      ])
+      .then(user => res.status(201).send({
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        message: 'Boards successfully fetched'
+      }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
+  const getTeamsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    // User Id validation
+    const { errors, idIsValid } = validateIdParam(userId);
+    if (!idIsValid) {
+      return res.status(422).json({ message: errors.name });
+    }
+
+    User.findById(userId)
+      .select('teams')
+      .populate({
+        path: 'teams',
+        select: ['name', 'description', 'members']
+      })
+      .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
+      .catch(err => {
+        return res.status(404).json({ message: "This user does not exists" });
+      })
+
+  };
+
   return {
     register,
     login,
     getUser,
     updateProfile,
     findByBeginName,
-    loginPolytech
+    loginPolytech,
+    updateFavoriteBoards,
+    getBoardsByUserId,
+    getTeamsByUserId
   };
 };
 

@@ -61,13 +61,10 @@ export const loginGoogleUser = (token, history) => dispatch => {
 
 export const loginPolytechUser = (tokenPolytech, history) => dispatch => {
 
-    const decoded = jwt_decode(tokenPolytech);
-
-    const userName = decoded.firstname;
-
+    const user = jwt_decode(tokenPolytech);
 
     axios
-        .post("/api/public/login/polytech", {username : userName})
+        .post("/api/public/login/polytech", {user : user})
         .then(res => {
             const token = res.data.token;
             localStorage.setItem("jwtToken", token);

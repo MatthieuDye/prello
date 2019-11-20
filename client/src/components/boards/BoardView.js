@@ -5,7 +5,7 @@ import {Button, Card, Icon, Container} from "semantic-ui-react";
 
 
 //________ACTIONS________
-import {fetchBoard, fetchList} from "../../actions/boardActions";
+import {fetchBoard, fetchLists} from "../../actions/boardActions";
 import AddBoardList from "../modals/AddBoardList";
 
 class BoardView extends Component {
@@ -15,7 +15,11 @@ class BoardView extends Component {
     }
 
     redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add`);
+        this.props.history.push(`/board/${boardId}/add/member`);
+    };
+
+    redirectionAddBoardTeam = (boardId) => {
+        this.props.history.push(`/board/${boardId}/add/team`);
     };
 
     render() {
@@ -92,13 +96,13 @@ class BoardView extends Component {
                 <section>
                     {this.props.name.toUpperCase()} | {}
                     <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
+                    <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
                 </section>
                 </div>
                 {this.props.lists.length <= 0 ? <EmptyList /> : this.props.lists.map(list => (
                 list.name
                     )
-                )}
-
+                )}                
             </div>
         )
     }
@@ -134,5 +138,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchBoard, fetchList}
+    {fetchBoard, fetchLists}
 )(BoardView);

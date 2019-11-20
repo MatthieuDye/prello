@@ -428,37 +428,30 @@ describe('PUT /api/private/board/admin/:boardId/update/user/role/:userId', () =>
     });
 });
 
-describe('POST /api/private/board/admin/:boardId/add/team/:teamId', () => {
+describe('POST /api/private/board/admin/:boardId/add/team/:teamName', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/'+ boardData.id + '/add/team/' + boardData.userId)
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/' + teamData.name)
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/'+ boardData.id + '/add/team/000000000000000000000000')
+            .post('/api/private/board/admin/'+ boardData.id + '/add/team/666')
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/000000000000000000000000/add/team/'+boardData.userId)
+            .post('/api/private/board/admin/000000000000000000000000/add/team/'+teamData.name)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(404, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)
-            .post('/api/private/board/admin/'+ boardData.id + '/add/team/jkh')
-            .set('Authorization', token)
-            .expect('Content-Type', /json/)
-            .expect(422, done);
-    });
-    it('should return 422 ERROR', (done) => {
-        request(app)
-            .post('/api/private/board/admin/sdfsdf/add/team/'+boardData.userId)
+            .post('/api/private/board/admin/sdfsdf/add/team/'+teamData.name)
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(422, done);
@@ -470,13 +463,13 @@ describe('POST /api/private/board/admin/:boardId/add/team/:teamId', () => {
             .send(teamData)
             .set('Authorization', token)
             .then(res => {
-                    const teamId = res.body.team._id;
+                    const teamName = res.body.team.name;
                     request(app)
-                        .post('/api/private/board/admin/' + boardData.id + '/add/team/' + teamId)
+                        .post('/api/private/board/admin/' + boardData.id + '/add/team/' + teamName)
                         .set('Authorization', token)
                         .expect('Content-Type', /json/)
                         .expect(201, (err, res) => {
-                            expect(res.body.board.team.localeCompare(teamId));
+                            expect(res.body.board.team.localeCompare(teamName));
                             done();
                         })
                 }

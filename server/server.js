@@ -104,7 +104,6 @@ app.get(
 app.get('/api/public/user/auth/google/callback', passport.authenticate('google', { session: false }), async (req, res) => {
     try {
         const user = req.user;
-        console.log("ici : " + user);
 
         const payload = {
             id: user.id,
@@ -121,7 +120,6 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
                 expiresIn: 3600 // 1 hour in seconds
             },
             (err, token) => {
-                console.log("before : " + token);
                 res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
             }
         );

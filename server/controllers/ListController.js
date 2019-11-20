@@ -17,7 +17,7 @@ const ListController = () => {
 
     /**
      * Create a list
-     * @param {string} id.param.required - the board's id
+     * @param {string} boardId.param.required - the board's id
      * @returns {List} 201 - List created
      */
     const createList = async (req, res) => {
@@ -29,7 +29,7 @@ const ListController = () => {
         }
 
         if (!req.body.boardId) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: "Invalid board id" });
         }
 
         //Search if the board exists
@@ -64,7 +64,7 @@ const ListController = () => {
     /**
      * Get a list
      * @param {string} id.param.required - the list's id
-     * @returns {List} 200 - List got
+     * @returns {List} 201 - List got
      */
     const getList = async (req, res) => {
         const id = req.params.id;

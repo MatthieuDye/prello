@@ -154,29 +154,6 @@ const TeamController = () => {
             .catch(err => res.status(404).json({ message: "Team not found - " + err }));
     };
 
-    const getTeamsByUserId = async (req, res) => {
-        const userId = req.params.userId;
-
-        // User Id validation
-        const { errors, idIsValid } = validateIdParam(userId);
-        if (!idIsValid) {
-            return res.status(422).json({ message: errors.name });
-        }
-
-        User.findById(userId)
-            .select('teams')
-            .populate({
-                path: 'teams',
-                select: ['name', 'description', 'members']
-            })
-            .then(user => res.status(201).send({ teams: user.teams, message: 'Teams successfully fetched' }))
-            .catch(err => {
-                return res.status(404).json({ message: "This user does not exists" });
-            })
-
-    };
-
-
     // @desc add a user to the team
     // @access Auth users
     const addMember = async (req, res) => {
@@ -420,15 +397,31 @@ const TeamController = () => {
             .catch(err => res.status(500).json({ message: "Server error - " + err }))
     };
 
+    const findByBeginName = async (req, res) => {
+
+        const query = req.params.query;
+
+        Team.find({ "name": { $regex: `^${query}`, $options: 'i' } })
+            .then(teams => {
+                res.status(201).send({
+                    teams: teams,
+                    message: 'Teams successfully fetched'
+                })
+            })
+            .catch(err => {
+                return res.status(404).json({ message: "This query found no user - " + err });
+            })
+    };
+
     return {
         createTeam,
         getTeam,
         updateTeam,
-        getTeamsByUserId,
         addMember,
         deleteMember,
         updateMemberRole,
-        deleteTeam
+        deleteTeam,
+        findByBeginName
     };
 };
 

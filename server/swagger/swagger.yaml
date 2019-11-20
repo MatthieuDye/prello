@@ -5,6 +5,7 @@ info:
 
 servers:
   - url: http://localhost:5000
+  - url: https://prello-ig-back.igpolytech.fr/
 
 paths:
   /api/public/register:
@@ -151,6 +152,34 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/findByBeginName{query} :
+    get:
+      summary: Get all users with a name beginning by a query
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: query
+          in: path
+          description: Begin of the name
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Users sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        '404':
+          description: The query found no user
           content:
             application/json:
               schema:
@@ -467,6 +496,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/team/findByBeginName{query} :
+    get:
+      summary: Get all teams with a name beginning by a query
+      security:
+        - token: []
+      tags:
+        - teams
+      parameters:
+        - name: query
+          in: path
+          description: Begin of the name
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Teams sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams"
+        '404':
+          description: The query found no team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
   /api/private/board/create:
     post:
       summary: Add a board
@@ -744,7 +801,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/board/admin/{boardId}/add/team/{teamId}:
+  /api/private/board/admin/{boardId}/add/team/{teamName}:
     post:
       summary: add a team to the board
       security:
@@ -758,9 +815,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: teamId
+        - name: teamName
           in: path
-          description: Team ID
+          description: Team Name
           required: true
           schema:
             type: string
@@ -784,6 +841,39 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/{boardId}/info :
+    get:
+      summary: Get all info for a board id
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Board information sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardInfo"
+        '404':
+          description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/delete/team/{teamId}:
     delete:
@@ -976,6 +1066,151 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/card/create:
+    post:
+      summary: Add a card in a list
+      security:
+        - token: []
+      tags:
+        - cards
+      requestBody:
+        description: Card name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        '201':
+          description: Card create successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: List or card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/card/{cardId} :
+    get:
+      summary: Get a card with an id
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Card sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Card details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCard'
+      responses:
+        '201':
+          description: Card sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Card sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card or List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid card id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -1034,6 +1269,11 @@ components:
           type: string
         password2:
           type: string
+
+    Users:
+      type: array
+        items:
+          $ref: "#/components/schemas/User"
 
     UpdateUser:
       required:
@@ -1176,6 +1416,43 @@ components:
         pink:
           type: string
 
+    BoardInfo:
+      required:
+        - name
+        - members
+        - closed
+        - labelNames
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          $ref: "#/components/schemas/BoardMembers"
+          default: []
+        team:
+          type: string
+        isArchived:
+          type: boolean
+          default: false
+        lists:
+          $ref: "#/components/schemas/ListInfo"
+          default: []
+        labelNames:
+          $ref: "#/components/schemas/LabelNames"
+
+    ListInfo:
+      required:
+        - name
+        - isArchived
+      properties:
+        name:
+          type: string
+        isArchived:
+          type: boolean
+        cards:
+          $ref: "#/components/schemas/Cards"
+
     List:
       required:
         - name
@@ -1197,4 +1474,56 @@ components:
       properties:
         name:
           type: string
+
+    Card:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        dueDate:
+          $ref: "#/components/schemas/DueDate"
+        isArchived:
+          type: boolean
+          default: false
+        members:
+          $ref: "#/components/schemas/Users"
+
+    Cards:
+      type: array
+        items:
+          $ref: "#/components/schemas/Card"
+
+    DueDate:
+      required:
+        - date
+      properties:
+        date:
+          type: date
+        isDone:
+          type: boolean
+          default: false
+
+    UpdateCard:
+      required:
+        - newName
+        - newDescription
+        - newDueDate
+        - newDueDateIsDone
+        - newIsArchived
+      properties:
+        newName:
+          type: string
+        newDescription:
+          type: string
+        newDueDate:
+          type: date
+        newDueDateIsDone:
+          type: boolean
+          default: false
+        newIsArchived:
+          type: boolean
+          default: false
     

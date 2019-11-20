@@ -142,38 +142,6 @@ const BoardController = () => {
             .catch(err => res.status(404).json({ message: "Board not found - " + err }))
     };
 
-    const getBoardsByUserId = async (req, res) => {
-        const userId = req.params.userId;
-        // User Id validation
-        const { errors, idIsValid } = validateIdParam(userId);
-        if (!idIsValid) {
-            return res.status(422).json({ message: errors.name });
-        }
-
-        User.findById(userId)
-            .select('boards')
-            .populate([{
-                path: 'guestBoards',
-                select: ['name', 'description']
-            }, {
-                path: 'teams',
-                select: ['name'],
-                populate: ({
-                    path: 'boards',
-                    select: ['name', 'description']
-                })
-            }
-            ])
-            .then(user => res.status(201).send({
-                boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
-                message: 'Boards successfully fetched'
-            }))
-            .catch(err => {
-                return res.status(404).json({ message: "This user does not exists" });
-            })
-
-    };
-
     // @route PUT api/private/board/admin/:boardId/add/user/:memberId
     // @desc add a user to the team
     // @access Auth users
@@ -371,16 +339,11 @@ const BoardController = () => {
     // @access Auth users
 
     const addTeam = async (req, res) => {
-        const { boardId, teamId } = req.params;
+        const { boardId, teamName } = req.params;
 
         // Board Id validation
         if (!validateIdParam(boardId).idIsValid) {
             return res.status(422).json({ message: validateIdParam(boardId).errors.name });
-        }
-
-        // Team Id validation
-        if (!validateIdParam(teamId).idIsValid) {
-            return res.status(422).json({ message: validateIdParam(teamId).errors.name });
         }
 
         Board.findOne({ _id: boardId })
@@ -388,19 +351,19 @@ const BoardController = () => {
                 //If the board exists
                 if (board) {
                     //Search if the team exists
-                    Team.findOne({ _id: teamId })
+                    Team.findOne({ name: teamName })
                         .then(team => {
                             //If the team exists
                             if (team) {
                                 Board
                                     .updateOne({ _id: boardId }, {
                                         $set: {
-                                            "team": teamId
+                                            "team": team._id
                                         },
                                     })
                                     .then(board => {
                                         //Add the team to the user team list
-                                        Team.updateOne({ _id: teamId }, {
+                                        Team.updateOne({ name: teamName }, {
                                             $addToSet: {
                                                 boards: boardId
                                             }
@@ -491,7 +454,50 @@ const BoardController = () => {
 
     };
 
+    /**
+     * Get all informations for a board
+     * @param {string} boardId.path.required - board's id.
+     * @returns {Board.model} 201 - Board object
+     */
+    const getAllBoardInfo = async (req, res) => {
+        const boardId = req.params.id;
 
+        // Board Id validation
+        const { errors, idIsValid } = validateIdParam(boardId);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
+        Board.findById(boardId)
+            //.select('lists')
+            .populate([{
+                path: 'lists',
+                select: ['name', 'isArchived']
+            }])
+            //.select('cards')
+            .populate([{
+                path: 'cards',
+                select: ['name', 'description', 'dueDate', 'lables', 'members', 'isArchived']
+            }])
+            .then(board => res.status(201).send({
+                board: board,
+                message: 'Boards information successfully fetched'
+            }))
+            .catch(err => {
+                return res.status(404).json({ message: "This board does not exists - " + err });
+            })
+/*
+        Board.findOne({ _id: Object(boardId) }).then(board => {
+            if (board) {
+                return res.status(201).json({ board: board, message: "Board found" })
+            } else {
+                return res.status(404).json({ message: "Board not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "Board not found " + err });
+        });
+        */
+    };
 
     /**
      * Create a list on the board
@@ -506,28 +512,28 @@ const BoardController = () => {
      * @security JWT
      */
     const addList = async (req, res) => {
-            /*req.body.idBoard = req.params.id;
+        /*req.body.idBoard = req.params.id;
 
-            Board.findById(req.params.id)
-                .exec(function (err, board) {
-                    if (err) debug('POST boards/:id/lists error : ' + err);
-                    if (!board)
-                        return res.status(404).json({ message: 'Board not found' });
+        Board.findById(req.params.id)
+            .exec(function (err, board) {
+                if (err) debug('POST boards/:id/lists error : ' + err);
+                if (!board)
+                    return res.status(404).json({ message: 'Board not found' });
 
-                    let newList = new List(req.body);
-                    newList.validate(function (err) {
-                        if (err) return res.status(400).json({ message: err });
+                let newList = new List(req.body);
+                newList.validate(function (err) {
+                    if (err) return res.status(400).json({ message: err });
 
-                        newList.save(function (err) {
-                            if (err) {
-                                debug('POST boards/:id/lists error : ' + err);
-                                return res.status(500).json({ message: 'Unexpected internal error' });
-                            }
-                            res.status(201).json(newList);
-                        });
+                    newList.save(function (err) {
+                        if (err) {
+                            debug('POST boards/:id/lists error : ' + err);
+                            return res.status(500).json({ message: 'Unexpected internal error' });
+                        }
+                        res.status(201).json(newList);
                     });
-                }).then();*/
-        }
+                });
+            }).then();*/
+    }
 
     /**
      * Get lists of the board
@@ -591,7 +597,6 @@ const BoardController = () => {
         createBoard,
         getBoard,
         updateBoard,
-        getBoardsByUserId,
         addList,
         getLists,
         addLabel,
@@ -599,7 +604,8 @@ const BoardController = () => {
         deleteMember,
         updateMemberRole,
         addTeam,
-        deleteTeam
+        deleteTeam,
+        getAllBoardInfo
     };
 };
 

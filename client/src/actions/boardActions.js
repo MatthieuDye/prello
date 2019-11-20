@@ -127,3 +127,23 @@ export const fetchList = (listId) => dispatch => {
             })
         );
 };
+// _______ ADD TEAM_______
+
+export const addTeamSuccessAction = board => ({
+    type: TYPE.ADD_BOARD_TEAM_SUCCESS,
+    payload: {
+        board,
+    },
+});
+
+export const addTeam = (teamName, boardId) => dispatch => {
+    axios
+        .post(`/api/private/board/admin/${boardId}/add/team/${teamName}`)
+        .then(res => dispatch(addTeamSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
