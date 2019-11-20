@@ -91,7 +91,7 @@ export const addMember = (userName, teamId) => dispatch => {
 // _______ UPDATE MEMBER ROLE _____
 
 export const updateMemberRoleSuccessAction = team => ({
-    type: ADD_MEMBER_SUCCESS,
+    type: UPDATE_MEMBER_ROLE_SUCCESS,
     payload: {
         team,
     },
