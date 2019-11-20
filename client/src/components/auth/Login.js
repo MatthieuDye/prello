@@ -165,7 +165,7 @@ class Login extends Component {
                                     <Button fluid>
                                         <Header as='h6'>
                                             <Image src={logoGoogle} size='mini'/>
-                                            Login with google
+                                            Login with Google
                                         </Header>
                                     </Button>
                                 </a>
