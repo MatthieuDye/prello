@@ -32,7 +32,6 @@ class AddTeamMember extends Component {
             isLoading: false,
             value: '',
             users: [],
-            team: this.props.currentTeam,
             errors: {}
         };
     }
@@ -52,7 +51,7 @@ class AddTeamMember extends Component {
     }
 
     onSubmit = () => {
-        this.props.addMember(this.state.value, this.state.team._id)
+        this.props.addMember(this.state.value, this.props.currentTeam._id)
     };
 
     //__________AUTOCOMPLETE_________

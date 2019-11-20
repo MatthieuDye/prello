@@ -28,7 +28,6 @@ class AddBoardMember extends Component {
             isLoading: false,
             value: '',
             users: [],
-            board: this.props.currentBoard,
             errors: {}
         };
     }
@@ -48,7 +47,7 @@ class AddBoardMember extends Component {
     }
 
     onSubmit = ()  => {
-        this.props.addMember(this.state.value,this.state.board._id)
+        this.props.addMember(this.state.value,this.props.currentBoard._id)
     };
 
     //__________AUTOCOMPLETE_________
