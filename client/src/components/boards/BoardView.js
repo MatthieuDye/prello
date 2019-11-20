@@ -23,7 +23,7 @@ class BoardView extends Component {
 
     render() {
 
-        console.log(this.props.currentBoard)
+        console.log(this.props.lists.cards)
 
         return (
             <div>
@@ -35,7 +35,7 @@ class BoardView extends Component {
                     </section>
                 </div>
                 {console.log("LISTES : " + this.props.lists.length)}
-                {/*this.props.lists.length <= 0 ? <EmptyList /> : */this.props.lists.map(list => (
+                {this.props.lists.map(list => (
                     <Container>
                         <div style={{ display: 'inline-block' }}>
                             <Card>
@@ -96,7 +96,9 @@ BoardView.defaultProps = {
         _id: ""
     },*/
     name: "",
-    lists: []
+    lists: [{
+        cards: []
+    }]
 };
 
 const mapStateToProps = state => ({

@@ -472,15 +472,13 @@ const BoardController = () => {
             //.select('lists')
             .populate([{
                 path: 'lists',
-                select: ['name', 'isArchived']
-            }])
-            //.select('cards')
-            .populate([{
-                path: 'cards',
-                select: ['name', 'description', 'dueDate', 'lables', 'members', 'isArchived']
+                select: ['name', 'isArchived', 'cards'],
+                populate: ({
+                    path: 'cards',
+                    select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                })
             }])
             .then(board => {
-                console.log(board)
                 res.status(201).send({
                     board: board,
                     message: 'Boards information successfully fetched'
