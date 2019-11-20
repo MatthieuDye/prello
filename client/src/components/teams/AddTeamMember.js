@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import Autosuggest from  'react-autosuggest';
+import React, {Component} from 'react';
+import Autosuggest from 'react-autosuggest';
 import axios from "axios";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import { Button } from 'semantic-ui-react'
+import {Button, Input, Container, Icon} from 'semantic-ui-react'
 
 //______ACTIONS______
 
@@ -19,6 +19,10 @@ const renderSuggestion = suggestion => (
     </div>
 );
 
+const renderInputComponent = inputProps => {
+    return (<Input {...inputProps}/>)
+};
+
 class AddTeamMember extends Component {
 
     constructor(props) {
@@ -33,23 +37,22 @@ class AddTeamMember extends Component {
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.errors!==prevState.errors){
-            return { errors: nextProps.errors};
-        }
-        else return null;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.errors !== prevState.errors) {
+            return {errors: nextProps.errors};
+        } else return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.errors!==this.props.errors){
+        if (prevProps.errors !== this.props.errors) {
             //Perform some operation here
             console.log(this.props.errors);
             this.setState({errors: this.props.errors});
         }
     }
 
-    onSubmit = ()  => {
-        this.props.addMember(this.state.value,this.state.team._id)
+    onSubmit = () => {
+        this.props.addMember(this.state.value, this.state.team._id)
     };
 
     //__________AUTOCOMPLETE_________
@@ -77,7 +80,7 @@ class AddTeamMember extends Component {
         });
     };
 
-    onChange = (event, { newValue }) => {
+    onChange = (event, {newValue}) => {
         this.setState({
             value: newValue
         });
@@ -97,22 +100,17 @@ class AddTeamMember extends Component {
 
     render() {
 
-        const { value, users, isLoading } = this.state;
+        const {value, users, isLoading} = this.state;
 
         const inputProps = {
-            placeholder: 'Choose username',
+            placeholder: 'Search for a username',
             value,
             onChange: this.onChange
         };
-        const status = (isLoading ? 'Loading...' : 'Type to load users');
+        const status = (isLoading && true);
         return (
-            <div style = {{ marginTop: 40, marginLeft: 50 }}>
-                <div>
-                team : {this.state.team.name}
-                </div>
-                <div className="status">
-                    <strong>Status:</strong> {status}
-                </div>
+            <Container>
+                {/*status && <Icon loading name='spinner'/>*/}
                 <Autosuggest
                     suggestions={users}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -120,10 +118,10 @@ class AddTeamMember extends Component {
                     getSuggestionValue={getSuggestionValue}
                     renderSuggestion={renderSuggestion}
                     inputProps={inputProps}
+                    renderInputComponent={renderInputComponent}
                 />
-
-                <Button className="ui button" onClick={() => this.onSubmit()}>Submit</Button>
-            </div>
+                <Button onClick={this.onSubmit} content='add'/>
+            </Container>
         );
     }
 }
