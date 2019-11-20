@@ -70,13 +70,28 @@ const CardController = () => {
     }
 
     /**
-     * Get a card by id
-     * @param {string} id.path.required - card's id
-     * @param {string} checklists.query - card's checklist (value on "open" to display)
-     * @returns {Card.model} 201 - Card
+     * Get a card
+     * @param {string} id.param.required - the card's id
+     * @returns {Card.model} 201 - Card got
      */
     const getCard = async (req, res) => {
-        
+        const id = req.params.id;
+
+        // Card Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
+        Card.findOne({ _id: Object(id) }).then(card => {
+            if (card) {
+                return res.status(201).json({ card: card, message: "Card found" })
+            } else {
+                return res.status(404).json({ message: "Card not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "Card not found - " + err });
+        });
     }
 
     /**

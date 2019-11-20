@@ -65,7 +65,7 @@ const ListController = () => {
     /**
      * Get a list
      * @param {string} id.param.required - the list's id
-     * @returns {List} 200 - List got
+     * @returns {List} 201 - List got
      */
     const getList = async (req, res) => {
         const id = req.params.id;
