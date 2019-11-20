@@ -12,7 +12,7 @@ import {
     Message,
     Segment,
     Accordion,
-    Input
+    Input, TextArea, Form
 } from "semantic-ui-react";
 
 
@@ -59,96 +59,102 @@ class TeamView extends Component {
 
         return (
             <Container>
+                <Form>
+                    <Divider hidden/>
+                    <Header as='h2'>
+                        <Segment.Inline>
+                            <Icon name='users'/>
+                            <Header.Content>
+                                {this.state.editingMode
+                                    ? <Form.Input value='fjkdsfbsdkjhf'/>
+                                    : 'Team fjkdsfbsdkjhf' + this.props.currentTeam.name
+                                }
+                            </Header.Content>
+                            {this.state.editingMode
+                                ? <Button color='green' size='mini' floated='right' onClick={this.handleEditing}>
+                                    <Icon name='check'/>SAVE
+                                </Button>
+                                : <Button primary size='mini' floated='right' onClick={this.handleEditing}>
+                                    <Icon name='edit'/>EDIT
+                                </Button>
+                            }
 
-                <Button onClick={() => this.redirectionAddTeamMember(this.props.currentTeam._id)}>Add a member</Button>
+                        </Segment.Inline>
+                    </Header>
 
-                <Header as='h2'>
-                    <Icon name='users'/>
-                    <Header.Content>
+                    <Divider/>
+                    <Divider hidden/>
 
+                    <Container>
+                        <Header fluid as='h4'>Description</Header>
                         {this.state.editingMode
-                            ? <Input size='mini' value='kjdshfkjsdhfs'/>
-                            : 'Team fjkdsfbsdkjhf' + this.props.currentTeam.name
+                            ?
+                            <Form.TextArea
+                                rows={4}
+                                placeholder='enter team description'
+                                value='la balbekjzlfbljkfbd sf dsklqfhjsldfj'
+                            />
+                            : 'bla balbekjzlfbljkfbd sf dsklqfhjsldfjk' + this.props.currentTeam.description
                         }
-                    </Header.Content>
-                    <Button primary size='mini' floated='right' onClick={this.handleEditing}>
-                        <Icon name='edit'/>
-                        EDIT
-                    </Button>
-                </Header>
-                <br/>
-                <Divider/>
-                <Container>
-                    <Header as='h4'>Description</Header>
-                    <p>bla balbekjzlfbljkfbd sf dsklqfhjsldfjk</p>
-                </Container>
+                    </Container>
 
-                <Divider hidden/>
+                    < Divider hidden/>
 
-                <Grid padded relaxed columns={2} stackable centered textAlign='center'>
-                    <Grid.Column style={{maxWidth: 400}}>
-                        <Divider horizontal>
-                            <Header as='h4'>
-                                <Icon name='users'/>
-                                5 Members
-                            </Header>
-                        </Divider>
+                    < Grid padded relaxed columns={2} stackable centered>
+                        <Grid.Column style={{maxWidth: 400}}>
+                            <Divider horizontal>
+                                <Header as='h4'>
+                                    <Icon name='users'/>
+                                    5 Members
+                                </Header>
+                            </Divider>
 
-                        <AddTeamMember />
+                            <AddTeamMember/>
 
-                        <Accordion>
-                            <Accordion.Title active={activeIndex === 0}
-                                             index={0}
-                                             onClick={this.handleClick}>
-                                <Icon name='dropdown'/>
-                                5 members
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 0}>
-                                <List relaxed>
-                                    <List.Item>
-                                        <Icon name='user' color='grey'/>
-                                        <List.Content>
-                                            <List.Header>Alia CHAWAF</List.Header>
-                                            <List.Content>alia.chawaf</List.Content>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon name='user outline' color='blue'/>
-                                        <List.Content>
-                                            <List.Header>Alia CHAWAF</List.Header>
-                                            <List.Content>alia.chawaf</List.Content>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon name='user' color='grey'/>
-                                        <List.Content>
-                                            <List.Header>Alia CHAWAF</List.Header>
-                                            <List.Content>alia.chawaf</List.Content>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Icon name='user' color='grey'/>
-                                        <List.Content>
-                                            <List.Header>Alia CHAWAF</List.Header>
-                                            <List.Content>alia.chawaf</List.Content>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Accordion.Content>
-                        </Accordion>
-                    </Grid.Column>
-                    <Grid.Column style={{maxWidth: 70}}>
-                    </Grid.Column>
-                    <Grid.Column style={{maxWidth: 400}}>
-                        <Divider horizontal>
-                            <Header as='h4'>
-                                <Icon name='columns'/>
-                                5 Boards
-                            </Header>
-                        </Divider>
-                    </Grid.Column>
-                </Grid>
+                            <List selection relaxed>
+                                <List.Item>
+                                    <Icon name='user' color='grey'/>
+                                    <List.Content>
+                                        <List.Header>Alia CHAWAF</List.Header>
+                                        <List.Content>alia.chawaf</List.Content>
+                                    </List.Content>
+                                </List.Item>
+                                <List.Item>
+                                    <Icon name='user outline' color='blue'/>
+                                    <List.Content>
+                                        <List.Header>Alia fdsfsdfsdfsdfdsfsdfdsCHAWAF</List.Header>
+                                        <List.Content>alia.chawaf</List.Content>
+                                    </List.Content>
+                                </List.Item>
+                                <List.Item>
+                                    <Icon name='user' color='grey'/>
+                                    <List.Content>
+                                        <List.Header>Alia CHAWAF</List.Header>
+                                        <List.Content>alia.chfdsdfsfsawaf</List.Content>
+                                    </List.Content>
+                                </List.Item>
+                                <List.Item>
+                                    <Icon name='user' color='grey'/>
+                                    <List.Content>
+                                        <List.Header>Alia CHAWAF</List.Header>
+                                        <List.Content>alia.chawaf</List.Content>
+                                    </List.Content>
+                                </List.Item>
+                            </List>
 
+                        </Grid.Column>
+                        <Grid.Column style={{maxWidth: 70}}>
+                        </Grid.Column>
+                        <Grid.Column style={{maxWidth: 400}}>
+                            <Divider horizontal>
+                                <Header as='h4'>
+                                    <Icon name='columns'/>
+                                    5 Boards
+                                </Header>
+                            </Divider>
+                        </Grid.Column>
+                    </Grid>
+                </Form>
             </Container>
         )
     }
