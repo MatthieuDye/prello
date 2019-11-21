@@ -42,7 +42,8 @@ class AddListCard extends Component {
 
         const newCardInfo = {
             name: this.state.name,
-            listId: this.props.currentListId
+            listId: this.props.currentListId,
+            boardId: this.props.currentBoard._id
         };
 
         this.props.addListCard(newCardInfo)

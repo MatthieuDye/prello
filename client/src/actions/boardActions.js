@@ -55,7 +55,7 @@ export const addMemberSuccessAction = board => ({
 
 export const addMember = (userName, boardId) => dispatch => {
     axios
-        .post(`/api/private/board/admin/${boardId}/add/user/${userName}`)
+        .post(`/api/private/board/admin/${boardId}/add/user/${userName}`, undefined, {headers : {boardId : boardId}})
         .then(res => dispatch(addMemberSuccessAction(res.data.board)))
         .catch(err =>
             dispatch({
@@ -76,7 +76,7 @@ export const fetchBoardSuccessAction = board => ({
 
 export const fetchBoard = (boardId) => dispatch => {
     axios
-        .get(`/api/private/board/member/${boardId}/all`)
+        .get(`/api/private/board/member/${boardId}/all`,{headers : {boardId : boardId}})
         .then(res => dispatch(fetchBoardSuccessAction(res.data.board)))
         .catch(err =>
             dispatch({
@@ -97,7 +97,7 @@ export const addBoardListSuccessAction = list => ({
 
 export const addBoardList = (newListData) => dispatch => {
     axios
-        .post(`/api/private/board/member/list/create`, newListData )
+        .post(`/api/private/board/member/list/create`, newListData , {headers : {boardId : newListData.boardId}})
         .then(res => dispatch(addBoardListSuccessAction(res.data.list)))
         .catch(err =>
             dispatch({
@@ -107,26 +107,6 @@ export const addBoardList = (newListData) => dispatch => {
         );
 };
 
-// _______ FETCH A LIST _______
-
-export const fetchBoardListSuccessAction = list => ({
-    type: TYPE.FETCH_BOARD_LIST_SUCCESS,
-    payload: {
-        list,
-    },
-});
-
-export const fetchList = (listId) => dispatch => {
-    axios
-        .get(`/api/private/board/member/list/${listId}`)
-        .then(res => dispatch(fetchBoardListSuccessAction(res.data.list)))
-        .catch(err =>
-            dispatch({
-                type: TYPE.GET_ERRORS,
-                payload: err.response.data
-            })
-        );
-};
 // _______ ADD TEAM_______
 
 export const addTeamSuccessAction = board => ({
@@ -138,7 +118,7 @@ export const addTeamSuccessAction = board => ({
 
 export const addTeam = (teamName, boardId) => dispatch => {
     axios
-        .post(`/api/private/board/admin/${boardId}/add/team/${teamName}`)
+        .post(`/api/private/board/admin/${boardId}/add/team/${teamName}`, undefined, {headers : {boardId : boardId}})
         .then(res => dispatch(addTeamSuccessAction(res.data.board)))
         .catch(err =>
             dispatch({
