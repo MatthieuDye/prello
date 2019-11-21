@@ -61,10 +61,11 @@ class TeamView extends Component {
     // BOARDS
     redirectionBoard = (boardId) => {
         this.props.history.push(`/board/${boardId}`);
-
-    render() {
-        return (
-            <Container>
+    };
+        render()
+        {
+            return (
+                <Container>
                     <Divider hidden/>
                     <Header as='h2'>
                         <Segment.Inline>
@@ -80,14 +81,14 @@ class TeamView extends Component {
                             {this.props.currentTeam.admins
                             && this.props.currentTeam.admins.includes(this.props.auth.user.id)
                             && (this.state.editingMode
-                                ?
-                                <Button positive size='mini' floated='right' onClick={this.handleSaveEditing}>
-                                    <Icon name='check'/>Save
-                                </Button>
-                                :
-                                <Button primary size='mini' floated='right' onClick={this.handleEditing}>
-                                    <Icon name='edit'/>Edit
-                                </Button>
+                                    ?
+                                    <Button positive size='mini' floated='right' onClick={this.handleSaveEditing}>
+                                        <Icon name='check'/>Save
+                                    </Button>
+                                    :
+                                    <Button primary size='mini' floated='right' onClick={this.handleEditing}>
+                                        <Icon name='edit'/>Edit
+                                    </Button>
                             )}
 
                         </Segment.Inline>
@@ -197,9 +198,9 @@ class TeamView extends Component {
                             </List>
                         </Grid.Column>
                     </Grid>
-            </Container>
-        )
-    }
+                </Container>
+            )
+        }
 }
 
 TeamView.propTypes = {
