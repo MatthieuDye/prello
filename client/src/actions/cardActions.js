@@ -21,3 +21,24 @@ export const updateCard = (newCardData) => dispatch => {
             })
         );
 };
+
+// _______ DELETE CARD_______
+
+export const deleteCardSuccessAction = card => ({
+    type: TYPE.DELETE_CARD_SUCCESS,
+    payload: {
+        card,
+    },
+});
+
+export const deleteCard = (cardData) => dispatch => {
+    axios
+        .delete(`/api/private/board/member/card/${cardData.id}`, cardData, {headers : {boardId : cardData.boardId}}  )
+        .then(res => dispatch(deleteCardSuccessAction(res.data.card)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};

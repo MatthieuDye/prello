@@ -6,6 +6,9 @@ const cardReducer = (state =  [], action) => {
         case types.UPDATE_CARD_SUCCESS: {
             return action.payload.card
         }
+        case types.DELETE_CARD_SUCCESS: {
+            return action.payload.card
+        }
         default:
             return state;
     }

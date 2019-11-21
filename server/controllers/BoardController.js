@@ -138,6 +138,19 @@ const BoardController = () => {
                                         path: 'cards',
                                         select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
                                     })
+                                }, {
+                                    path: 'guestMembers',
+                                    select: ['firstName', 'lastName']
+                                }, {
+                                    path: 'admins',
+                                    select: ['firstName', 'lastName']
+                                }, {
+                                    path: 'team',
+                                    select: ['name', 'members'],
+                                    populate: ({
+                                        path: 'members',
+                                        select: ['name', 'lastName']
+                                    })
                                 }])
                                 .then(board => res.status(201).json({ board: board, message: "Board renamed" }))
                                 .catch(err => res.status(404).json({ message: "Board not found - " + err }))
@@ -194,6 +207,19 @@ const BoardController = () => {
                                                         populate: ({
                                                             path: 'cards',
                                                             select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'admins',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['name', 'lastName']
                                                         })
                                                     }])
                                                     .then(board => {
@@ -268,6 +294,19 @@ const BoardController = () => {
                                                             path: 'cards',
                                                             select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
                                                         })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'admins',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['name', 'lastName']
+                                                        })
                                                     }])
                                                     .then(board => {
                                                         res.status(201).send({ board: board, message: 'User successfully deleted from the board' })
@@ -334,6 +373,19 @@ const BoardController = () => {
                                                         path: 'cards',
                                                         select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
                                                     })
+                                                }, {
+                                                    path: 'guestMembers',
+                                                    select: ['firstName', 'lastName']
+                                                }, {
+                                                    path: 'admins',
+                                                    select: ['firstName', 'lastName']
+                                                }, {
+                                                    path: 'team',
+                                                    select: ['name', 'members'],
+                                                    populate: ({
+                                                        path: 'members',
+                                                        select: ['name', 'lastName']
+                                                    })
                                                 }])
                                                 .then(board => {
                                                     res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
@@ -351,6 +403,19 @@ const BoardController = () => {
                                                     populate: ({
                                                         path: 'cards',
                                                         select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                    })
+                                                }, {
+                                                    path: 'guestMembers',
+                                                    select: ['firstName', 'lastName']
+                                                }, {
+                                                    path: 'admins',
+                                                    select: ['firstName', 'lastName']
+                                                }, {
+                                                    path: 'team',
+                                                    select: ['name', 'members'],
+                                                    populate: ({
+                                                        path: 'members',
+                                                        select: ['name', 'lastName']
                                                     })
                                                 }])
                                                 .then(board => {
@@ -417,6 +482,19 @@ const BoardController = () => {
                                                         populate: ({
                                                             path: 'cards',
                                                             select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'admins',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['name', 'lastName']
                                                         })
                                                     }])
                                                     .then(board => { res.status(201).send({ board: board, message: 'Team successfully added to the board' }) })
@@ -486,6 +564,19 @@ const BoardController = () => {
                                                             path: 'cards',
                                                             select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
                                                         })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'admins',
+                                                        select: ['firstName', 'lastName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['name', 'lastName']
+                                                        })
                                                     }])
                                                     .then(boardDone => {
                                                         res.status(201).send({
@@ -525,13 +616,25 @@ const BoardController = () => {
         }
 
         Board.findById(boardId)
-            //.select('lists')
             .populate([{
                 path: 'lists',
                 select: ['name', 'isArchived', 'cards'],
                 populate: ({
                     path: 'cards',
                     select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                })
+            }, {
+                path: 'guestMembers',
+                select: ['firstName', 'lastName']
+            }, {
+                path: 'admins',
+                select: ['firstName', 'lastName']
+            }, {
+                path: 'team',
+                select: ['name', 'members'],
+                populate: ({
+                    path: 'members',
+                    select: ['name', 'lastName']
                 })
             }])
             .then(board => {

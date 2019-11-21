@@ -36,5 +36,5 @@ export const ARCHIVE_LIST_SUCCESS = "ARCHIVE_LIST_SUCCESS";
 
 // ________CARDS___________
 export const UPDATE_CARD_SUCCESS = "UPDATE_CARD_SUCCESS";
-
+export const DELETE_CARD_SUCCESS = "DELETE_CARD_SUCCESS";
 
