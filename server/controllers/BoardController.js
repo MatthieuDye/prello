@@ -146,7 +146,7 @@ const BoardController = () => {
                                     select: ['name', 'members'],
                                     populate: ({
                                         path: 'members',
-                                        select: ['name', 'lastName']
+                                        select: ['firstName', 'lastName', 'userName']
                                     })
                                 }])
                                 .then(board => res.status(201).json({ board: board, message: "Board renamed" }))
@@ -213,7 +213,7 @@ const BoardController = () => {
                                                         select: ['name', 'members'],
                                                         populate: ({
                                                             path: 'members',
-                                                            select: ['name', 'lastName']
+                                                            select: ['firstName', 'lastName', 'userName']
                                                         })
                                                     }])
                                                     .then(board => {
@@ -296,7 +296,7 @@ const BoardController = () => {
                                                         select: ['name', 'members'],
                                                         populate: ({
                                                             path: 'members',
-                                                            select: ['name', 'lastName']
+                                                            select: ['firstName', 'lastName', 'userName']
                                                         })
                                                     }])
                                                     .then(board => {
@@ -372,7 +372,7 @@ const BoardController = () => {
                                                     select: ['name', 'members'],
                                                     populate: ({
                                                         path: 'members',
-                                                        select: ['name', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     })
                                                 }])
                                                 .then(board => {
@@ -400,7 +400,7 @@ const BoardController = () => {
                                                     select: ['name', 'members'],
                                                     populate: ({
                                                         path: 'members',
-                                                        select: ['name', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     })
                                                 }])
                                                 .then(board => {
@@ -476,7 +476,7 @@ const BoardController = () => {
                                                         select: ['name', 'members'],
                                                         populate: ({
                                                             path: 'members',
-                                                            select: ['name', 'lastName']
+                                                            select: ['firstName', 'lastName', 'userName']
                                                         })
                                                     }])
                                                     .then(board => { res.status(201).send({ board: board, message: 'Team successfully added to the board' }) })
@@ -554,7 +554,7 @@ const BoardController = () => {
                                                         select: ['name', 'members'],
                                                         populate: ({
                                                             path: 'members',
-                                                            select: ['name', 'lastName']
+                                                            select: ['firstName', 'lastName', 'userName']
                                                         })
                                                     }])
                                                     .then(boardDone => {
@@ -610,7 +610,7 @@ const BoardController = () => {
                 select: ['name', 'members'],
                 populate: ({
                     path: 'members',
-                    select: ['name', 'lastName']
+                    select: ['firstName', 'lastName', 'userName']
                 })
             }])
             .then(board => {
