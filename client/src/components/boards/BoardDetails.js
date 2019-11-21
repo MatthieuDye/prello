@@ -17,14 +17,14 @@ import {
     Popup,
     Segment
 } from 'semantic-ui-react'
-import {fetchBoard} from "../../actions/boardActions";
+import {fetchBoard, updateMemberRole, deleteBoardTeam, updateBoard, deleteBoardMember} from "../../actions/boardActions";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
 
 const UpdateBoardSchema = Yup.object().shape({
     boardName: Yup.string()
-        .required('Team name is required')
-        .max(50, 'Team name should not exceed 50 characters'),
+        .required('Board name is required')
+        .max(50, 'Board name should not exceed 50 characters'),
     description: Yup.string()
         .max(1000, 'Description should not exceed 1000 characters')
 });
@@ -52,9 +52,18 @@ class BoardDetails extends Component {
 
     // MEMBER EDIT HANDLERS
     handleMemberRoleChange = (memberID) => {
+        const boardID = this.props.currentBoard._id;
+        const isAdmin = this.props.currentBoard.admins.includes(memberID);
+        this.props.updateMemberRole(memberID, boardID, !isAdmin);
     };
 
     handleDeleteMember = (memberID) => {
+        this.props.deleteBoardMember(memberID, this.props.currentBoard._id);
+    };
+
+    handleDeleteTeam = () => {
+        const teamID = this.props.currentBoard.team._id;
+        this.props.deleteBoardTeam(teamID, this.props.currentBoard._id);
     };
 
     // BOARDS
@@ -62,15 +71,6 @@ class BoardDetails extends Component {
         const teamID = this.props.currentBoard.team._id;
         this.props.history.push(`/team/${teamID}`);
     };
-
-    redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/member`);
-    };
-
-    redirectionAddBoardTeam = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/team`);
-    };
-
 
     render() {
         return (
@@ -85,8 +85,15 @@ class BoardDetails extends Component {
                     onSubmit={values => {
 
                         this.handleEditing();
-                        // TODO
 
+                        const boardData = {
+                            name: values.boardName,
+                            description: values.description,
+                        };
+
+                        const boardID = this.props.currentBoard._id;
+
+                        this.props.updateBoard(boardID, boardData);
                     }}
                 >
 
@@ -106,7 +113,7 @@ class BoardDetails extends Component {
                                                 onChange={handleChange('boardName')}
                                                 error={errors.boardName && {content: errors.boardName}}
                                             />
-                                            : 'Board ' + this.props.currentBoard.name
+                                            : 'Board _ ' + this.props.currentBoard.name
                                         }
                                     </Header.Content>
                                     {this.props.currentBoard.admins
@@ -170,8 +177,7 @@ class BoardDetails extends Component {
                                 <List.Item>
                                     {this.state.editingMode && this.props.auth.user._id !== _id &&
                                     <List.Content floated='right' verticalAlign='middle'>
-                                        <Icon color='red' name='trash' link
-                                              onClick={() => this.handleDeleteMember(_id)}/>
+                                        <Icon color='red' name='trash' link onClick={() => this.handleDeleteMember(_id)}/>
                                     </List.Content>
                                     }
 
@@ -195,7 +201,7 @@ class BoardDetails extends Component {
                                         name={this.props.currentBoard.admins.includes(_id) ? 'user' : 'user outline'}
                                         color={this.props.currentBoard.admins.includes(_id) ? 'red' : 'grey'}/>
                                     <List.Content>
-                                        <List.Header>{firstName} {lastName}</List.Header>
+                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
                                         <List.Content>
                                             {userName}
                                         </List.Content>
@@ -228,16 +234,13 @@ class BoardDetails extends Component {
                         && this.props.currentBoard.team !== null
                             ?
                             (this.state.editingMode
-                                    ? <List>
-                                    <List.Item>
+                                    ? <Segment textAlign='center'>
                                         <AddBoardTeam hasTeam={true}/>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Button floated='right'>
-                                            <Icon name='trash' color='red'/>
+                                        <Divider />
+                                        <Button floated='center'>
+                                            <Icon name='trash' color='red' link onClick={() => this.handleDeleteTeam()}/>
                                         </Button>
-                                    </List.Item>
-                                    </List>
+                                    </Segment>
                                     : <Card color='blue' fluid link onClick={this.redirectionTeam}>
                                         <Card.Content>
                                             <Card.Header>{this.props.currentBoard.team.name}</Card.Header>
@@ -247,6 +250,24 @@ class BoardDetails extends Component {
                             : <AddBoardTeam hasTeam={false}/>
                         }
                         <Divider hidden/>
+
+                        <List selection relaxed='very'>
+                            {this.props.currentBoard.team &&
+                                this.props.currentBoard.team.members.map(({_id, firstName, lastName, userName}) => (
+
+                                <List.Item>
+                                    <Icon
+                                        name={this.props.currentBoard.admins.includes(_id) ? 'user' : 'user outline'}
+                                        color={this.props.currentBoard.admins.includes(_id) ? 'red' : 'grey'}/>
+                                    <List.Content>
+                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
+                                        <List.Content>
+                                            {userName}
+                                        </List.Content>
+                                    </List.Content>
+                                </List.Item>
+                            ))}
+                        </List>
 
                     </Grid.Column>
                 </Grid>
@@ -261,7 +282,11 @@ BoardDetails.propTypes = {
     guestMembers: PropTypes.array.isRequired,
     errors: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
-    fetchBoard: PropTypes.func.isRequired
+    fetchBoard: PropTypes.func.isRequired,
+    updateMemberRole: PropTypes.func.isRequired,
+    deleteBoardTeam: PropTypes.func.isRequired,
+    deleteBoardMember: PropTypes.func.isRequired,
+    updateBoard: PropTypes.func.isRequired
 };
 
 BoardDetails.defaultProps = {
@@ -278,5 +303,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchBoard}
+    {fetchBoard, updateMemberRole, deleteBoardTeam, deleteBoardMember, updateBoard}
 )(BoardDetails);

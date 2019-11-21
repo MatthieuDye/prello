@@ -151,17 +151,17 @@ export const deleteBoardMember = (userId, boardId) => dispatch => {
 
 //________ DELETE TEAM _______
 
-export const deleteMemberTeamSuccessAction = board => ({
+export const deleteTeamSuccessAction = board => ({
     type: TYPE.DELETE_TEAM_BOARD_SUCCESS,
     payload: {
         board,
     },
 });
 
-export const deleteTeamMember = (teamId, boardId) => dispatch => {
+export const deleteBoardTeam = (teamId, boardId) => dispatch => {
     axios
         .delete(`/api/private/board/admin/${boardId}/delete/team/${teamId}`, {headers : {"boardId" : boardId}})
-        .then(res => dispatch(deleteMemberTeamSuccessAction(res.data.board)))
+        .then(res => dispatch(deleteTeamSuccessAction(res.data.board)))
         .catch(err =>
             dispatch({
                 type: TYPE.GET_ERRORS,
@@ -172,10 +172,10 @@ export const deleteTeamMember = (teamId, boardId) => dispatch => {
 
 // _______ UPDATE MEMBER ROLE _____
 
-export const updateBoardMemberRoleSuccessAction = team => ({
+export const updateBoardMemberRoleSuccessAction = board => ({
     type: TYPE.UPDATE_BOARD_MEMBER_ROLE_SUCCESS,
     payload: {
-        team,
+        board,
     },
 });
 

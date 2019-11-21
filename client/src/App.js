@@ -67,29 +67,37 @@ class App extends Component {
                     <Menu.Item>
                         <img src={require('./assets/prello_icon.png')} alt="Prello logo"/>
                     </Menu.Item>
-                    <Menu.Item
-                        name='boards'
-                        active={activeItem === 'boards'}
-                        onClick={this.handleItemClick}
-                    >
-                        <Link to="/boards" className="nav-link">Boards</Link>
-                    </Menu.Item>
 
-                    <Menu.Item
-                        name='teams'
-                        active={activeItem === 'teams'}
-                        onClick={this.handleItemClick}
-                    >
-                        <Link to="/teams" className="nav-link">Teams</Link>
-                    </Menu.Item>
+                    <Link to="/boards" className="nav-link">
+                        <Menu.Item
+                            name='boards'
+                            active={activeItem === 'boards'}
+                            onClick={this.handleItemClick}
+                        />
+                    </Link>
+
+                    <Link to="/teams" className="nav-link">
+                        <Menu.Item
+                            name='teams'
+                            active={activeItem === 'teams'}
+                            onClick={this.handleItemClick}
+                        />
+                    </Link>
+
                     <Menu.Menu position='right'>
                         <Dropdown item icon='plus circle'>
                             <Dropdown.Menu className="dropDownMenu">
                                 <Dropdown.Item>
-                                    <Link to="/add/board" className="nav-link">Create a board</Link>
+                                    <Link to="/add/board" className="nav-link">
+                                        <Icon name='columns'/>
+                                        New Board
+                                    </Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
-                                    <Link to="/add/team" className="nav-link">Create a team</Link>
+                                    <Link to="/add/team" className="nav-link">
+                                        <Icon name='users'/>
+                                        New Team
+                                    </Link>
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -99,7 +107,10 @@ class App extends Component {
                                     <Link to="/profile" className="nav-link">My profile</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
-                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
+                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>
+                                        <Icon name='log out'/>
+                                        Logout
+                                    </Link>
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -114,10 +125,10 @@ class App extends Component {
                 <PrivateRoute exact path="/teams" component={MyTeams}/>
                 <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
                 <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
+                <PrivateRoute exact path='/board/:boardId/details' component={BoardDetails}/>
                 <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
             </React.Fragment>
-
-        )
+        );
 
         return (
             <Provider store={store}>
