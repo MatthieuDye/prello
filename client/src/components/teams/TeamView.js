@@ -1,11 +1,25 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
-import {Button, Card, Checkbox, Container, Divider, Form, Grid, Header, Icon, List, Segment} from "semantic-ui-react";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Container,
+    Divider,
+    Form,
+    Grid,
+    Header,
+    Icon,
+    List,
+    Popup,
+    Segment
+} from "semantic-ui-react";
 //________ACTIONS________
 import {fetchTeam} from "../../actions/teamActions";
 import AddTeamMember from "./AddTeamMember";
 import {updateMemberRole} from "../../actions/teamActions";
+import {deleteMember} from "../../actions/teamActions";
 
 class TeamView extends Component {
 
@@ -31,6 +45,10 @@ class TeamView extends Component {
         const teamID = this.props.currentTeam._id;
         const isAdmin = this.props.currentTeam.admins.includes(memberID);
         this.props.updateMemberRole(memberID, teamID, !isAdmin);
+    };
+
+    handleDeleteMember = (memberID) => {
+        this.props.deleteMember(memberID, this.props.currentTeam._id);
     };
 
     redirectionBoard = (boardId) => {
@@ -112,15 +130,26 @@ class TeamView extends Component {
                                     <List.Item>
                                         {this.state.editingMode && this.props.auth.user.id !== _id &&
                                         <List.Content floated='right' verticalAlign='middle'>
-                                            <Icon color='red' name='trash' link/>
-                                            <Checkbox
-                                                fitted slider
-                                                label='admin'
-                                                defaultChecked={this.props.currentTeam.admins.includes(_id)}
-                                                onClick={() => this.handleMemberRoleChange(_id)}
+                                            <Icon color='red' name='trash' link onClick={() => this.handleDeleteMember(_id)}/>
+                                        </List.Content>
+                                        }
+
+                                        {this.state.editingMode && this.props.auth.user.id !== _id &&
+                                        <List.Content floated='right' verticalAlign='middle'>
+                                            <Popup
+                                                trigger={
+                                                    <Checkbox
+                                                        fitted slider
+                                                        defaultChecked={this.props.currentTeam.admins.includes(_id)}
+                                                        onClick={() => this.handleMemberRoleChange(_id)}
+                                                    />
+                                                }
+                                                content="Make admin"
+                                                basic
                                             />
                                         </List.Content>
                                         }
+
                                         <Icon
                                             name={this.props.currentTeam.admins.includes(_id) ? 'user' : 'user outline'}
                                             color={this.props.currentTeam.admins.includes(_id) ? 'red' : 'grey'}/>
@@ -169,6 +198,7 @@ class TeamView extends Component {
 TeamView.propTypes = {
     currentTeam: PropTypes.object.isRequired,
     fetchTeam: PropTypes.func.isRequired,
+    deleteMember: PropTypes.func.isRequired,
     updateMemberRole: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     members: PropTypes.array.isRequired,
@@ -189,5 +219,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchTeam, updateMemberRole}
+    {fetchTeam, updateMemberRole, deleteMember}
 )(TeamView);
