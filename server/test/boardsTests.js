@@ -556,7 +556,7 @@ describe('POST /api/private/board/admin/:boardId/add/team/:teamName', () => {
                         .set({'Authorization': token, "boardId" : boardData.id})
                         .expect('Content-Type', /json/)
                         .expect(201, (err, res) => {
-                            expect(res.body.board.team.localeCompare(teamName));
+                            expect(res.body.board.team.name).is.equal(teamName);
                             done();
                         })
                 }
