@@ -36,7 +36,7 @@ export const loginUser = (userData, history) => dispatch => {
             dispatch(setCurrentUser(decoded));
             // Save user
             dispatch(saveUser(decoded));
-            history.push("/:userName/boards");
+            history.push("/boards");
         })
         .catch(err =>
             dispatch({
@@ -56,7 +56,7 @@ export const loginGoogleUser = (token, history) => dispatch => {
     dispatch(setCurrentUser(decoded));
     // Save user
     dispatch(saveUser(decoded));
-    history.push("/:userName/boards");
+    history.push("/boards");
 };
 
 export const loginPolytechUser = (tokenPolytech, history) => dispatch => {
@@ -76,7 +76,7 @@ export const loginPolytechUser = (tokenPolytech, history) => dispatch => {
             dispatch(setCurrentUser(decoded));
             // Save user
             dispatch(saveUser(decoded));
-            history.push("/:userName/boards");
+            history.push("/boards");
         })
 };
 

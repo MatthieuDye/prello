@@ -67,69 +67,57 @@ class App extends Component {
                     <Menu.Item>
                         <img src={require('./assets/prello_icon.png')} alt="Prello logo"/>
                     </Menu.Item>
+                    <Menu.Item
+                        name='boards'
+                        active={activeItem === 'boards'}
+                        onClick={this.handleItemClick}
+                    >
+                        <Link to="/boards" className="nav-link">Boards</Link>
+                    </Menu.Item>
 
-                    <Link to="/:userName/boards" className="nav-link">
-                        <Menu.Item
-                            name='boards'
-                            active={activeItem === 'boards'}
-                            onClick={this.handleItemClick}
-                        />
-                    </Link>
+                    <Menu.Item
+                        name='teams'
+                        active={activeItem === 'teams'}
+                        onClick={this.handleItemClick}
+                    >
+                        <Link to="/teams" className="nav-link">Teams</Link>
+                    </Menu.Item>
+                    <Menu.Menu position='right'>
+                        <Dropdown item icon='plus circle'>
+                            <Dropdown.Menu className="dropDownMenu">
+                                <Dropdown.Item>
+                                    <Link to="/add/board" className="nav-link">Create a board</Link>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                    <Link to="/add/team" className="nav-link">Create a team</Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <Dropdown item icon='user'>
+                            <Dropdown.Menu className="dropDownMenu">
+                                <Dropdown.Item>
+                                    <Link to="/profile" className="nav-link">My profile</Link>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Menu.Menu>
+                </Menu>
 
-                    <Link to="/:userName/teams" className="nav-link">
-                        <Menu.Item
-                            name='teams'
-                            active={activeItem === 'teams'}
-                            onClick={this.handleItemClick}
-                        />
-                    </Link>
+                <PrivateRoute exact path="/boards" component={MyBoards}/>
+                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember}/>
+                <PrivateRoute exact path="/profile" component={Profile}/>
+                <PrivateRoute exact path="/add/team" component={CreateTeam}/>
+                <PrivateRoute exact path="/add/board" component={CreateBoard}/>
+                <PrivateRoute exact path="/teams" component={MyTeams}/>
+                <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
+                <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
+                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
+            </React.Fragment>
 
-                <Menu.Menu position='right'>
-                    <Dropdown item icon='plus circle'>
-                        <Dropdown.Menu className="dropDownMenu">
-                            <Dropdown.Item>
-                                <Link to="/add/board" className="nav-link">
-                                    <Icon name='columns'/>
-                                       New Board
-                                </Link>
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                <Link to="/add/team" className="nav-link">
-                                    <Icon name='users'/>
-                                    New Team
-                                </Link>
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown item icon='user'>
-                        <Dropdown.Menu className="dropDownMenu">
-                            <Dropdown.Item>
-                                <Link to="/:userName" className="nav-link">My profile</Link>
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>
-                                    <Icon name='log out'/>
-                                    Logout
-                                </Link>
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Menu.Menu>
-            </Menu>
-
-        <PrivateRoute exact path="/:userName/boards" component={MyBoards}/>
-        <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember}/>
-        <PrivateRoute exact path="/:userName" component={Profile}/>
-        <PrivateRoute exact path="/add/team" component={CreateTeam}/>
-        <PrivateRoute exact path="/add/board" component={CreateBoard}/>
-        <PrivateRoute exact path="/:userName/teams" component={MyTeams}/>
-        <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
-        <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
-        <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember}/>
-        <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
-        <PrivateRoute exact path='/board/:boardId/details' component={BoardDetails}/>
-    </React.Fragment>
-    );
+        )
 
         return (
             <Provider store={store}>

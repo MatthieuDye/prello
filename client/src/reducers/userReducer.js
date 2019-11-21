@@ -1,4 +1,4 @@
-import {UPDATE_USER_PROFILE, SAVE_USER, FAVORITE_BOARD_SUCCESS} from '../actions/types';
+import {UPDATE_USER_PROFILE, SAVE_USER, FETCH_USER_SUCCESS} from '../actions/types';
 
 const userReducer = (state = [], action) => {
     switch (action.type) {
@@ -22,7 +22,9 @@ const userReducer = (state = [], action) => {
             }
         }
 
-
+        case FETCH_USER_SUCCESS: {
+            return action.payload.user
+        }
 
         default:
             return state;

@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { updateUser } from "../../actions/userActions";
+import { updateUser, fetchUser } from "../../actions/userActions";
 
 class Profile extends Component {
   constructor() {
@@ -18,19 +18,25 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    //Retrieve all data from the state
-    this.setState({
-      firstName: this.props.user.firstName,
-      lastName: this.props.user.lastName,
-      userName: this.props.user.userName,
-      email: this.props.user.email,
-    })
+
+    this.props.fetchUser(this.props.auth.user._id);
+
   }
+
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
+      });
+    }
+
+    if (nextProps.user) {
+      this.setState({
+        firstName: this.props.user.firstName,
+        lastName: this.props.user.lastName,
+        userName: this.props.user.userName,
+        email: this.props.user.email,
       });
     }
   }
@@ -154,6 +160,7 @@ class Profile extends Component {
 
 Profile.propTypes = {
   updateUser: PropTypes.func.isRequired,
+  fetchUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
@@ -167,5 +174,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { updateUser }
+  { updateUser, fetchUser }
 )(withRouter(Profile));
