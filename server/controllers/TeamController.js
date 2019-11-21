@@ -84,7 +84,18 @@ const TeamController = () => {
             return res.status(422).json({ message: errors.name });
         }
 
-        Team.findOne({ _id: Object(id) }).then(team => {
+        Team.findOne({ _id: Object(id) })
+            .populate(
+                [{
+                    path: 'members',
+                    select: ['userName', 'firstName', 'lastName']
+                },{
+                    path: 'boards',
+                    select: ['name']
+                }
+                ]
+            )
+            .then(team => {
             if (team) {
                 return res.status(201).json({ team: team, message: "Team found" })
             } else {
@@ -190,6 +201,16 @@ const TeamController = () => {
                                             .then(team => {
                                                 //Get the team to return
                                                 Team.findById(teamId)
+                                                    .populate(
+                                                        [{
+                                                            path: 'members',
+                                                            select: ['userName', 'firstName', 'lastName']
+                                                        },{
+                                                            path: 'boards',
+                                                            select: ['name']
+                                                        }
+                                                        ]
+                                                    )
                                                     .then(team => {
                                                         res.status(201).send({ team: team, message: 'User successfully added to the team' })
 
@@ -261,6 +282,16 @@ const TeamController = () => {
                                                     .then(board => {
                                                         //Get the team to return
                                                         Team.findById(teamId)
+                                                            .populate(
+                                                                [{
+                                                                    path: 'members',
+                                                                    select: ['userName', 'firstName', 'lastName']
+                                                                },{
+                                                                    path: 'boards',
+                                                                    select: ['name']
+                                                                }
+                                                                ]
+                                                            )
                                                             .then(team => res.status(201).send({ team: team, message: 'User successfully deleted from the team' }))
                                                             .catch(err => res.status(404).json({ message: "This team does not exists - " + err }))
                                                     })
@@ -324,8 +355,18 @@ const TeamController = () => {
                                     })
                                         .then(team => {
                                             Team.findById(req.params.teamId)
-                                                .then(team => {
-                                                    res.status(201).send({ team: team, message: 'User role successfully updated in the team' });
+                                                .populate(
+                                                    [{
+                                                        path: 'members',
+                                                        select: ['userName', 'firstName', 'lastName']
+                                                    },{
+                                                        path: 'boards',
+                                                        select: ['name']
+                                                    }
+                                                    ]
+                                                )
+                                                .then(teamUpdated => {
+                                                    res.status(201).send({ team: teamUpdated, message: 'User role successfully updated in the team' });
                                                 })
                                                 .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                         })
@@ -338,8 +379,18 @@ const TeamController = () => {
                                     })
                                         .then(team => {
                                             Team.findById(req.params.teamId)
-                                                .then(team => {
-                                                    res.status(201).send({ team: team, message: 'User role successfully updated in the team' });
+                                                .populate(
+                                                    [{
+                                                        path: 'members',
+                                                        select: ['userName', 'firstName', 'lastName']
+                                                    },{
+                                                        path: 'boards',
+                                                        select: ['name']
+                                                    }
+                                                    ]
+                                                )
+                                                .then(teamUpdated => {
+                                                    res.status(201).send({ team: teamUpdated, message: 'User role successfully updated in the team' });
                                                 })
                                                 .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                         })

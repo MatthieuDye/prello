@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import {fetchBoards} from "../../actions/boardActions";
 import {favoriteBoard} from "../../actions/userActions";
 
+
 class MyBoards extends Component {
 
     componentDidMount() {
@@ -37,6 +38,7 @@ class MyBoards extends Component {
         return (
             <Container>
                 <Divider hidden/>
+
                 <Header as='h2'>
                     <Segment.Inline>
                         <Icon name='columns'/>
@@ -63,6 +65,7 @@ class MyBoards extends Component {
                 }
 
                 <Card.Group stackable doubling itemsPerRow={4}>
+
                     {this.props.favoriteBoards.map(({_id, name, description}) => (
 
                         <Card color='red'>
@@ -111,6 +114,7 @@ class MyBoards extends Component {
                                     link
                                     onClick={() => this.handleFavorite(_id)}
                                 />
+
                             </Card.Content>
                         </Card>
                     ))}

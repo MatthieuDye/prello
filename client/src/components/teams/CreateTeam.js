@@ -17,7 +17,7 @@ const CreateTeamSchema = Yup.object().shape({
 const CreateTeam = (props) => (
 
     <Container>
-
+        <Divider hidden/>
         <Header as='h3'>
             <Icon name='users'/>
             <Header.Content>Create a Team</Header.Content>
@@ -65,7 +65,7 @@ const CreateTeam = (props) => (
                                 <TextArea
                                     placeholder='enter team description'
                                     value={values.description}
-                                    style={{minHeight: 100}}
+                                    rows={4}
                                     onChange={handleChange('description')}
                                 />
                                 {errors.description && touched.description &&
