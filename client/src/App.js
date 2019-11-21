@@ -70,7 +70,7 @@ class App extends Component {
                         active={activeItem === 'boards'}
                         onClick={this.handleItemClick}
                     >
-                        <Link to="/:userName/boards" className="nav-link">Boards</Link>
+                        <Link to="/boards" className="nav-link">Boards</Link>
                     </Menu.Item>
 
                     <Menu.Item
@@ -78,7 +78,7 @@ class App extends Component {
                         active={activeItem === 'teams'}
                         onClick={this.handleItemClick}
                     >
-                        <Link to="/:userName/teams" className="nav-link">Teams</Link>
+                        <Link to="/teams" className="nav-link">Teams</Link>
                     </Menu.Item>
                     <Menu.Menu position='right'>
                         <Dropdown item icon='plus circle'>
@@ -94,7 +94,7 @@ class App extends Component {
                         <Dropdown item icon='user'>
                             <Dropdown.Menu className="dropDownMenu">
                                 <Dropdown.Item>
-                                    <Link to="/:userName" className="nav-link">My profile</Link>
+                                    <Link to="/profile" className="nav-link">My profile</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
                                     <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
@@ -104,15 +104,14 @@ class App extends Component {
                     </Menu.Menu>
                 </Menu>
 
-                <PrivateRoute exact path="/:userName/boards" component={MyBoards}/>
+                <PrivateRoute exact path="/boards" component={MyBoards}/>
                 <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember}/>
-                <PrivateRoute exact path="/:userName" component={Profile}/>
+                <PrivateRoute exact path="/profile" component={Profile}/>
                 <PrivateRoute exact path="/add/team" component={CreateTeam}/>
                 <PrivateRoute exact path="/add/board" component={CreateBoard}/>
-                <PrivateRoute exact path="/:userName/teams" component={MyTeams}/>
+                <PrivateRoute exact path="/teams" component={MyTeams}/>
                 <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
                 <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
-                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember}/>
                 <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
             </React.Fragment>
 

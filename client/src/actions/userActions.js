@@ -13,7 +13,7 @@ export const updateUser = (userName, userData, history) => dispatch => {
     })
     .then(res => {
       dispatch(updateUserProfile(userData));
-      history.push("/:userName/boards");
+      history.push("/boards");
     })
     .catch(err =>
       dispatch({

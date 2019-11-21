@@ -21,21 +21,22 @@ class Profile extends Component {
 
     this.props.fetchUser(this.props.auth.user._id);
 
-    //Retrieve all data from the state
-    this.setState({
-      firstName: this.props.user.firstName,
-      lastName: this.props.user.lastName,
-      userName: this.props.user.userName,
-      email: this.props.user.email,
-    });
-
-
   }
+
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
+      });
+    }
+
+    if (nextProps.user) {
+      this.setState({
+        firstName: this.props.user.firstName,
+        lastName: this.props.user.lastName,
+        userName: this.props.user.userName,
+        email: this.props.user.email,
       });
     }
   }

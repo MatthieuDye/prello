@@ -16,7 +16,7 @@ export const createBoard = (boardData, history) => dispatch => {
     axios
         .post("/api/private/board/create", boardData)
         .then(res => dispatch(createBoardSuccessAction(res.data.board)))
-        .then(() => history.push("/:userName/boards"))
+        .then(() => history.push("/boards"))
         .catch(err =>
             dispatch({
                 type: TYPE.GET_ERRORS,
