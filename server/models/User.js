@@ -50,6 +50,16 @@ const UserSchema = new Schema({
     default : [],
     required : true
   },
+  favoriteBoards: {
+    type : [
+      {
+        type : Schema.Types.ObjectId,
+        ref : 'Board'
+      }
+    ],
+    default : [],
+    required : true
+  },
   teams: {
     type : [
       {

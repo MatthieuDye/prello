@@ -61,7 +61,6 @@ class TeamView extends Component {
     // BOARDS
     redirectionBoard = (boardId) => {
         this.props.history.push(`/board/${boardId}`);
-    };
 
     render() {
         return (

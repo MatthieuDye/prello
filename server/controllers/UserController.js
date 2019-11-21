@@ -18,6 +18,7 @@ const validateIdParam = require("../validation/idParam");
 
 // Load User model
 const User = require("../models/User");
+const Board = require("../models/Board");
 
 router.use(cors());
 
@@ -130,10 +131,15 @@ const UserController = () => {
 
   const loginPolytech = async (req, res) => {
 
+     const verify = jwt.verify(req.body.token, process.env.AUTH_POLYTECH_SECRET);
+
+     if (!verify) {
+         return res.status(401).json({ message: "Unauthorized request"});
+     }
+
 
     const user = req.body.user ;
-    const username = user.firstname + "." + user.lastname;
-    console.log(username);
+    const username = user.firstname.toLowerCase() + "." + user.lastname.toLowerCase();
 
     let userId = new ObjectID();
 
@@ -230,6 +236,70 @@ const UserController = () => {
       res.status(404).json({ message: "User not found " + err });
     });
   };
+  //put /user/:userId/board/favorite/:boardId
+
+  const updateFavoriteBoards = async (req, res) => {
+
+    const {boardId, userId} = req.params;
+    const isFavorite = req.body.isFavorite;
+
+    // Board Id validation
+    if (!validateIdParam(boardId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(boardId).errors.name});
+    }
+
+    // User Id validation
+    if (!validateIdParam(userId).idIsValid) {
+      return res.status(422).json({message: validateIdParam(userId).errors.name});
+    }
+
+    User.findOne({_id: userId}).then(user => {
+          if (user) {
+            Board.findOne({_id: boardId}).then(board => {
+              if (board) {
+                if (isFavorite) {
+                  User.updateOne({_id: user._id}, {
+                    $addToSet: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
+                          .then(userFounded => {
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
+                              }
+                          ))
+                } else {
+                  User.updateOne({_id: user._id}, {
+                    $pull: {
+                      favoriteBoards: board._id
+                    }
+                  }).then(() =>
+                      User
+                          .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
+                          .then(userFounded => {
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
+                              }
+                          ))
+                }
+              } else {
+                return res.status(404).json({message: "This board does not exists"})
+              }
+            })
+          } else {
+            return res.status(404).json({message: "This user does not exists"})
+          }
+        }
+    )
+  };
 
   const findByBeginName = async (req, res) => {
 
@@ -253,7 +323,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Invalid input" });
+      return res.status(422).json({ message: errors });
     }
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
@@ -299,7 +369,13 @@ const UserController = () => {
       .populate([{
         path: 'guestBoards',
         select: ['name', 'description']
-      }, {
+      },
+        {
+        path: 'favoriteBoards',
+        select: ['name', 'description']
+      },
+
+        {
         path: 'teams',
         select: ['name'],
         populate: ({
@@ -309,7 +385,7 @@ const UserController = () => {
       }
       ])
       .then(user => res.status(201).send({
-        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams, favoriteBoards: user.favoriteBoards },
         message: 'Boards successfully fetched'
       }))
       .catch(err => {
@@ -347,6 +423,7 @@ const UserController = () => {
     updateProfile,
     findByBeginName,
     loginPolytech,
+    updateFavoriteBoards,
     getBoardsByUserId,
     getTeamsByUserId
   };

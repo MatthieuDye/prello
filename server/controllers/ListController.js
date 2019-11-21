@@ -30,10 +30,10 @@ const ListController = () => {
         }
 
         if (!req.body.boardId) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: "Invalid board id" });
         }
 
-        //Serach if the board exists
+        //Search if the board exists
         Board.findById(req.body.boardId)
             .then(board => {
                 //If the board is not null
@@ -65,7 +65,7 @@ const ListController = () => {
     /**
      * Get a list
      * @param {string} id.param.required - the list's id
-     * @returns {List} 200 - List got
+     * @returns {List} 201 - List got
      */
     const getList = async (req, res) => {
         const id = req.params.id;

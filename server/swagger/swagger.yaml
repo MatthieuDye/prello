@@ -5,6 +5,7 @@ info:
 
 servers:
   - url: http://localhost:5000
+  - url: https://prello-ig-back.igpolytech.fr/
 
 paths:
   /api/public/register:
@@ -1032,6 +1033,151 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/card/create:
+    post:
+      summary: Add a card in a list
+      security:
+        - token: []
+      tags:
+        - cards
+      requestBody:
+        description: Card name
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        '201':
+          description: Card create successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '404':
+          description: List or card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '500':
+          description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/board/member/card/{cardId} :
+    get:
+      summary: Get a card with an id
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Card sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Card details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCard'
+      responses:
+        '201':
+          description: Card sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a card
+      security:
+        - token: []
+      tags:
+        - cards
+      parameters:
+        - name: cardId
+          in: path
+          description: Card ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Card sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        '404':
+          description: Card or List not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid card id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
 components:
   securitySchemes:
     token:
@@ -1258,4 +1404,56 @@ components:
       properties:
         name:
           type: string
+
+    Card:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        dueDate:
+          $ref: "#/components/schemas/DueDate"
+        isArchived:
+          type: boolean
+          default: false
+        members:
+          $ref: "#/components/schemas/Users"
+
+    Cards:
+      type: array
+        items:
+          $ref: "#/components/schemas/Card"
+
+    DueDate:
+      required:
+        - date
+      properties:
+        date:
+          type: date
+        isDone:
+          type: boolean
+          default: false
+
+    UpdateCard:
+      required:
+        - newName
+        - newDescription
+        - newDueDate
+        - newDueDateIsDone
+        - newIsArchived
+      properties:
+        newName:
+          type: string
+        newDescription:
+          type: string
+        newDueDate:
+          type: date
+        newDueDateIsDone:
+          type: boolean
+          default: false
+        newIsArchived:
+          type: boolean
+          default: false
     

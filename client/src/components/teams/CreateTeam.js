@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {createTeam} from "../../actions/teamActions";
@@ -9,6 +9,9 @@ import * as Yup from 'yup'
 const CreateTeamSchema = Yup.object().shape({
     teamName: Yup.string()
         .required('Team name is required')
+        .max(50, 'Team name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
 });
 
 const CreateTeam = (props) => (
@@ -56,7 +59,7 @@ const CreateTeam = (props) => (
                                     {errors.teamName}
                                 </Label>}
                             </Form.Field>
-
+                            <Divider hidden/>
                             <Form.Field>
                                 <Header as='h4'>Description</Header>
                                 <TextArea
@@ -65,6 +68,10 @@ const CreateTeam = (props) => (
                                     rows={4}
                                     onChange={handleChange('description')}
                                 />
+                                {errors.description && touched.description &&
+                                <Label basic prompt pointing>
+                                    {errors.description}
+                                </Label>}
                             </Form.Field>
 
                             <Button primary onPress={handleSubmit}>

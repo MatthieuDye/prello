@@ -23,7 +23,7 @@ import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
 
-import { Menu, Dropdown, Icon } from 'semantic-ui-react'
+import { Menu, Dropdown } from 'semantic-ui-react'
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -83,7 +83,7 @@ class App extends Component {
                         <Dropdown item icon='plus circle'>
                             <Dropdown.Menu className="dropDownMenu">
                                 <Dropdown.Item>
-                                    <Link to="/board/create" className="nav-link">Create a board</Link>
+                                    <Link to="/add/board" className="nav-link">Create a board</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
                                     <Link to="/add/team" className="nav-link">Create a team</Link>
@@ -104,7 +104,6 @@ class App extends Component {
                 </Menu>
                 
                 <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
-                <PrivateRoute exact path="/board/create" component={CreateBoard} />
                 <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember} />
                 <PrivateRoute exact path="/:userName" component={Profile} />
                 <PrivateRoute exact path="/add/team" component={CreateTeam} />
