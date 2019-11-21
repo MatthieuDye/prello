@@ -22,6 +22,7 @@ import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
+import BoardDetails from "./components/boards/BoardDetails";
 
 import {Dropdown, Icon, Menu} from 'semantic-ui-react'
 import LoaderAuth from "./components/auth/LoaderAuth";
@@ -126,6 +127,7 @@ class App extends Component {
         <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
         <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember}/>
         <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
+        <PrivateRoute exact path='/board/:boardId/details' component={BoardDetails}/>
     </React.Fragment>
     );
 
