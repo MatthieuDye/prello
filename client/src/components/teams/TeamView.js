@@ -5,6 +5,7 @@ import {Button, Card, Checkbox, Container, Divider, Form, Grid, Header, Icon, Li
 //________ACTIONS________
 import {fetchTeam} from "../../actions/teamActions";
 import AddTeamMember from "./AddTeamMember";
+import {updateMemberRole} from "../../actions/teamActions";
 
 class TeamView extends Component {
 
@@ -24,6 +25,13 @@ class TeamView extends Component {
         this.setState({
             editingMode: !this.state.editingMode
         })
+    };
+
+    handleMemberRoleChange = (memberID) => {
+        const userID = this.props.auth.user.id;
+        const teamID = this.props.currentTeam._id;
+        const isAdmin = this.props.currentTeam.admins.includes(memberID);
+        this.props.updateMemberRole(userID, teamID, !isAdmin);
     };
 
     redirectionBoard = (boardId) => {
@@ -103,13 +111,14 @@ class TeamView extends Component {
                                 {this.props.members.map(({_id, firstName, lastName, userName}) => (
 
                                     <List.Item>
-                                        {this.state.editingMode &&
+                                        {this.state.editingMode && this.props.auth.user.id !== _id &&
                                         <List.Content floated='right' verticalAlign='middle'>
                                             <Icon color='red' name='trash' link/>
                                             <Checkbox
                                                 fitted slider
                                                 label='admin'
                                                 defaultChecked={this.props.currentTeam.admins.includes(_id)}
+                                                onClick={() => this.handleMemberRoleChange(_id)}
                                             />
                                         </List.Content>
                                         }
@@ -161,6 +170,7 @@ class TeamView extends Component {
 TeamView.propTypes = {
     currentTeam: PropTypes.object.isRequired,
     fetchTeam: PropTypes.func.isRequired,
+    updateMemberRole: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     members: PropTypes.array.isRequired,
     boards: PropTypes.array.isRequired
@@ -180,5 +190,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchTeam}
+    {fetchTeam, updateMemberRole}
 )(TeamView);
