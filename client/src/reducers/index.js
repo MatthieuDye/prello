@@ -7,6 +7,8 @@ import teamReducer from "./teamReducer";
 import currentTeamReducer from "./currentTeamReducer";
 import boardReducer from "./boardReducer";
 import currentBoardReducer from "./currentBoardReducer";
+import listReducer from "./listReducer";
+import cardReducer from "./cardReducer";
 
 export default combineReducers({
   auth: authReducer,
@@ -15,6 +17,7 @@ export default combineReducers({
   teams: teamReducer,
   boards: boardReducer,
   currentTeam: currentTeamReducer,
-  currentBoard: currentBoardReducer
-
+  currentBoard: currentBoardReducer,
+  lists: listReducer,
+  cards: cardReducer,
 });

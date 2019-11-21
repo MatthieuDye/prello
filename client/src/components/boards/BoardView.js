@@ -6,6 +6,8 @@ import { Button, Card, Icon, Container } from "semantic-ui-react";
 //________ACTIONS________
 import { fetchBoard } from "../../actions/boardActions";
 import AddBoardList from "../modals/AddBoardList";
+import AddListCard from "../modals/AddListCard";
+import UpdateCard from "../modals/UpdateCard";
 
 class BoardView extends Component {
 
@@ -22,9 +24,6 @@ class BoardView extends Component {
     };
 
     render() {
-
-        console.log(this.props.lists.cards)
-
         return (
             <div>
                 <div className={"header"}>
@@ -34,42 +33,56 @@ class BoardView extends Component {
                         <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
                     </section>
                 </div>
-                {console.log("LISTES : " + this.props.lists.length)}
-                {this.props.lists.map(list => (
-                    <Container>
-                        <div style={{ display: 'inline-block' }}>
-                            <Card>
-                                <Card.Content>
-                                    <Card.Header>{list.name}</Card.Header>
-                                </Card.Content>
-                                {list.cards.map(card => (
+
+                <Container>
+                    {this.props.lists.map(list => (
+                        <React.Fragment>
+                            <div style={{ display: 'inline-block' }}>
+                                <Card>
                                     <Card.Content>
-                                    <Card color={"grey"}>
-                                        <Card.Content header={card.name} />
-                                        <Card.Content description={card.description} />
-                                        <Card.Content extra>
-                                            <Icon name='calendar' />Due date
-                                        <Icon name='archive' />Archived ?
+                                        <Card.Header>{list.name}</Card.Header>
                                     </Card.Content>
-                                    </Card>
-                                </Card.Content>
-                                ))}
-                                
-                                <Card.Content extra>
-                                    <button>
-                                        <Icon name={"add circle"} /> Add a new card
-                                </button>
-                                </Card.Content>
-                            </Card>
-                        </div>
-                        <div style={{ display: 'inline-block' }}>
-                            <Card link >
-                                <AddBoardList />
-                            </Card>
-                        </div>
-                    </Container>
-                )
-                )}
+                                    {list.cards.map(card => (
+                                        <Card.Content>
+                                            <Card color={"grey"}>
+                                                <Card.Content header={card.name} />
+                                                <Card.Content description={card.description} />
+                                                <Card.Content extra>
+                                                    <Icon name='calendar' />{card.dueDate.date}
+                                                    <Icon name='archive' />{card.dueDate.isDone}
+                                                </Card.Content>
+                                                <Button>
+                                                    <UpdateCard 
+                                                    currentCardId={card._id}
+                                                    currentCardName={card.name}
+                                                    currentCardDescription={card.description}
+                                                    currentCardDueDate={card.dueDate.date}
+                                                    currentCardDueDateIsDone={card.dueDate.isDone}
+                                                    currentCardIsArchived={card.isArchived}/>
+                                                </Button>
+                                            </Card>
+                                        </Card.Content>
+                                    ))}
+
+                                    <Card.Content extra>
+                                        <Button>
+                                            <Icon name={"add circle"} />
+                                            <AddListCard currentListId={list._id} />
+                                        </Button>
+                                    </Card.Content>
+                                </Card>
+                            </div>
+
+                        </React.Fragment>
+                    )
+                    )}
+                    <div style={{ display: 'inline-block' }}>
+                        <Card link >
+                            <AddBoardList />
+                        </Card>
+                    </div>
+                </Container>
+
             </div>
         )
     }
@@ -84,17 +97,6 @@ BoardView.propTypes = {
 };
 
 BoardView.defaultProps = {
-    /*currentBoard: {
-        labelNames: "",
-        admins: [],
-        guestMembers: [],
-        isArchived: false,
-        lists: [],
-        id: "",
-        name: "",
-        description: "",
-        _id: ""
-    },*/
     name: "",
     lists: [{
         cards: []

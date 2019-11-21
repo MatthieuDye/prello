@@ -5,9 +5,10 @@ import { Card, Modal} from 'semantic-ui-react'
 
 //______ACTIONS______
 
-import {addBoardList, fetchBoard} from "../../actions/boardActions";
+import {fetchBoard} from "../../actions/boardActions";
+import {addListCard} from "../../actions/listActions";
 
-class AddBoardList extends Component {
+class AddListCard extends Component {
 
     constructor(props) {
         super(props);
@@ -39,30 +40,28 @@ class AddBoardList extends Component {
     onSubmit = e => {
         e.preventDefault();
 
-        const newListInfo = {
+        const newCardInfo = {
             name: this.state.name,
-            boardId: this.props.boardId
+            listId: this.props.currentListId
         };
 
-        this.props.addBoardList(newListInfo)
+        this.props.addListCard(newCardInfo)
         this.props.fetchBoard(this.props.boardId);
     };
-
-
 
     render() {
        return <Modal
             trigger={
                 <Card.Content extra>
-                    Add another list
+                    Add another card
                 </Card.Content>}>
-            <Modal.Header>Adding a new list</Modal.Header>
+            <Modal.Header>Adding a new card</Modal.Header>
             <Modal.Content>
                 <Modal.Description>
                     <form onSubmit={this.onSubmit}>
 
                         <div className="form-group">
-                            <label>List Name:  </label>
+                            <label>Card Name:  </label>
                             <input
                                 onChange={this.onChange}
                                 value = {this.state.name}
@@ -83,9 +82,9 @@ class AddBoardList extends Component {
     }
 }
 
-AddBoardList.propTypes = {
+AddListCard.propTypes = {
     currentBoard: PropTypes.object.isRequired,
-    addBoardList: PropTypes.func.isRequired,
+    addListCard: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired,
     auth: PropTypes.object.isRequired,
     boardId: PropTypes.string.isRequired,
@@ -101,5 +100,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {addBoardList, fetchBoard}
-)(AddBoardList);
+    {addListCard, fetchBoard}
+)(AddListCard);

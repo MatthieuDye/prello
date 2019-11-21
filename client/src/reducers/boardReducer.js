@@ -12,7 +12,7 @@ const boardReducer = (state =  [], action) => {
             return action.payload.boards
         }
         case types.ADD_BOARD_LIST_SUCCESS: {
-            return action.payload.board
+            return action.payload.list
         }
 
         default:
