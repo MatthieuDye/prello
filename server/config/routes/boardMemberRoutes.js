@@ -6,6 +6,7 @@ const boardMemberRoutes = {
     'POST /:id/add/list': 'BoardController.addList',
     'GET /:id/lists': 'BoardController.getLists',
     'POST /:id/add/label': 'BoardController.addLabel',
+    'GET /:boardId/all': 'BoardController.getAllBoardInfo',
     
     //Card
     'POST /card/create': 'CardController.createCard',
