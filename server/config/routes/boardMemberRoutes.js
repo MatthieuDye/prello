@@ -26,6 +26,7 @@ const boardMemberRoutes = {
     'GET /list/:id': 'ListController.getList',
     'PUT /list/:id/archive': 'ListController.archiveList',
     'PUT /list/:id/rename': 'ListController.renameList',
+    'DELETE /list/:id': 'ListController.deleteList',
     'PUT /list/:id/move': 'ListController.moveList',
 };
 

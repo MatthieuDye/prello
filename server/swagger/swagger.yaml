@@ -1231,7 +1231,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /api/private/board/member/list/{listId} :
+  /api/private/board/member/list/{id} :
     get:
       summary: Get a list from a board
       security:
@@ -1239,7 +1239,7 @@ paths:
       tags:
         - lists
       parameters:
-        - name: listId
+        - name: id
           in: path
           description: List ID
           required: true
@@ -1260,6 +1260,50 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a list
+      security:
+        - token: []
+      tags:
+        - lists
+      parameters:
+        - name: id
+          in: path
+          description: List ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: List sucessfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/List"
+        '404':
+          description: List or Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid list id
           content:
             application/json:
               schema:
