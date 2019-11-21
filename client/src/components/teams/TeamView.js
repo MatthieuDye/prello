@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
+import AddTeamMember from "./AddTeamMember";
 import {
     Button,
     Card,
@@ -16,10 +17,7 @@ import {
     Segment
 } from "semantic-ui-react";
 //________ACTIONS________
-import {fetchTeam} from "../../actions/teamActions";
-import AddTeamMember from "./AddTeamMember";
-import {updateMemberRole} from "../../actions/teamActions";
-import {deleteMember} from "../../actions/teamActions";
+import {deleteMember, fetchTeam, updateMemberRole} from "../../actions/teamActions";
 
 class TeamView extends Component {
 
@@ -35,12 +33,21 @@ class TeamView extends Component {
         this.props.fetchTeam(this.props.match.params.teamId);
     }
 
+    // EDIT HANDLER
     handleEditing = (e) => {
         this.setState({
             editingMode: !this.state.editingMode
         })
     };
 
+    handleSaveEditing = (e) => {
+
+        this.handleEditing(e);
+        // TODO
+
+    }
+
+    // MEMBER EDIT HANDLERS
     handleMemberRoleChange = (memberID) => {
         const teamID = this.props.currentTeam._id;
         const isAdmin = this.props.currentTeam.admins.includes(memberID);
@@ -51,6 +58,7 @@ class TeamView extends Component {
         this.props.deleteMember(memberID, this.props.currentTeam._id);
     };
 
+    // BOARDS
     redirectionBoard = (boardId) => {
         this.props.history.push(`/board/${boardId}`);
     };
@@ -58,7 +66,6 @@ class TeamView extends Component {
     render() {
         return (
             <Container>
-                <Form>
                     <Divider hidden/>
                     <Header as='h2'>
                         <Segment.Inline>
@@ -74,12 +81,12 @@ class TeamView extends Component {
                             {this.props.currentTeam.admins
                             && this.props.currentTeam.admins.includes(this.props.auth.user.id)
                             && (this.state.editingMode
-                                ? <Button.Group size='mini' floated='right'>
-                                    <Button onClick={this.handleEditing}>Cancel</Button>
-                                    <Button.Or/>
-                                    <Button positive onClick={this.handleEditing}>Save</Button>
-                                </Button.Group>
-                                : <Button primary size='mini' floated='right' onClick={this.handleEditing}>
+                                ?
+                                <Button positive size='mini' floated='right' onClick={this.handleSaveEditing}>
+                                    <Icon name='check'/>Save
+                                </Button>
+                                :
+                                <Button primary size='mini' floated='right' onClick={this.handleEditing}>
                                     <Icon name='edit'/>Edit
                                 </Button>
                             )}
@@ -130,7 +137,8 @@ class TeamView extends Component {
                                     <List.Item>
                                         {this.state.editingMode && this.props.auth.user.id !== _id &&
                                         <List.Content floated='right' verticalAlign='middle'>
-                                            <Icon color='red' name='trash' link onClick={() => this.handleDeleteMember(_id)}/>
+                                            <Icon color='red' name='trash' link
+                                                  onClick={() => this.handleDeleteMember(_id)}/>
                                         </List.Content>
                                         }
 
@@ -183,13 +191,13 @@ class TeamView extends Component {
                             <List selection relaxed='very'>
                                 {this.props.boards.map(({_id, name}) => (
                                     <Card.Group>
-                                        <Card fluid color='blue' header={name} link onClick={() => this.redirectionBoard(_id)}/>
+                                        <Card fluid color='blue' header={name} link
+                                              onClick={() => this.redirectionBoard(_id)}/>
                                     </Card.Group>
                                 ))}
                             </List>
                         </Grid.Column>
                     </Grid>
-                </Form>
             </Container>
         )
     }
