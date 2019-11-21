@@ -29,6 +29,10 @@ const currentBoardReducer = (state =  [], action) => {
             return action.payload.board
         }
 
+        case types.UPDATE_BOARD_SUCCESS: {
+            return action.payload.board
+        }
+
         default:
             return state;
     }

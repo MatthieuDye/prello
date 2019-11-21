@@ -191,3 +191,25 @@ export const updateMemberRole = (userId, boardId, isAdmin) => dispatch => {
         );
 };
 
+//_______ UPDATE BOARD _______
+
+export const updateBoardSuccessAction = board => ({
+    type: TYPE.UPDATE_BOARD_SUCCESS,
+    payload: {
+        board,
+    },
+});
+
+export const updateBoard = (boardId, boardData) => dispatch => {
+
+    axios
+        .put(`/api/private/board/admin/${boardId}/update`, boardData, {headers : {"boardId" : boardId}})
+        .then(res => dispatch(updateBoardSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
