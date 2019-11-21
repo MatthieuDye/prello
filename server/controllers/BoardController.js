@@ -140,7 +140,7 @@ const BoardController = () => {
                                     })
                                 }, {
                                     path: 'guestMembers',
-                                    select: ['firstName', 'lastName']
+                                    select: ['firstName', 'lastName', 'userName']
                                 }, {
                                     path: 'team',
                                     select: ['name', 'members'],
@@ -207,7 +207,7 @@ const BoardController = () => {
                                                         })
                                                     }, {
                                                         path: 'guestMembers',
-                                                        select: ['firstName', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     }, {
                                                         path: 'team',
                                                         select: ['name', 'members'],
@@ -290,7 +290,7 @@ const BoardController = () => {
                                                         })
                                                     }, {
                                                         path: 'guestMembers',
-                                                        select: ['firstName', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     }, {
                                                         path: 'team',
                                                         select: ['name', 'members'],
@@ -366,7 +366,7 @@ const BoardController = () => {
                                                     })
                                                 }, {
                                                     path: 'guestMembers',
-                                                    select: ['firstName', 'lastName']
+                                                    select: ['firstName', 'lastName', 'userName']
                                                 }, {
                                                     path: 'team',
                                                     select: ['name', 'members'],
@@ -394,7 +394,7 @@ const BoardController = () => {
                                                     })
                                                 }, {
                                                     path: 'guestMembers',
-                                                    select: ['firstName', 'lastName']
+                                                    select: ['firstName', 'lastName', 'userName']
                                                 }, {
                                                     path: 'team',
                                                     select: ['name', 'members'],
@@ -470,7 +470,7 @@ const BoardController = () => {
                                                         })
                                                     }, {
                                                         path: 'guestMembers',
-                                                        select: ['firstName', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     }, {
                                                         path: 'team',
                                                         select: ['name', 'members'],
@@ -548,7 +548,7 @@ const BoardController = () => {
                                                         })
                                                     }, {
                                                         path: 'guestMembers',
-                                                        select: ['firstName', 'lastName']
+                                                        select: ['firstName', 'lastName', 'userName']
                                                     },{
                                                         path: 'team',
                                                         select: ['name', 'members'],
@@ -604,7 +604,7 @@ const BoardController = () => {
                 })
             }, {
                 path: 'guestMembers',
-                select: ['firstName', 'lastName']
+                select: ['firstName', 'lastName', 'userName']
             }, {
                 path: 'team',
                 select: ['name', 'members'],
