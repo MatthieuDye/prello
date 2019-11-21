@@ -24,13 +24,8 @@ class MyBoards extends Component {
     };
 
     handleFavorite = (boardId) => {
-        console.log("IN HANDLE");
-        console.log(boardId);
-
         const isFavorite = this.isFavorite(boardId);
-        console.log(isFavorite);
         const userID = this.props.auth.user.id;
-        console.log(userID);
         this.props.favoriteBoard(userID, boardId, !isFavorite);
     };
 

@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import AddTeamMember from "./AddTeamMember";
+
+import {Formik} from "formik";
+import * as Yup from "yup";
 import {
     Button,
     Card,
@@ -17,11 +20,9 @@ import {
     Segment
 } from "semantic-ui-react";
 //________ACTIONS________
-import {deleteMember, fetchTeam, updateMemberRole} from "../../actions/teamActions";
-import {Formik} from "formik";
-import * as Yup from "yup";
+import {deleteMember, fetchTeam, updateMemberRole, updateTeam} from "../../actions/teamActions";
 
-const CreateTeamSchema = Yup.object().shape({
+const UpdateTeamSchema = Yup.object().shape({
     teamName: Yup.string()
         .required('Team name is required')
         .max(50, 'Team name should not exceed 50 characters'),
@@ -50,13 +51,6 @@ class TeamView extends Component {
         })
     };
 
-    handleSaveEditing = (e) => {
-
-        this.handleEditing(e);
-        // TODO
-
-    };
-
     // MEMBER EDIT HANDLERS
     handleMemberRoleChange = (memberID) => {
         const teamID = this.props.currentTeam._id;
@@ -81,15 +75,26 @@ class TeamView extends Component {
                         teamName: this.props.currentTeam.name,
                         description: this.props.currentTeam.description
                     }}
-                    validationSchema={CreateTeamSchema}
+                    enableReinitialize
+                    validationSchema={UpdateTeamSchema}
                     onSubmit={values => {
-                        //TODO
+
+                        const teamData = {
+                            name: values.teamName,
+                            description: values.description,
+                        };
+
+                        this.handleEditing();
+                        const teamID = this.props.currentTeam._id;
+
+                        this.props.updateTeam(teamID, teamData)
                     }}
                 >
 
                     {({handleChange, handleSubmit, values, errors}) => (
 
-                        <Form onSubmit={handleSubmit}> <Divider hidden/>
+                        <Form>
+                            <Divider hidden/>
                             <Header as='h2'>
                                 <Segment.Inline>
                                     <Icon name='users'/>
@@ -109,12 +114,11 @@ class TeamView extends Component {
                                     && this.props.currentTeam.admins.includes(this.props.auth.user.id)
                                     && (this.state.editingMode
                                             ?
-                                            <Button positive size='mini' floated='right'
-                                                    onClick={this.handleSaveEditing}>
+                                            <Button positive size='mini' floated='right' type='submit' onClick={handleSubmit}>
                                                 <Icon name='check'/>Save
                                             </Button>
                                             :
-                                            <Button primary size='mini' floated='right' onClick={this.handleEditing}>
+                                            <Button primary size='mini' floated='right' type='button' onClick={this.handleEditing}>
                                                 <Icon name='edit'/>Edit
                                             </Button>
                                     )}
@@ -239,6 +243,7 @@ class TeamView extends Component {
 TeamView.propTypes = {
     currentTeam: PropTypes.object.isRequired,
     fetchTeam: PropTypes.func.isRequired,
+    updateTeam: PropTypes.func.isRequired,
     deleteMember: PropTypes.func.isRequired,
     updateMemberRole: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
@@ -260,5 +265,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchTeam, updateMemberRole, deleteMember}
+    {fetchTeam, updateMemberRole, deleteMember, updateTeam}
 )(TeamView);
