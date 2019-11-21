@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {BrowserRouter as Router, Route, Link, Switch, Redirect} from "react-router-dom";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import './App.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import {setCurrentUser, logoutUser} from "./actions/authActions";
+import {logoutUser, setCurrentUser} from "./actions/authActions";
 import {Provider} from "react-redux";
 import store from "./store";
 
@@ -22,8 +22,9 @@ import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
+import BoardDetails from "./components/boards/BoardDetails";
 
-import {Menu, Dropdown} from 'semantic-ui-react'
+import {Dropdown, Icon, Menu} from 'semantic-ui-react'
 import LoaderAuth from "./components/auth/LoaderAuth";
 
 // Check for token to keep user logged in
@@ -47,7 +48,9 @@ if (localStorage.jwtToken) {
 }
 
 class App extends Component {
-    state = {}
+    state = {
+        activeItem: 'boards'
+    };
 
     handleItemClick = (e, {name}) => this.setState({activeItem: name})
 
@@ -64,7 +67,6 @@ class App extends Component {
                     <Menu.Item>
                         <img src={require('./assets/prello_icon.png')} alt="Prello logo"/>
                     </Menu.Item>
-
                     <Menu.Item
                         name='boards'
                         active={activeItem === 'boards'}
@@ -116,6 +118,7 @@ class App extends Component {
             </React.Fragment>
 
         )
+
         return (
             <Provider store={store}>
                 <Router>

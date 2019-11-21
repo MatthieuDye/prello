@@ -16,12 +16,8 @@ class BoardView extends Component {
         this.props.fetchBoard(this.props.match.params.boardId);
     }
 
-    redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/member`);
-    };
-
-    redirectionAddBoardTeam = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/team`);
+    redirectionBoardDetails = (boardId) => {
+        this.props.history.push(`/board/${boardId}/details`);
     };
 
     render() {
@@ -30,8 +26,7 @@ class BoardView extends Component {
                 <div className={"header"}>
                     <section>
                         {this.props.name.toUpperCase()} | {}
-                        <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
-                        <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
+                        <Button onClick={() => this.redirectionBoardDetails(this.props.currentBoard._id)}>Details</Button>
                     </section>
                 </div>
 
