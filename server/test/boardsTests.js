@@ -44,6 +44,16 @@ const teamData = {
     id:""
 }
 
+const userNotBoardMember = {
+    firstName: 'notMember',
+    lastName: 'notMember',
+    userName: 'notMember',
+    email: 'notMember@user.fr',
+    password: 'notMember',
+    password2: 'notMember'
+};
+
+let tokenNotBoardMember = null;
 let token;
 
 describe('POST /board/create', () => {
@@ -62,6 +72,15 @@ describe('POST /board/create', () => {
                     .send(userDataTwo)
                     .then((res) => {
                         userDataTwo.userId = res.body.user._id
+                    });
+                await request(app)
+                    .post('/api/public/register')
+                    .send(userNotBoardMember);
+                await request(app)
+                    .post('/api/public/login')
+                    .send({ email: userNotBoardMember.email, password: userNotBoardMember.password })
+                    .then((res) => {
+                        tokenNotBoardMember = res.body.token;
                     });
 
                 request(app)
@@ -114,6 +133,13 @@ describe('GET /api/private/board/member/:boardId', () => {
             .get('/api/private/board/member/' + boardData.id)
             .expect('Content-Type', /json/)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/' + boardData.id)
+            .set({'Authorization': tokenNotBoardMember, "boardId" : boardData.id})
+            .expect('Content-Type', /json/)
+            .expect(403, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)

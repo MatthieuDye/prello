@@ -173,7 +173,7 @@ describe('GET /api/private/board/member/card/:cardId', () => {
             .get('/api/private/board/member/card/' + cardData.id)
             .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
-            .expect(401, done);
+            .expect(403, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
@@ -208,6 +208,13 @@ describe('PUT /api/private/board/member/card/:cardId', () => {
             .put(`/api/private/board/member/card/${cardData.id}`)
             .send(newCardData)
             .expect(401, done);
+    });
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/card/${cardData.id}`)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .send(newCardData)
+            .expect(403, done);
     });
     it('should return 422 ERROR', (done) => {
         const wrongData = {
@@ -251,6 +258,12 @@ describe('DELETE /api/private/board/member/card/:cardId', () => {
         request(app)
             .delete(`/api/private/board/member/card/${cardData.id}`)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/card/${cardData.id}`)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .expect(403, done);
     });
     it('should return 422 ERROR', (done) => {
         request(app)

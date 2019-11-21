@@ -30,6 +30,17 @@ const boardData = {
     userId: ""
 };
 
+const userNotBoardMember = {
+    firstName: 'notMember',
+    lastName: 'notMember',
+    userName: 'notMember',
+    email: 'notMember@user.fr',
+    password: 'notMember',
+    password2: 'notMember'
+};
+
+let tokenNotBoardMember = null;
+
 let token = null;
 let createdBoardId = null;
 
@@ -48,6 +59,15 @@ describe('POST /api/private/board/member/list/create', () => {
                     .send({ email: userData.email, password: userData.password })
                     .then((res) => {
                         token = res.body.token;
+                    });
+                await request(app)
+                    .post('/api/public/register')
+                    .send(userNotBoardMember);
+                await request(app)
+                    .post('/api/public/login')
+                    .send({ email: userNotBoardMember.email, password: userNotBoardMember.password })
+                    .then((res) => {
+                        tokenNotBoardMember = res.body.token;
                     });
                 request(app)
                     .post('/api/private/board/create')
@@ -83,6 +103,14 @@ describe('POST /api/private/board/member/list/create', () => {
             .send({ name: listData.name, boardId: createdBoardId })
             .expect('Content-Type', /json/)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/member/list/create')
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .send({ name: listData.name, boardId: createdBoardId })
+            .expect('Content-Type', /json/)
+            .expect(403, done);
     });
     it('should return 201 OK with the same name', (done) => {
         request(app)
@@ -123,6 +151,13 @@ describe('GET /api/private/board/member/list/:listId', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/list/' + listData.id)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .expect('Content-Type', /json/)
+            .expect(403, done);
+    });
     it('should return 404 ERROR', (done) => {
         request(app)
             .get('/api/private/board/member/list/000000000000000000000000')
@@ -156,6 +191,13 @@ describe('PUT /api/private/board/member/list/:listId/rename', () => {
             .put(`/api/private/board/member/list/${listData.id}/rename`)
             .send(newListData)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/rename`)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .send(newListData)
+            .expect(403, done);
     });
     it('should return 422 ERROR', (done) => {
         const wrongData = {
@@ -208,6 +250,14 @@ describe('PUT /api/private/board/member/list/:listId/archive', () => {
             .send({ isArchived: false })
             .expect('Content-Type', /json/)
             .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .put(`/api/private/board/member/list/${listData.id}/archive`)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .send({ isArchived: false })
+            .expect('Content-Type', /json/)
+            .expect(403, done);
     });
     it('should return 404 ERROR', (done) => {
         request(app)
