@@ -17,7 +17,7 @@ import {
     Popup,
     Segment
 } from 'semantic-ui-react'
-import {fetchBoard, updateMemberRole, deleteTeamMember, updateBoard, deleteBoardMember} from "../../actions/boardActions";
+import {fetchBoard, updateMemberRole, deleteBoardTeam, updateBoard, deleteBoardMember} from "../../actions/boardActions";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
 
@@ -61,20 +61,16 @@ class BoardDetails extends Component {
         this.props.deleteBoardMember(memberID, this.props.currentBoard._id);
     };
 
+    handleDeleteTeam = () => {
+        const teamID = this.props.currentBoard.team._id;
+        this.props.deleteBoardTeam(teamID, this.props.currentBoard._id);
+    };
+
     // BOARDS
     redirectionTeam = () => {
         const teamID = this.props.currentBoard.team._id;
         this.props.history.push(`/team/${teamID}`);
     };
-
-    redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/member`);
-    };
-
-    redirectionAddBoardTeam = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/team`);
-    };
-
 
     render() {
         return (
@@ -174,8 +170,7 @@ class BoardDetails extends Component {
                                 <List.Item>
                                     {this.state.editingMode && this.props.auth.user._id !== _id &&
                                     <List.Content floated='right' verticalAlign='middle'>
-                                        <Icon color='red' name='trash' link
-                                              onClick={() => this.handleDeleteMember(_id)}/>
+                                        <Icon color='red' name='trash' link onClick={() => this.handleDeleteMember(_id)}/>
                                     </List.Content>
                                     }
 
@@ -232,16 +227,13 @@ class BoardDetails extends Component {
                         && this.props.currentBoard.team !== null
                             ?
                             (this.state.editingMode
-                                    ? <List>
-                                    <List.Item>
+                                    ? <Segment textAlign='center'>
                                         <AddBoardTeam hasTeam={true}/>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Button floated='right'>
-                                            <Icon name='trash' color='red'/>
+                                        <Divider />
+                                        <Button floated='center'>
+                                            <Icon name='trash' color='red' link onClick={() => this.handleDeleteTeam()}/>
                                         </Button>
-                                    </List.Item>
-                                    </List>
+                                    </Segment>
                                     : <Card color='blue' fluid link onClick={this.redirectionTeam}>
                                         <Card.Content>
                                             <Card.Header>{this.props.currentBoard.team.name}</Card.Header>
@@ -267,7 +259,7 @@ BoardDetails.propTypes = {
     name: PropTypes.string.isRequired,
     fetchBoard: PropTypes.func.isRequired,
     updateMemberRole: PropTypes.func.isRequired,
-    deleteTeamMember: PropTypes.func.isRequired,
+    deleteBoardTeam: PropTypes.func.isRequired,
     deleteBoardMember: PropTypes.func.isRequired,
     updateBoard: PropTypes.func.isRequired
 };
@@ -286,5 +278,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchBoard, updateMemberRole, deleteTeamMember, deleteBoardMember, updateBoard}
+    {fetchBoard, updateMemberRole, deleteBoardTeam, deleteBoardMember, updateBoard}
 )(BoardDetails);
