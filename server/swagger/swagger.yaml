@@ -109,6 +109,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/user/{userName} :
     put:
@@ -156,6 +162,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/user/findByBeginName{query} :
     get:
@@ -180,6 +192,70 @@ paths:
                 $ref: "#/components/schemas/Users"
         '404':
           description: The query found no user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/private/user/{userId}/board/favorite/{boardId}:
+    put:
+      summary: Update the favorite boards list for a user
+      security:
+        - token: []
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            type: string
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: User details
+        required: true
+        content:
+          application/json:
+            schema:      # Request body contents
+              type: object
+              properties:
+                isFavorite:
+                  type: boolean
+              example:   # Sample object
+                isFavorite: true
+      responses:
+        '201':
+          description: User favorite boards list sucessfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: User or board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -220,6 +296,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/team/member/{teamId} :
     get:
@@ -250,6 +332,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -301,6 +395,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/user/{userId}/teams :
     get:
@@ -335,6 +441,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/team/admin/{teamId}/add/user/{userName} :
     post:
@@ -365,6 +477,18 @@ paths:
                 $ref: "#/components/schemas/Team"
         '404':
           description: User or Team not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -405,6 +529,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '500':
           description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -461,6 +597,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/team/admin/delete/{teamId} :
     delete:
@@ -495,6 +643,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/team/findByBeginName{query} :
     get:
@@ -519,6 +679,12 @@ paths:
                 $ref: "#/components/schemas/Teams"
         '404':
           description: The query found no team
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -559,6 +725,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/{boardId} :
     get:
@@ -589,6 +761,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -634,6 +818,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/user/{userId}/boards :
     get:
@@ -664,6 +860,12 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -708,6 +910,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/delete/user/{userId}:
     delete:
@@ -744,6 +958,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -800,6 +1026,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/add/team/{teamName}:
     post:
@@ -840,6 +1078,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/{boardId}/info :
     get:
@@ -870,6 +1120,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -914,6 +1176,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/list/create:
     post:
@@ -940,6 +1214,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '500':
           description: Servor error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -974,6 +1260,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -1015,6 +1313,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -1065,6 +1375,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/card/create:
     post:
@@ -1105,6 +1427,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/member/card/{cardId} :
     get:
@@ -1135,6 +1469,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
@@ -1178,6 +1524,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     delete:
       summary: Delete a card
       security:
@@ -1206,6 +1564,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         '422':
           description: Invalid card id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '412':
+          description: Precondition Failed
           content:
             application/json:
               schema:
