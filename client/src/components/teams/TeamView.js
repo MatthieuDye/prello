@@ -100,7 +100,7 @@ class TeamView extends Component {
                                     <Icon name='users'/>
                                     <Header.Content>
                                         {this.props.currentTeam.admins
-                                        && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                                        && this.props.currentTeam.admins.includes(this.props.auth.user._id)
                                         && this.state.editingMode
                                             ? <Form.Input
                                                 value={values.teamName}
@@ -111,7 +111,7 @@ class TeamView extends Component {
                                         }
                                     </Header.Content>
                                     {this.props.currentTeam.admins
-                                    && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                                    && this.props.currentTeam.admins.includes(this.props.auth.user._id)
                                     && (this.state.editingMode
                                             ?
                                             <Button positive size='mini' floated='right' type='submit' onClick={handleSubmit}>
@@ -163,7 +163,7 @@ class TeamView extends Component {
 
                         <Divider hidden/>
                         {this.props.currentTeam.admins
-                        && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                        && this.props.currentTeam.admins.includes(this.props.auth.user._id)
                         && <AddTeamMember/>
                         }
                         <Divider hidden/>
@@ -172,14 +172,14 @@ class TeamView extends Component {
                             {this.props.members.map(({_id, firstName, lastName, userName}) => (
 
                                 <List.Item>
-                                    {this.state.editingMode && this.props.auth.user.id !== _id &&
+                                    {this.state.editingMode && this.props.auth.user._id !== _id &&
                                     <List.Content floated='right' verticalAlign='middle'>
                                         <Icon color='red' name='trash' link
                                               onClick={() => this.handleDeleteMember(_id)}/>
                                     </List.Content>
                                     }
 
-                                    {this.state.editingMode && this.props.auth.user.id !== _id &&
+                                    {this.state.editingMode && this.props.auth.user._id !== _id &&
                                     <List.Content floated='right' verticalAlign='middle'>
                                         <Popup
                                             trigger={

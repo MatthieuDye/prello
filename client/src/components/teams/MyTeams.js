@@ -9,7 +9,7 @@ import {fetchTeams} from "../../actions/teamActions";
 class MyTeams extends Component {
 
     componentDidMount() {
-        this.props.fetchTeams(this.props.auth.user.id);
+        this.props.fetchTeams(this.props.auth.user._id);
     }
 
     redirectionTeam = (teamId) => {

@@ -12,7 +12,7 @@ import {favoriteBoard} from "../../actions/userActions";
 class MyBoards extends Component {
 
     componentDidMount() {
-        this.props.fetchBoards(this.props.auth.user.id);
+        this.props.fetchBoards(this.props.auth.user._id);
     }
 
     redirectionBoard = (boardId) => {
@@ -25,7 +25,7 @@ class MyBoards extends Component {
 
     handleFavorite = (boardId) => {
         const isFavorite = this.isFavorite(boardId);
-        const userID = this.props.auth.user.id;
+        const userID = this.props.auth.user._id;
         this.props.favoriteBoard(userID, boardId, !isFavorite);
     };
 
