@@ -17,6 +17,18 @@ const currentBoardReducer = (state =  [], action) => {
             return action.payload.board
         }
 
+        case types.DELETE_MEMBER_BOARD_SUCCESS: {
+            return action.payload.board
+        }
+
+        case types.DELETE_TEAM_BOARD_SUCCESS: {
+            return action.payload.board
+        }
+
+        case types.UPDATE_BOARD_MEMBER_ROLE_SUCCESS: {
+            return action.payload.board
+        }
+
         default:
             return state;
     }

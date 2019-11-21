@@ -127,3 +127,67 @@ export const addTeam = (teamName, boardId) => dispatch => {
             })
         );
 };
+
+//________ DELETE MEMBER _______
+
+export const deleteMemberBoardSuccessAction = board => ({
+    type: TYPE.DELETE_MEMBER_BOARD_SUCCESS,
+    payload: {
+        board,
+    },
+});
+
+export const deleteBoardMember = (userId, boardId) => dispatch => {
+    axios
+        .delete(`/api/private/board/admin/${boardId}/delete/user/${userId}`, {headers : {"boardId" : boardId}})
+        .then(res => dispatch(deleteMemberBoardSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+//________ DELETE TEAM _______
+
+export const deleteMemberTeamSuccessAction = board => ({
+    type: TYPE.DELETE_TEAM_BOARD_SUCCESS,
+    payload: {
+        board,
+    },
+});
+
+export const deleteTeamMember = (teamId, boardId) => dispatch => {
+    axios
+        .delete(`/api/private/board/admin/${boardId}/delete/team/${teamId}`, {headers : {"boardId" : boardId}})
+        .then(res => dispatch(deleteMemberTeamSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+// _______ UPDATE MEMBER ROLE _____
+
+export const updateBoardMemberRoleSuccessAction = team => ({
+    type: TYPE.UPDATE_BOARD_MEMBER_ROLE_SUCCESS,
+    payload: {
+        team,
+    },
+});
+
+export const updateMemberRole = (userId, boardId, isAdmin) => dispatch => {
+    axios
+        .put(`/api/private/board/admin/${boardId}/update/user/role/${userId}`, {isAdmin: isAdmin}, {headers : {"boardId" : boardId}} )
+        .then(res => dispatch(updateBoardMemberRoleSuccessAction(res.data.board)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
