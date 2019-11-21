@@ -22,7 +22,6 @@ import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
-import Test from "./components/boards/Testdnd";
 
 import {Menu, Dropdown} from 'semantic-ui-react'
 import LoaderAuth from "./components/auth/LoaderAuth";
