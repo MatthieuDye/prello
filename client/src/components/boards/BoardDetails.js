@@ -18,9 +18,16 @@ import {
     Segment
 } from 'semantic-ui-react'
 import {fetchBoard} from "../../actions/boardActions";
-import AddTeamMember from "../teams/AddTeamMember";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
+
+const UpdateBoardSchema = Yup.object().shape({
+    boardName: Yup.string()
+        .required('Team name is required')
+        .max(50, 'Team name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
+});
 
 class BoardDetails extends Component {
 
@@ -72,6 +79,7 @@ class BoardDetails extends Component {
                         boardName: this.props.currentBoard.name,
                         description: this.props.currentBoard.description
                     }}
+                    validationSchema={UpdateBoardSchema}
                     enableReinitialize
                     onSubmit={values => {
 
@@ -150,14 +158,7 @@ class BoardDetails extends Component {
                         </Divider>
 
                         <Divider hidden/>
-
                         <AddBoardMember />
-
-                        <AddBoardTeam />
-
-                        <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
-                        <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
-
                         <Divider hidden/>
 
                         <List selection relaxed='very'>
@@ -212,6 +213,8 @@ class BoardDetails extends Component {
                             </Header>
                         </Divider>
 
+                        <Divider hidden/>
+                        <AddBoardTeam />
                         <Divider hidden/>
 
                     </Grid.Column>
