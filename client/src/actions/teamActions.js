@@ -121,7 +121,7 @@ export const deleteMemberSuccessAction = team => ({
 
 export const deleteMember = (userId, teamId) => dispatch => {
     axios
-        .put(`/api/private/team/admin/${teamId}/delete/user/${userId}`)
+        .delete(`/api/private/team/admin/${teamId}/delete/user/${userId}`)
         .then(res => dispatch(deleteMemberSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({

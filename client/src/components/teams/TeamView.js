@@ -45,7 +45,7 @@ class TeamView extends Component {
         this.handleEditing(e);
         // TODO
 
-    }
+    };
 
     // MEMBER EDIT HANDLERS
     handleMemberRoleChange = (memberID) => {
@@ -61,6 +61,7 @@ class TeamView extends Component {
     // BOARDS
     redirectionBoard = (boardId) => {
         this.props.history.push(`/board/${boardId}`);
+    };
 
     render() {
         return (
