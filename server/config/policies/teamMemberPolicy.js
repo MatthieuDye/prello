@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
 
 
     const user = decode.decodeToken(req);
-    const userId = user.id;
+    const userId = user._id;
     const teamId = req.header("teamid");
 
     if (teamId === undefined) {

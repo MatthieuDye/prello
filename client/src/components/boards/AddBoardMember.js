@@ -106,7 +106,7 @@ class AddBoardMember extends Component {
         return (
             <div style = {{ marginTop: 40, marginLeft: 50 }}>
                 <div>
-                    Board : {this.state.board.name}
+                    Board : {this.props.currentBoard.name}
                 </div>
                 <div className="status">
                     <strong>Status:</strong> {status}

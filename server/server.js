@@ -106,7 +106,7 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
         const user = req.user;
 
         const payload = {
-            id: user.id,
+            _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,

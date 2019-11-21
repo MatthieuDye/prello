@@ -37,7 +37,7 @@ const CreateBoard = (props) => (
                         const boardData = {
                             name: values.boardName,
                             description: values.description,
-                            userId: props.auth.user.id
+                            userId: props.auth.user._id
                         };
 
                         props.createBoard(boardData, props.history);

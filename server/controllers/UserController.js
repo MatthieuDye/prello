@@ -98,7 +98,7 @@ const UserController = () => {
           // User matched
           // Create JWT Payload
           const payload = {
-            id: user.id,
+            _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,
@@ -139,7 +139,7 @@ const UserController = () => {
 
 
     const user = req.body.user ;
-    const username = user.firstname.toLowerCase() + "." + user.lastname.toLowerCase();
+    const username = user.firstname.toLowerCase() + user.lastname.toLowerCase() + "UM";
 
     let userId = new ObjectID();
 
@@ -185,7 +185,7 @@ const UserController = () => {
           } else {
             // Create JWT Payload
             const payload = {
-              id: existingUser._id,
+              _id: existingUser._id,
               firstName: existingUser.firstName,
               lastName: existingUser.lastName,
               userName: existingUser.userName,

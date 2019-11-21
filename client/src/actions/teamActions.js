@@ -14,6 +14,7 @@ export const createTeamSuccessAction = team => ({
 
 
 export const createTeam = (teamData, history) => dispatch => {
+console.log(teamData);
   axios
     .post("/api/private/team/create", teamData)
     .then(res => dispatch(createTeamSuccessAction(res.data.team)))
@@ -142,7 +143,7 @@ export const updateTeamSuccessAction = team => ({
 
 export const updateTeam = (teamId, teamData) => dispatch => {
     axios
-        .put(`/api/private/team/admin/${teamId}/update`, teamData)
+        .put(`/api/private/team/admin/${teamId}/update`, teamData, {headers : {"teamId" : teamId}})
         .then(res => dispatch(updateTeamSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
