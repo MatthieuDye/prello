@@ -63,3 +63,24 @@ export const archiveList = (archiveListData) => dispatch => {
             })
         );
 };
+
+// _______ DELETE LIST_______
+
+export const deleteListSuccessAction = list => ({
+    type: TYPE.DELETE_LIST_SUCCESS,
+    payload: {
+        list,
+    },
+});
+
+export const deleteList = (listData) => dispatch => {
+    axios
+        .delete(`/api/private/board/member/list/${listData.id}`, listData, {headers : {boardId : listData.boardId}}  )
+        .then(res => dispatch(deleteListSuccessAction(res.data.list)))
+        .catch(err =>
+            dispatch({
+                type: TYPE.GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
