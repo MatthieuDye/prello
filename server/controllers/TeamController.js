@@ -365,8 +365,8 @@ const TeamController = () => {
                                                     }
                                                     ]
                                                 )
-                                                .then(team => {
-                                                    res.status(201).send({ team: team, message: 'User role successfully updated in the team' });
+                                                .then(teamUpdated => {
+                                                    res.status(201).send({ team: teamUpdated, message: 'User role successfully updated in the team' });
                                                 })
                                                 .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                         })
@@ -379,8 +379,8 @@ const TeamController = () => {
                                     })
                                         .then(team => {
                                             Team.findById(req.params.teamId)
-                                                .then(team => {
-                                                    res.status(201).send({ team: team, message: 'User role successfully updated in the team' });
+                                                .then(teamUpdated => {
+                                                    res.status(201).send({ team: teamUpdated, message: 'User role successfully updated in the team' });
                                                 })
                                                 .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                         })
