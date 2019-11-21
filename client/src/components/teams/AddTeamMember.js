@@ -46,7 +46,8 @@ class AddTeamMember extends Component {
     }
 
     onSubmit = () => {
-        this.props.addMember(this.state.value, this.props.currentTeam._id)
+        this.setState({value: ''});
+        this.props.addMember(this.state.value, this.props.currentTeam._id);
     };
 
     renderInputComponent = inputProps => {
