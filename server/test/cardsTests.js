@@ -40,9 +40,20 @@ const listData = {
     id: ""
 };
 
+const userNotBoardMember = {
+    firstName: 'notMember',
+    lastName: 'notMember',
+    userName: 'notMember',
+    email: 'notMember@user.fr',
+    password: 'notMember',
+    password2: 'notMember'
+};
+
 let token = null;
 let createdBoardId = null;
 let createdListId = null;
+
+let tokenNotBoardMember = null;
 
 describe('POST /api/private/board/member/card/create', () => {
     before((done) => {
@@ -59,6 +70,15 @@ describe('POST /api/private/board/member/card/create', () => {
                     .send({ email: userData.email, password: userData.password })
                     .then((res) => {
                         token = res.body.token;
+                    });
+                await request(app)
+                    .post('/api/public/register')
+                    .send(userNotBoardMember);
+                await request(app)
+                    .post('/api/public/login')
+                    .send({ email: userNotBoardMember.email, password: userNotBoardMember.password })
+                    .then((res) => {
+                        tokenNotBoardMember = res.body.token;
                     });
                 await request(app)
                     .post('/api/private/board/create')
@@ -102,6 +122,14 @@ describe('POST /api/private/board/member/card/create', () => {
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .post('/api/private/board/member/card/create')
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .send({ name: cardData.name, listId: createdListId })
+            .expect('Content-Type', /json/)
+            .expect(403, done);
+    });
     it('should return 201 OK with the same name', (done) => {
         request(app)
             .post('/api/private/board/member/card/create')
@@ -137,6 +165,13 @@ describe('GET /api/private/board/member/card/:cardId', () => {
     it('should return 401 ERROR', (done) => {
         request(app)
             .get('/api/private/board/member/card/' + cardData.id)
+            .expect('Content-Type', /json/)
+            .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .get('/api/private/board/member/card/' + cardData.id)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
             .expect('Content-Type', /json/)
             .expect(401, done);
     });
