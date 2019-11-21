@@ -17,7 +17,7 @@ import {
     Popup,
     Segment
 } from 'semantic-ui-react'
-import {fetchBoard, updateMemberRole, deleteTeamMember, updateBoard} from "../../actions/boardActions";
+import {fetchBoard, updateMemberRole, deleteTeamMember, updateBoard, deleteBoardMember} from "../../actions/boardActions";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
 
@@ -58,6 +58,7 @@ class BoardDetails extends Component {
     };
 
     handleDeleteMember = (memberID) => {
+        this.props.deleteBoardMember(memberID, this.props.currentBoard._id);
     };
 
     // BOARDS
@@ -267,6 +268,7 @@ BoardDetails.propTypes = {
     fetchBoard: PropTypes.func.isRequired,
     updateMemberRole: PropTypes.func.isRequired,
     deleteTeamMember: PropTypes.func.isRequired,
+    deleteBoardMember: PropTypes.func.isRequired,
     updateBoard: PropTypes.func.isRequired
 };
 
@@ -284,5 +286,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {fetchBoard, updateMemberRole, deleteTeamMember, updateBoard}
+    {fetchBoard, updateMemberRole, deleteTeamMember, deleteBoardMember, updateBoard}
 )(BoardDetails);

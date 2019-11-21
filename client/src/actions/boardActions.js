@@ -172,10 +172,10 @@ export const deleteTeamMember = (teamId, boardId) => dispatch => {
 
 // _______ UPDATE MEMBER ROLE _____
 
-export const updateBoardMemberRoleSuccessAction = team => ({
+export const updateBoardMemberRoleSuccessAction = board => ({
     type: TYPE.UPDATE_BOARD_MEMBER_ROLE_SUCCESS,
     payload: {
-        team,
+        board,
     },
 });
 
