@@ -14,6 +14,10 @@ const listReducer = (state =  [], action) => {
         case types.ARCHIVE_LIST_SUCCESS: {
             return action.payload.list
         }
+
+        case types.DELETE_LIST_SUCCESS: {
+            return action.payload.list
+        }
         
         default:
             return state;

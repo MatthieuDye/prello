@@ -305,3 +305,39 @@ describe('PUT /api/private/board/member/list/:listId/archive', () => {
             });
     });
 });
+
+describe('DELETE /api/private/board/member/list/:listId', () => {
+    it('should return 401 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/list/${listData.id}`)
+            .expect(401, done);
+    });
+    it('should return 403 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/list/${listData.id}`)
+            .set({'Authorization': tokenNotBoardMember, "boardId" :createdBoardId})
+            .expect(403, done);
+    });
+    it('should return 422 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/list/666`)
+            .set({'Authorization': token, "boardId" :createdBoardId})
+            .expect(422, done);
+    });
+    it('should return 404 ERROR', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/list/000000000000000000000000`)
+            .set({'Authorization': token, "boardId" :createdBoardId})
+            .expect(404, done);
+    });
+    it('should return 201 OK', (done) => {
+        request(app)
+            .delete(`/api/private/board/member/list/${listData.id}`)
+            .set({'Authorization': token, "boardId" :createdBoardId})
+            .expect(201, (err, res) => {
+                expect(res.body.list).to.not.be.undefined;
+                expect(res.body.list.name).is.equal(listData.newName);
+                done();
+            });
+    });
+});

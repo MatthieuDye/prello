@@ -181,7 +181,7 @@ const CardController = () => {
                             //Delete the card to the list card array
                             List.update({}, {
                                 $pull: {
-                                    lists: id,
+                                    cards: id,
                                 }
                             }, {
                                 multi: true
