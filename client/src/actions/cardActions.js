@@ -12,7 +12,7 @@ export const updateCardSuccessAction = card => ({
 
 export const updateCard = (newCardData) => dispatch => {
     axios
-        .put(`/api/private/board/member/card/${newCardData.id}`, newCardData )
+        .put(`/api/private/board/member/card/${newCardData.id}`, newCardData, {headers : {boardId : newCardData.boardId}}  )
         .then(res => dispatch(updateCardSuccessAction(res.data.card)))
         .catch(err =>
             dispatch({

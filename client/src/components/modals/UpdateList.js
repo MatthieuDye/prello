@@ -47,12 +47,14 @@ class UpdateList extends Component {
 
         const renameListData = {
             name: this.state.name,
-            id: this.props.currentListId
+            id: this.props.currentListId,
+            boardId: this.props.currentBoard._id
         };
 
         const archiveListData = {
             isArchived: Boolean(this.state.isArchived),
-            id: this.props.currentListId
+            id: this.props.currentListId,
+            boardId: this.props.currentBoard._id
         }
 
         this.props.renameList(renameListData)

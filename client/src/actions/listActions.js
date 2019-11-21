@@ -12,7 +12,7 @@ export const addListCardSuccessAction = card => ({
 
 export const addListCard = (newCardData) => dispatch => {
     axios
-        .post(`/api/private/board/member/card/create`, newCardData )
+        .post(`/api/private/board/member/card/create`, newCardData, {headers : {boardId : newCardData.boardId}} )
         .then(res => dispatch(addListCardSuccessAction(res.data.card)))
         .catch(err =>
             dispatch({
@@ -33,7 +33,7 @@ export const renameListSuccessAction = list => ({
 
 export const renameList = (renameListData) => dispatch => {
     axios
-        .put(`/api/private/board/member/list/${renameListData.id}/rename`, renameListData )
+        .put(`/api/private/board/member/list/${renameListData.id}/rename`, renameListData, {headers : {boardId : renameListData.boardId}}  )
         .then(res => dispatch(renameListSuccessAction(res.data.list)))
         .catch(err =>
             dispatch({
@@ -54,7 +54,7 @@ export const archiveListSuccessAction = list => ({
 
 export const archiveList = (archiveListData) => dispatch => {
     axios
-        .put(`/api/private/board/member/list/${archiveListData.id}/archive`, archiveListData )
+        .put(`/api/private/board/member/list/${archiveListData.id}/archive`, archiveListData, {headers : {boardId : archiveListData.boardId}}  )
         .then(res => dispatch(archiveListSuccessAction(res.data.list)))
         .catch(err =>
             dispatch({

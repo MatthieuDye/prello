@@ -58,7 +58,8 @@ class UpdateCard extends Component {
             newDueDate: this.state.dueDate,
             newDueDateIsDone: Boolean(this.state.isDone),
             newIsArchived: Boolean(this.state.isArchived),
-            id: this.props.currentCardId
+            id: this.props.currentCardId,
+            boardId: this.props.currentBoard.boardId
         };
 
         this.props.updateCard(newCardInfo)
