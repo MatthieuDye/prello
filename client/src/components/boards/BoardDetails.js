@@ -17,6 +17,7 @@ import {
     Popup,
     Segment
 } from 'semantic-ui-react'
+import {fetchBoard} from "../../actions/boardActions";
 import AddTeamMember from "../teams/AddTeamMember";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
@@ -32,8 +33,8 @@ class BoardDetails extends Component {
     }
 
     componentDidMount() {
-        //this.props.fetchTeam(this.props.match.params.teamId);
-    }
+        this.props.fetchBoard(this.props.match.params.boardId);
+    };
 
     // EDIT HANDLER
     handleEditing = (e) => {
@@ -226,6 +227,7 @@ BoardDetails.propTypes = {
     guestMembers: PropTypes.array.isRequired,
     errors: PropTypes.object.isRequired,
     name: PropTypes.string.isRequired,
+    fetchBoard: PropTypes.func.isRequired
 };
 
 BoardDetails.defaultProps = {
@@ -242,5 +244,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    { }
+    {fetchBoard}
 )(BoardDetails);
