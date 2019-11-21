@@ -28,10 +28,9 @@ class TeamView extends Component {
     };
 
     handleMemberRoleChange = (memberID) => {
-        const userID = this.props.auth.user.id;
         const teamID = this.props.currentTeam._id;
         const isAdmin = this.props.currentTeam.admins.includes(memberID);
-        this.props.updateMemberRole(userID, teamID, !isAdmin);
+        this.props.updateMemberRole(memberID, teamID, !isAdmin);
     };
 
     redirectionBoard = (boardId) => {
