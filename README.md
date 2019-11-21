@@ -23,17 +23,6 @@ Deployed app: https://prello-ig.igpolytech.fr
 
 API documentation: https://prello-ig-back.igpolytech.fr/api-docs/
 
-## Team
-
-## Authors
-
-* **Alia CHAWAF** - [aliachawaf](https://github.com/aliachawaf)
-* **Matthieu DYE** - [MatthieuDye](https://github.com/MatthieuDye)
-* **Marine GARDEISEN** - [Gardeisen](https://github.com/Gardeisen)
-* **Rémi GESTIN** - [Remigestin](https://github.com/Remigestin)
-* **Nathan GUILLAUD** - [NathanGuillaud](https://github.com/NathanGuillaud)
-* **William REGNART** - [williamregnart](https://github.com/williamregnart)
-
 ## Getting started
 
 ### Requirements
@@ -74,3 +63,12 @@ You can run the tests in /server folder by using the following command:
 ```shell script
 npm test
 ```
+
+## Authors
+
+* **Alia CHAWAF** - [aliachawaf](https://github.com/aliachawaf)
+* **Matthieu DYE** - [MatthieuDye](https://github.com/MatthieuDye)
+* **Marine GARDEISEN** - [Gardeisen](https://github.com/Gardeisen)
+* **Rémi GESTIN** - [Remigestin](https://github.com/Remigestin)
+* **Nathan GUILLAUD** - [NathanGuillaud](https://github.com/NathanGuillaud)
+* **William REGNART** - [williamregnart](https://github.com/williamregnart)
