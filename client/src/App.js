@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import React, {Component} from "react";
+import {BrowserRouter as Router, Route, Link, Switch, Redirect} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import './App.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { setCurrentUser, logoutUser } from "./actions/authActions";
-import { Provider } from "react-redux";
+import {setCurrentUser, logoutUser} from "./actions/authActions";
+import {Provider} from "react-redux";
 import store from "./store";
 
 import Login from "./components/auth/Login";
@@ -23,7 +23,8 @@ import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
 
-import { Menu, Dropdown } from 'semantic-ui-react'
+import {Menu, Dropdown} from 'semantic-ui-react'
+import LoaderAuth from "./components/auth/LoaderAuth";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -48,7 +49,7 @@ if (localStorage.jwtToken) {
 class App extends Component {
     state = {}
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleItemClick = (e, {name}) => this.setState({activeItem: name})
 
     onLogoutClick = e => {
         e.preventDefault();
@@ -56,12 +57,12 @@ class App extends Component {
     };
 
     render() {
-        const { activeItem } = this.state
+        const {activeItem} = this.state
         const DefaultContainer = () => (
             <React.Fragment>
-            <Menu inverted>
+                <Menu inverted>
                     <Menu.Item>
-                        <img src={require('./assets/prello_icon.png')} alt="Prello logo" />
+                        <img src={require('./assets/prello_icon.png')} alt="Prello logo"/>
                     </Menu.Item>
 
                     <Menu.Item
@@ -102,30 +103,28 @@ class App extends Component {
                         </Dropdown>
                     </Menu.Menu>
                 </Menu>
-                
-                <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
-                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember} />
-                <PrivateRoute exact path="/:userName" component={Profile} />
-                <PrivateRoute exact path="/add/team" component={CreateTeam} />
-                <PrivateRoute exact path="/add/board" component={CreateBoard} />
-                <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
-                <PrivateRoute exact path='/team/:teamId' component={TeamView} />
-                <PrivateRoute exact path='/board/:boardId' component={BoardView} />
-                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember} />
-                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam} />
-                </React.Fragment>
+
+                <PrivateRoute exact path="/:userName/boards" component={MyBoards}/>
+                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember}/>
+                <PrivateRoute exact path="/:userName" component={Profile}/>
+                <PrivateRoute exact path="/add/team" component={CreateTeam}/>
+                <PrivateRoute exact path="/add/board" component={CreateBoard}/>
+                <PrivateRoute exact path="/:userName/teams" component={MyTeams}/>
+                <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
+                <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
+                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember}/>
+                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
+            </React.Fragment>
         )
         return (
             <Provider store={store}>
                 <Router>
-                    
-                    <div className="container">
-                        <Route path="/login" component={Login} />
-                        <Route exact path="/" component={Login} />
-                        <Route exact path="/register" component={Register} />
-                    </div>
                     <Switch>
-                        <PrivateRoute component={DefaultContainer} />
+                        <Route path="/loader" component={LoaderAuth}/>
+                        <Route path="/login" component={Login}/>
+                        <Route exact path="/" component={Login}/>
+                        <Route exact path="/register" component={Register}/>
+                        <PrivateRoute component={DefaultContainer}/>
                     </Switch>
 
                 </Router>
