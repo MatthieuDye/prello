@@ -64,7 +64,7 @@ export const loginPolytechUser = (tokenPolytech, history) => dispatch => {
     const user = jwt_decode(tokenPolytech);
 
     axios
-        .post("/api/public/login/polytech", {user : user})
+        .post("/api/public/login/polytech", {user : user, token: tokenPolytech})
         .then(res => {
             const token = res.data.token;
             localStorage.setItem("jwtToken", token);

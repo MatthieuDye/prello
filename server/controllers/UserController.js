@@ -131,6 +131,12 @@ const UserController = () => {
 
   const loginPolytech = async (req, res) => {
 
+     const verify = jwt.verify(req.body.token, process.env.AUTH_POLYTECH_SECRET);
+
+     if (!verify) {
+         return res.status(401).json({ message: "Unauthorized request"});
+     }
+
 
     const user = req.body.user ;
     const username = user.firstname.toLowerCase() + "." + user.lastname.toLowerCase();
@@ -259,20 +265,28 @@ const UserController = () => {
                   }).then(() =>
                       User
                           .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 } else {
-                  User.updateOne({_id: user.userId}, {
+                  User.updateOne({_id: user._id}, {
                     $pull: {
                       favoriteBoards: board._id
                     }
                   }).then(() =>
                       User
-                          .findOne({_id: userId})
+                          .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 }
@@ -355,7 +369,13 @@ const UserController = () => {
       .populate([{
         path: 'guestBoards',
         select: ['name', 'description']
-      }, {
+      },
+        {
+        path: 'favoriteBoards',
+        select: ['name', 'description']
+      },
+
+        {
         path: 'teams',
         select: ['name'],
         populate: ({
@@ -365,7 +385,7 @@ const UserController = () => {
       }
       ])
       .then(user => res.status(201).send({
-        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams, favoriteBoards: user.favoriteBoards },
         message: 'Boards successfully fetched'
       }))
       .catch(err => {

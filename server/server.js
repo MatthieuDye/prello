@@ -120,7 +120,7 @@ app.get('/api/public/user/auth/google/callback', passport.authenticate('google',
                 expiresIn: 3600 // 1 hour in seconds
             },
             (err, token) => {
-                res.redirect(`${process.env.CLIENT_URI}/login?token=${token}`);
+                res.redirect(`${process.env.CLIENT_URI}/loader?token=${token}`);
             }
         );
 
