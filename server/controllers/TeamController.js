@@ -76,7 +76,7 @@ const TeamController = () => {
      * @returns {Team.model} 201 - Team object
      */
     const getTeam = async (req, res) => {
-        const id = req.params.id;
+        const id = req.params.teamId;
 
         // Team Id validation
         const { errors, idIsValid } = validateIdParam(id);

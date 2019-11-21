@@ -1,7 +1,7 @@
 const teamMemberRoutes = {
 
     //Team
-    'GET /:id': 'TeamController.getTeam',
+    'GET /:teamId': 'TeamController.getTeam',
     
 };
 

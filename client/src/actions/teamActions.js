@@ -58,7 +58,7 @@ export const fetchTeamSuccessAction = team => ({
 
 export const fetchTeam = (teamId) => dispatch => {
     axios
-        .get(`/api/private/team/member/${teamId}`)
+        .get(`/api/private/team/member/${teamId}`, {headers : {teamId : teamId}})
         .then(res => dispatch(fetchTeamSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
@@ -79,7 +79,7 @@ export const addMemberSuccessAction = team => ({
 
 export const addMember = (userName, teamId) => dispatch => {
     axios
-        .post(`/api/private/team/admin/${teamId}/add/user/${userName}`)
+        .post(`/api/private/team/admin/${teamId}/add/user/${userName}`,undefined, {headers : {"teamId" : teamId}})
         .then(res => dispatch(addMemberSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
