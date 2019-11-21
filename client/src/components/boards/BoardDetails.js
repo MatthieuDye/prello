@@ -23,8 +23,8 @@ import AddBoardTeam from "./AddBoardTeam";
 
 const UpdateBoardSchema = Yup.object().shape({
     boardName: Yup.string()
-        .required('Team name is required')
-        .max(50, 'Team name should not exceed 50 characters'),
+        .required('Board name is required')
+        .max(50, 'Board name should not exceed 50 characters'),
     description: Yup.string()
         .max(1000, 'Description should not exceed 1000 characters')
 });
@@ -85,8 +85,15 @@ class BoardDetails extends Component {
                     onSubmit={values => {
 
                         this.handleEditing();
-                        // TODO
 
+                        const boardData = {
+                            name: values.boardName,
+                            description: values.description,
+                        };
+
+                        const boardID = this.props.currentBoard._id;
+
+                        this.props.updateBoard(boardID, boardData);
                     }}
                 >
 
@@ -106,7 +113,7 @@ class BoardDetails extends Component {
                                                 onChange={handleChange('boardName')}
                                                 error={errors.boardName && {content: errors.boardName}}
                                             />
-                                            : 'Board ' + this.props.currentBoard.name
+                                            : 'Board _ ' + this.props.currentBoard.name
                                         }
                                     </Header.Content>
                                     {this.props.currentBoard.admins
