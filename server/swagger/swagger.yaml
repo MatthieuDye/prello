@@ -841,6 +841,39 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  /api/private/board/member/{boardId}/info :
+    get:
+      summary: Get all info for a board id
+      security:
+        - token: []
+      tags:
+        - boards
+      parameters:
+        - name: boardId
+          in: path
+          description: Board ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Board information sucessfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardInfo"
+        '404':
+          description: Board not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        '422':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   /api/private/board/admin/{boardId}/delete/team/{teamId}:
     delete:
@@ -1382,6 +1415,43 @@ components:
           type: string
         pink:
           type: string
+
+    BoardInfo:
+      required:
+        - name
+        - members
+        - closed
+        - labelNames
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        members:
+          $ref: "#/components/schemas/BoardMembers"
+          default: []
+        team:
+          type: string
+        isArchived:
+          type: boolean
+          default: false
+        lists:
+          $ref: "#/components/schemas/ListInfo"
+          default: []
+        labelNames:
+          $ref: "#/components/schemas/LabelNames"
+
+    ListInfo:
+      required:
+        - name
+        - isArchived
+      properties:
+        name:
+          type: string
+        isArchived:
+          type: boolean
+        cards:
+          $ref: "#/components/schemas/Cards"
 
     List:
       required:

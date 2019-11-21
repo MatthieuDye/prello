@@ -12,6 +12,9 @@ const boardReducer = (state =  [], action) => {
         case types.FETCH_BOARDS_SUCCESS: {
             return action.payload.boards
         }
+        case types.ADD_BOARD_LIST_SUCCESS: {
+            return action.payload.list
+        }
 
         case FAVORITE_BOARD_SUCCESS: {
             return {

@@ -128,6 +128,7 @@ class App extends Component {
         <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
     </React.Fragment>
     );
+
         return (
             <Provider store={store}>
                 <Router>
