@@ -46,19 +46,42 @@ class BoardView extends Component {
                                         <Card.Content>
                                             <Card color={"grey"}>
                                                 <Card.Content header={card.name} />
-                                                <Card.Content description={card.description} />
-                                                <Card.Content extra>
-                                                    <Icon name='calendar' />{card.dueDate.date}
-                                                    <Icon name='archive' />{card.dueDate.isDone}
-                                                </Card.Content>
+                                                {card.isArchived ? (
+                                                    <Card.Content extra>
+                                                        <Icon name='archive' />
+                                                        Archived
+                                                        </Card.Content>
+                                                ) : (
+                                                        <React.Fragment>
+                                                            {(card.description != undefined && card.description != "") && (
+                                                                <Card.Content description={card.description} />
+                                                            )}
+                                                            
+                                                            {console.log(card.name + card.dueDate.date + card.dueDate.isDone)}
+                                                            {((card.dueDate.date != undefined && card.dueDate.date != "") || card.dueDate.isDone) && (
+                                                                <Card.Content extra>
+                                                                    {(card.dueDate.date != undefined && card.dueDate.date != "") && (
+                                                                        <React.Fragment>
+                                                                        <Icon name='calendar' />{card.dueDate.date}
+                                                                        </React.Fragment>
+                                                                    )}
+                                                                    {card.dueDate.isDone && (
+                                                                        <Icon name='check' />
+                                                                    )}
+                                                                </Card.Content>
+                                                            )}
+                                                        </React.Fragment>
+                                                )}
+
+
                                                 <Button>
-                                                    <UpdateCard 
-                                                    currentCardId={card._id}
-                                                    currentCardName={card.name}
-                                                    currentCardDescription={card.description}
-                                                    currentCardDueDate={card.dueDate.date}
-                                                    currentCardDueDateIsDone={card.dueDate.isDone}
-                                                    currentCardIsArchived={card.isArchived}/>
+                                                    <UpdateCard
+                                                        currentCardId={card._id}
+                                                        currentCardName={card.name}
+                                                        currentCardDescription={card.description}
+                                                        currentCardDueDate={card.dueDate.date}
+                                                        currentCardIsDone={card.dueDate.isDone}
+                                                        currentCardIsArchived={card.isArchived} />
                                                 </Button>
                                             </Card>
                                         </Card.Content>

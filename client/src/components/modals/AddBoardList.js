@@ -73,7 +73,7 @@ class AddBoardList extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <input type="submit" value="Create the List" className="btn btn-primary"/>
+                            <input type="submit" value="Save" className="btn btn-primary"/>
                         </div>
                     </form>
 

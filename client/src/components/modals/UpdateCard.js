@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Modal } from 'semantic-ui-react'
+import { Card, Modal, Checkbox } from 'semantic-ui-react'
 
 //______ACTIONS______
 
@@ -17,7 +17,7 @@ class UpdateCard extends Component {
             name: this.props.currentCardName,
             description: this.props.currentCardDescription,
             dueDate: this.props.currentCardDueDate,
-            dueDateIsDone: this.props.currentCardDueDateIsDone,
+            isDone: this.props.currentCardIsDone,
             isArchived: this.props.currentCardIsArchived,
             errors: {}
         };
@@ -41,6 +41,14 @@ class UpdateCard extends Component {
         this.setState({ [e.target.id]: e.target.value });
     };
 
+    handleIsArchivedChange = (bool) => {
+        this.setState({ isArchived: !bool });
+    }
+
+    handleIsDoneChange = (bool) => {
+        this.setState({ isDone: !bool });
+    }
+
     onSubmit = e => {
         e.preventDefault();
 
@@ -48,8 +56,8 @@ class UpdateCard extends Component {
             newName: this.state.name,
             newDescription: this.state.description,
             newDueDate: this.state.dueDate,
-            newDueDateIsDone: this.state.dueDateIsDone,
-            newIsArchived: this.state.isArchived,
+            newDueDateIsDone: Boolean(this.state.isDone),
+            newIsArchived: Boolean(this.state.isArchived),
             id: this.props.currentCardId
         };
 
@@ -90,9 +98,29 @@ class UpdateCard extends Component {
                                 required={false}
                             />
 
+                            <label>Card due date:  </label>
+                            <input
+                                onChange={this.onChange}
+                                value={this.state.dueDate}
+                                id="dueDate"
+                                type="date"
+                                className="form-control"
+                                required={false}
+                            />
+
+                            <label>Card is done ?  </label>
+                            <Checkbox fitted slider
+                                defaultChecked={Boolean(this.state.isDone)}
+                                onClick={() => this.handleIsDoneChange(this.state.isDone)} />
+
+                            <label>Card is archived ?  </label>
+                            <Checkbox fitted slider
+                                defaultChecked={Boolean(this.state.isArchived)}
+                                onClick={() => this.handleIsArchivedChange(this.state.isArchived)} />
+
                         </div>
                         <div className="form-group">
-                            <input type="submit" value="Create the List" className="btn btn-primary" />
+                            <input type="submit" value="Save" className="btn btn-primary" />
                         </div>
                     </form>
 
