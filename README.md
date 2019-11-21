@@ -1,8 +1,13 @@
+# Prello
+
+Prello is an online project management tool.
+
+![Prello logo](client/src/assets/prello_logo.png)
+
 ## Travis
 [![Build Status](https://travis-ci.org/MatthieuDye/prello.svg?branch=master)](https://travis-ci.org/MatthieuDye/prello)
 
 ## Sonar
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=alert_status)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=bugs)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=code_smells)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=ncloc)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
@@ -12,74 +17,60 @@
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=sqale_index)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=MatthieuDye_prello&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=MatthieuDye_prello)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Links
 
-## Available Scripts
+Deployed app: https://prello-ig.igpolytech.fr
 
-In the project directory, you can run:
+API documentation: https://prello-ig-back.igpolytech.fr/api-docs/
 
-### `yarn start`
+## Team
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Authors
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+* **Alia CHAWAF** - [aliachawaf](https://github.com/aliachawaf)
+* **Matthieu DYE** - [MatthieuDye](https://github.com/MatthieuDye)
+* **Marine GARDEISEN** - [Gardeisen](https://github.com/Gardeisen)
+* **Rémi GESTIN** - [Remigestin](https://github.com/Remigestin)
+* **Nathan GUILLAUD** - [NathanGuillaud](https://github.com/NathanGuillaud)
+* **William REGNART** - [williamregnart](https://github.com/williamregnart)
 
-### `yarn test`
+## Getting started
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Requirements
 
-### `yarn build`
+- [MongoDB](https://www.mongodb.com/fr)
+- [Node.js](https://nodejs.org/en/)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Launch
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+First, run MongoDB.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```shell script
+git clone https://github.com/MatthieuDye/prello.git
+cd prello
+```
+On one terminal:
+```shell script
+cd client
+npm install
+npm start
+```
 
-### `yarn eject`
+On a second terminal:
+```shell script
+cd server
+npm install
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Your app is now running at the following link: http://localhost:3000/
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+API documentation is here: http://localhost:5000/api-docs/
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Tests
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+You can run the tests in /server folder by using the following command: 
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-=======
-# prello
-DEFINITELY NOT TRELLO APP
+```shell script
+npm test
+```
