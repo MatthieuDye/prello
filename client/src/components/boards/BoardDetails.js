@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import {Formik} from "formik";
 import * as Yup from "yup";
 import {
@@ -58,7 +58,8 @@ class BoardDetails extends Component {
     };
 
     // BOARDS
-    redirectionTeam = (teamID) => {
+    redirectionTeam = () => {
+        const teamID = this.props.currentBoard.team._id;
         this.props.history.push(`/team/${teamID}`);
     };
 
@@ -112,11 +113,13 @@ class BoardDetails extends Component {
                                     && this.props.currentBoard.admins.includes(this.props.auth.user._id)
                                     && (this.state.editingMode
                                             ?
-                                            <Button positive size='mini' floated='right' type='submit' onClick={handleSubmit}>
+                                            <Button positive size='mini' floated='right' type='submit'
+                                                    onClick={handleSubmit}>
                                                 <Icon name='check'/>Save
                                             </Button>
                                             :
-                                            <Button primary size='mini' floated='right' type='button' onClick={this.handleEditing}>
+                                            <Button primary size='mini' floated='right' type='button'
+                                                    onClick={this.handleEditing}>
                                                 <Icon name='edit'/>Edit
                                             </Button>
                                     )}
@@ -158,7 +161,7 @@ class BoardDetails extends Component {
                         </Divider>
 
                         <Divider hidden/>
-                        <AddBoardMember />
+                        <AddBoardMember/>
                         <Divider hidden/>
 
                         <List selection relaxed='very'>
@@ -209,12 +212,40 @@ class BoardDetails extends Component {
                         <Divider horizontal>
                             <Header as='h4'>
                                 <Icon name='users'/>
-                                Team
+                                {this.props.currentBoard.team !== undefined
+                                && this.props.currentBoard.team !== ""
+                                && this.props.currentBoard.team !== null
+                                    ? 'Team ' + this.props.currentBoard.team.name
+                                    : 'No Team'
+                                }
                             </Header>
                         </Divider>
 
                         <Divider hidden/>
-                        <AddBoardTeam />
+
+                        {this.props.currentBoard.team !== undefined
+                        && this.props.currentBoard.team !== ""
+                        && this.props.currentBoard.team !== null
+                            ?
+                            (this.state.editingMode
+                                    ? <List>
+                                    <List.Item>
+                                        <AddBoardTeam hasTeam={true}/>
+                                    </List.Item>
+                                    <List.Item>
+                                        <Button floated='right'>
+                                            <Icon name='trash' color='red'/>
+                                        </Button>
+                                    </List.Item>
+                                    </List>
+                                    : <Card color='blue' fluid link onClick={this.redirectionTeam}>
+                                        <Card.Content>
+                                            <Card.Header>{this.props.currentBoard.team.name}</Card.Header>
+                                        </Card.Content>
+                                    </Card>
+                            )
+                            : <AddBoardTeam hasTeam={false}/>
+                        }
                         <Divider hidden/>
 
                     </Grid.Column>

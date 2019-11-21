@@ -26,7 +26,6 @@ class AddBoardTeam extends Component {
             isLoading: false,
             value: "",
             teams: [],
-            board: this.props.currentBoard,
             errors: {}
         };
     }
@@ -47,7 +46,7 @@ class AddBoardTeam extends Component {
 
     onSubmit = ()  => {
         this.setState({value: ''});
-        this.props.addTeam(this.state.value,this.state.board._id)
+        this.props.addTeam(this.state.value,this.props.currentBoard._id)
     };
 
     renderInputComponent = inputProps => {
@@ -56,7 +55,7 @@ class AddBoardTeam extends Component {
                 fluid
                 action={{
                     onClick: () => this.onSubmit(),
-                    icon: 'add'
+                    icon: this.props.hasTeam ? 'edit' : 'add'
                 }}
                 {...inputProps}
             />
@@ -109,7 +108,7 @@ class AddBoardTeam extends Component {
         const { value, teams, isLoading } = this.state;
 
         const inputProps = {
-            placeholder: 'Choose team name',
+            placeholder: this.props.hasTeam ? 'Change team ...' : 'Add a team ...',
             value,
             onChange: this.onChange
         };
@@ -133,7 +132,8 @@ class AddBoardTeam extends Component {
 AddBoardTeam.propTypes = {
     currentBoard: PropTypes.object.isRequired,
     addTeam: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired
+    errors: PropTypes.object.isRequired,
+    hasTeam: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
