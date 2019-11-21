@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Button, Card, Icon, Container } from "semantic-ui-react";
+import {Button, Card, Icon, Container, Divider, Header, Segment} from "semantic-ui-react";
 
 //________ACTIONS________
 import { fetchBoard } from "../../actions/boardActions";
@@ -16,26 +16,26 @@ class BoardView extends Component {
         this.props.fetchBoard(this.props.match.params.boardId);
     }
 
-    redirectionAddBoardMember = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/member`);
-    };
-
-    redirectionAddBoardTeam = (boardId) => {
-        this.props.history.push(`/board/${boardId}/add/team`);
-    };
-
     render() {
         return (
-            <div>
-                <div className={"header"}>
-                    <section>
-                        {this.props.name.toUpperCase()} | {}
-                        <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
-                        <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
-                    </section>
-                </div>
 
                 <Container>
+                    <Divider hidden/>
+                    <Header as='h2'>
+                        <Segment.Inline>
+                            <Icon name='columns'/>
+                            <Header.Content>
+                                {'Board ' + this.props.currentBoard.name}
+                            </Header.Content>
+                            <Button primary size='mini' floated='right' type='button'>
+                                <Icon name='edit'/>Edit Infos
+                            </Button>
+                        </Segment.Inline>
+                    </Header>
+
+                    <Divider/>
+                    <Divider hidden/>
+
                     {this.props.lists.map(list => (
                         <React.Fragment>
                             <div style={{ display: 'inline-block' }}>
@@ -88,6 +88,7 @@ class BoardView extends Component {
                                                                 )}
 
 
+
                                                             <Button>
                                                                 <UpdateCard
                                                                     currentCardId={card._id}
@@ -122,8 +123,6 @@ class BoardView extends Component {
                         </Card>
                     </div>
                 </Container>
-
-            </div>
         )
     }
 }
