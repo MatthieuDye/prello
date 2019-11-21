@@ -100,7 +100,7 @@ export const updateMemberRoleSuccessAction = team => ({
 
 export const updateMemberRole = (userId, teamId, isAdmin) => dispatch => {
     axios
-        .put(`/api/private/team/admin/${teamId}/update/user/role/${userId}`, {isAdmin: isAdmin} )
+        .put(`/api/private/team/admin/${teamId}/update/user/role/${userId}`, {isAdmin: isAdmin}, {headers : {"teamId" : teamId}} )
         .then(res => dispatch(updateMemberRoleSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
@@ -121,7 +121,7 @@ export const deleteMemberSuccessAction = team => ({
 
 export const deleteMember = (userId, teamId) => dispatch => {
     axios
-        .put(`/api/private/team/admin/${teamId}/delete/user/${userId}`)
+        .delete(`/api/private/team/admin/${teamId}/delete/user/${userId}`, {headers : {"teamId" : teamId}})
         .then(res => dispatch(deleteMemberSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
