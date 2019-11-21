@@ -201,7 +201,7 @@ class BoardDetails extends Component {
                                         name={this.props.currentBoard.admins.includes(_id) ? 'user' : 'user outline'}
                                         color={this.props.currentBoard.admins.includes(_id) ? 'red' : 'grey'}/>
                                     <List.Content>
-                                        <List.Header>{firstName} {lastName}</List.Header>
+                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
                                         <List.Content>
                                             {userName}
                                         </List.Content>
@@ -250,6 +250,24 @@ class BoardDetails extends Component {
                             : <AddBoardTeam hasTeam={false}/>
                         }
                         <Divider hidden/>
+
+                        <List selection relaxed='very'>
+                            {this.props.currentBoard.team &&
+                                this.props.currentBoard.team.members.map(({_id, firstName, lastName, userName}) => (
+
+                                <List.Item>
+                                    <Icon
+                                        name={this.props.currentBoard.admins.includes(_id) ? 'user' : 'user outline'}
+                                        color={this.props.currentBoard.admins.includes(_id) ? 'red' : 'grey'}/>
+                                    <List.Content>
+                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
+                                        <List.Content>
+                                            {userName}
+                                        </List.Content>
+                                    </List.Content>
+                                </List.Item>
+                            ))}
+                        </List>
 
                     </Grid.Column>
                 </Grid>
