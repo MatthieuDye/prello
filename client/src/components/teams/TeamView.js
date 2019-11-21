@@ -18,6 +18,16 @@ import {
 } from "semantic-ui-react";
 //________ACTIONS________
 import {deleteMember, fetchTeam, updateMemberRole} from "../../actions/teamActions";
+import {Formik} from "formik";
+import * as Yup from "yup";
+
+const CreateTeamSchema = Yup.object().shape({
+    teamName: Yup.string()
+        .required('Team name is required')
+        .max(50, 'Team name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
+});
 
 class TeamView extends Component {
 
@@ -66,138 +76,161 @@ class TeamView extends Component {
     render() {
         return (
             <Container>
-                    <Divider hidden/>
-                    <Header as='h2'>
-                        <Segment.Inline>
-                            <Icon name='users'/>
-                            <Header.Content>
-                                {this.props.currentTeam.admins
-                                && this.props.currentTeam.admins.includes(this.props.auth.user.id)
-                                && this.state.editingMode
-                                    ? <Form.Input value={this.props.currentTeam.name}/>
-                                    : 'Team ' + this.props.currentTeam.name
-                                }
-                            </Header.Content>
-                            {this.props.currentTeam.admins
-                            && this.props.currentTeam.admins.includes(this.props.auth.user.id)
-                            && (this.state.editingMode
-                                ?
-                                <Button positive size='mini' floated='right' onClick={this.handleSaveEditing}>
-                                    <Icon name='check'/>Save
-                                </Button>
-                                :
-                                <Button primary size='mini' floated='right' onClick={this.handleEditing}>
-                                    <Icon name='edit'/>Edit
-                                </Button>
-                            )}
+                <Formik
+                    initialValues={{
+                        teamName: this.props.currentTeam.name,
+                        description: this.props.currentTeam.description
+                    }}
+                    validationSchema={CreateTeamSchema}
+                    onSubmit={values => {
+                        //TODO
+                    }}
+                >
 
-                        </Segment.Inline>
-                    </Header>
+                    {({handleChange, handleSubmit, values, errors}) => (
 
-                    <Divider/>
-                    <Divider hidden/>
-
-                    <Container>
-                        <Header fluid as='h4'>Description</Header>
-                        {this.state.editingMode
-                            ?
-                            <Form.TextArea
-                                rows={4}
-                                placeholder='Enter team description'
-                                value={this.props.currentTeam.description}
-                            />
-                            : this.props.currentTeam.description ? this.props.currentTeam.description : 'No description yet ...'
-                        }
-                    </Container>
-
-                    < Divider hidden/>
-
-                    < Grid padded relaxed columns={2} stackable centered>
-                        <Grid.Column style={{maxWidth: 400}}>
-                            <Divider horizontal>
-                                <Header as='h4'>
+                        <Form onSubmit={handleSubmit}> <Divider hidden/>
+                            <Header as='h2'>
+                                <Segment.Inline>
                                     <Icon name='users'/>
-                                    {this.props.members.length > 1
-                                        ? this.props.members.length + ' Members'
-                                        : this.props.members.length + ' Member'
-                                    }
-                                </Header>
-                            </Divider>
-
-                            <Divider hidden/>
-                            {this.props.currentTeam.admins
-                            && this.props.currentTeam.admins.includes(this.props.auth.user.id)
-                            && <AddTeamMember/>
-                            }
-                            <Divider hidden/>
-
-                            <List selection relaxed='very'>
-                                {this.props.members.map(({_id, firstName, lastName, userName}) => (
-
-                                    <List.Item>
-                                        {this.state.editingMode && this.props.auth.user.id !== _id &&
-                                        <List.Content floated='right' verticalAlign='middle'>
-                                            <Icon color='red' name='trash' link
-                                                  onClick={() => this.handleDeleteMember(_id)}/>
-                                        </List.Content>
-                                        }
-
-                                        {this.state.editingMode && this.props.auth.user.id !== _id &&
-                                        <List.Content floated='right' verticalAlign='middle'>
-                                            <Popup
-                                                trigger={
-                                                    <Checkbox
-                                                        fitted slider
-                                                        defaultChecked={this.props.currentTeam.admins.includes(_id)}
-                                                        onClick={() => this.handleMemberRoleChange(_id)}
-                                                    />
-                                                }
-                                                content="Make admin"
-                                                basic
+                                    <Header.Content>
+                                        {this.props.currentTeam.admins
+                                        && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                                        && this.state.editingMode
+                                            ? <Form.Input
+                                                value={values.teamName}
+                                                onChange={handleChange('teamName')}
+                                                error={errors.teamName && {content: errors.teamName}}
                                             />
-                                        </List.Content>
+                                            : 'Team ' + this.props.currentTeam.name
                                         }
+                                    </Header.Content>
+                                    {this.props.currentTeam.admins
+                                    && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                                    && (this.state.editingMode
+                                            ?
+                                            <Button positive size='mini' floated='right'
+                                                    onClick={this.handleSaveEditing}>
+                                                <Icon name='check'/>Save
+                                            </Button>
+                                            :
+                                            <Button primary size='mini' floated='right' onClick={this.handleEditing}>
+                                                <Icon name='edit'/>Edit
+                                            </Button>
+                                    )}
 
-                                        <Icon
-                                            name={this.props.currentTeam.admins.includes(_id) ? 'user' : 'user outline'}
-                                            color={this.props.currentTeam.admins.includes(_id) ? 'red' : 'grey'}/>
-                                        <List.Content>
-                                            <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
-                                            <List.Content>
-                                                {userName}
-                                            </List.Content>
-                                        </List.Content>
-                                    </List.Item>
-                                ))}
-                            </List>
-                        </Grid.Column>
+                                </Segment.Inline>
+                            </Header>
 
-                        <Grid.Column style={{maxWidth: 70}}>
-                        </Grid.Column>
-
-                        <Grid.Column style={{maxWidth: 400}}>
-                            <Divider horizontal>
-                                <Header as='h4'>
-                                    <Icon name='columns'/>
-                                    {this.props.boards.length > 1
-                                        ? this.props.boards.length + ' Boards'
-                                        : this.props.boards.length + ' Board'
-                                    }
-                                </Header>
-                            </Divider>
-
+                            <Divider/>
                             <Divider hidden/>
 
-                            <List selection relaxed='very'>
-                                {this.props.boards.map(({_id, name}) => (
-                                    <Card.Group>
-                                        <Card fluid color='blue' header={name} link
-                                              onClick={() => this.redirectionBoard(_id)}/>
-                                    </Card.Group>
-                                ))}
-                            </List>
-                        </Grid.Column>
-                    </Grid>
+                            <Container>
+                                <Header fluid as='h4'>Description</Header>
+                                {this.state.editingMode
+                                    ?
+                                    <Form.TextArea
+                                        rows={4}
+                                        placeholder='Enter team description'
+                                        value={values.description}
+                                        onChange={handleChange('description')}
+                                        error={errors.description && {content: errors.description}}
+
+                                    />
+                                    : this.props.currentTeam.description ? this.props.currentTeam.description : 'No description yet ...'
+                                }
+                            </Container>
+                        </Form>
+                    )}
+                </Formik>
+                <Divider hidden/>
+
+                < Grid padded relaxed columns={2} stackable centered>
+                    <Grid.Column style={{maxWidth: 400}}>
+                        <Divider horizontal>
+                            <Header as='h4'>
+                                <Icon name='users'/>
+                                {this.props.members.length > 1
+                                    ? this.props.members.length + ' Members'
+                                    : this.props.members.length + ' Member'
+                                }
+                            </Header>
+                        </Divider>
+
+                        <Divider hidden/>
+                        {this.props.currentTeam.admins
+                        && this.props.currentTeam.admins.includes(this.props.auth.user.id)
+                        && <AddTeamMember/>
+                        }
+                        <Divider hidden/>
+
+                        <List selection relaxed='very'>
+                            {this.props.members.map(({_id, firstName, lastName, userName}) => (
+
+                                <List.Item>
+                                    {this.state.editingMode && this.props.auth.user.id !== _id &&
+                                    <List.Content floated='right' verticalAlign='middle'>
+                                        <Icon color='red' name='trash' link
+                                              onClick={() => this.handleDeleteMember(_id)}/>
+                                    </List.Content>
+                                    }
+
+                                    {this.state.editingMode && this.props.auth.user.id !== _id &&
+                                    <List.Content floated='right' verticalAlign='middle'>
+                                        <Popup
+                                            trigger={
+                                                <Checkbox
+                                                    fitted slider
+                                                    defaultChecked={this.props.currentTeam.admins.includes(_id)}
+                                                    onClick={() => this.handleMemberRoleChange(_id)}
+                                                />
+                                            }
+                                            content="Make admin"
+                                            basic
+                                        />
+                                    </List.Content>
+                                    }
+
+                                    <Icon
+                                        name={this.props.currentTeam.admins.includes(_id) ? 'user' : 'user outline'}
+                                        color={this.props.currentTeam.admins.includes(_id) ? 'red' : 'grey'}/>
+                                    <List.Content>
+                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
+                                        <List.Content>
+                                            {userName}
+                                        </List.Content>
+                                    </List.Content>
+                                </List.Item>
+                            ))}
+                        </List>
+                    </Grid.Column>
+
+                    <Grid.Column style={{maxWidth: 70}}>
+                    </Grid.Column>
+
+                    <Grid.Column style={{maxWidth: 400}}>
+                        <Divider horizontal>
+                            <Header as='h4'>
+                                <Icon name='columns'/>
+                                {this.props.boards.length > 1
+                                    ? this.props.boards.length + ' Boards'
+                                    : this.props.boards.length + ' Board'
+                                }
+                            </Header>
+                        </Divider>
+
+                        <Divider hidden/>
+
+                        <List selection relaxed='very'>
+                            {this.props.boards.map(({_id, name}) => (
+                                <Card.Group>
+                                    <Card fluid color='blue' header={name} link
+                                          onClick={() => this.redirectionBoard(_id)}/>
+                                </Card.Group>
+                            ))}
+                        </List>
+                    </Grid.Column>
+                </Grid>
             </Container>
         )
     }
