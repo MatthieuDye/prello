@@ -18,6 +18,8 @@ import {
     Segment
 } from 'semantic-ui-react'
 import AddTeamMember from "../teams/AddTeamMember";
+import AddBoardMember from "./AddBoardMember";
+import AddBoardTeam from "./AddBoardTeam";
 
 class BoardDetails extends Component {
 
@@ -73,6 +75,8 @@ class BoardDetails extends Component {
                     onSubmit={values => {
 
                         this.handleEditing();
+                        // TODO
+
                     }}
                 >
 
@@ -146,6 +150,9 @@ class BoardDetails extends Component {
 
                         <Divider hidden/>
 
+                        <AddBoardMember />
+
+                        <AddBoardTeam />
 
                         <Button onClick={() => this.redirectionAddBoardMember(this.props.currentBoard._id)}>Add a member</Button>
                         <Button onClick={() => this.redirectionAddBoardTeam(this.props.currentBoard._id)}>Add a team</Button>
@@ -183,7 +190,7 @@ class BoardDetails extends Component {
                                         name={this.props.currentBoard.admins.includes(_id) ? 'user' : 'user outline'}
                                         color={this.props.currentBoard.admins.includes(_id) ? 'red' : 'grey'}/>
                                     <List.Content>
-                                        <List.Header>{firstName} {lastName.toUpperCase()}</List.Header>
+                                        <List.Header>{firstName} {lastName}</List.Header>
                                         <List.Content>
                                             {userName}
                                         </List.Content>
@@ -214,6 +221,7 @@ class BoardDetails extends Component {
 }
 
 BoardDetails.propTypes = {
+    auth: PropTypes.object.isRequired,
     currentBoard: PropTypes.object.isRequired,
     guestMembers: PropTypes.array.isRequired,
     errors: PropTypes.object.isRequired,
@@ -225,6 +233,7 @@ BoardDetails.defaultProps = {
 };
 
 const mapStateToProps = state => ({
+    auth: state.auth,
     currentBoard: state.currentBoard,
     guestMembers: state.currentBoard.guestMembers,
     errors: state.errors,
