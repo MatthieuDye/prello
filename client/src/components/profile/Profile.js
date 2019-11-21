@@ -17,6 +17,7 @@ class Profile extends Component {
     };
   }
 
+
   componentDidMount() {
 
     this.props.fetchUser(this.props.auth.user._id);
@@ -24,19 +25,30 @@ class Profile extends Component {
   }
 
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: nextProps.errors
-      });
+  static getDerivedStateFromProps(nextProps, prevState){
+    if(nextProps.user !==prevState.user){
+      return { someState: nextProps.user};
     }
+    if(nextProps.errors !==prevState.errors){
+      return { someState: nextProps.errors};
+    }
+    else return null;
+  }
 
-    if (nextProps.user) {
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.user!==this.props.user){
+      //Perform some operation here
       this.setState({
         firstName: this.props.user.firstName,
         lastName: this.props.user.lastName,
         userName: this.props.user.userName,
         email: this.props.user.email,
+      });
+    }
+
+    if (prevProps.errors !== prevState.errors) {
+      this.setState({
+        errors: this.props.errors
       });
     }
   }
