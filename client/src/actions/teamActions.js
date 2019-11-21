@@ -14,7 +14,6 @@ export const createTeamSuccessAction = team => ({
 
 
 export const createTeam = (teamData, history) => dispatch => {
-console.log(teamData);
   axios
     .post("/api/private/team/create", teamData)
     .then(res => dispatch(createTeamSuccessAction(res.data.team)))
