@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GET_ERRORS, CREATE_TEAM_SUCCESS, FETCH_TEAMS_SUCCESS, FETCH_TEAM_SUCCESS,
-    ADD_MEMBER_SUCCESS, UPDATE_MEMBER_ROLE_SUCCESS, DELETE_MEMBER_SUCCESS } from "./types";
+    ADD_MEMBER_SUCCESS, UPDATE_TEAM_SUCCESS, UPDATE_MEMBER_ROLE_SUCCESS, DELETE_MEMBER_SUCCESS } from "./types";
 
 
 // _______ CREATE TEAM _______
@@ -123,6 +123,27 @@ export const deleteMember = (userId, teamId) => dispatch => {
     axios
         .put(`/api/private/team/admin/${teamId}/delete/user/${userId}`)
         .then(res => dispatch(deleteMemberSuccessAction(res.data.team)))
+        .catch(err =>
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
+        );
+};
+
+//________ UPDATE TEAM _______
+
+export const updateTeamSuccessAction = team => ({
+    type: UPDATE_TEAM_SUCCESS,
+    payload: {
+        team,
+    },
+});
+
+export const updateTeam = (teamId, teamData) => dispatch => {
+    axios
+        .put(`/api/private/team/admin/${teamId}/update`, teamData)
+        .then(res => dispatch(updateTeamSuccessAction(res.data.team)))
         .catch(err =>
             dispatch({
                 type: GET_ERRORS,

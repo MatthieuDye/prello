@@ -22,6 +22,10 @@ const currentTeamReducer = (state =  [], action) => {
             return action.payload.team
         }
 
+        case types.UPDATE_TEAM_SUCCESS: {
+            return action.payload.team
+        }
+
         default:
             return state;
     }
