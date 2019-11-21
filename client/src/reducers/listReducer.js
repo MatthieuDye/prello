@@ -6,6 +6,15 @@ const listReducer = (state =  [], action) => {
         case types.ADD_LIST_CARD_SUCCESS: {
             return action.payload.card
         }
+
+        case types.RENAME_LIST_SUCCESS: {
+            return action.payload.list
+        }
+
+        case types.ARCHIVE_LIST_SUCCESS: {
+            return action.payload.list
+        }
+        
         default:
             return state;
     }

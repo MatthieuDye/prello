@@ -11,7 +11,6 @@ export const updateCardSuccessAction = card => ({
 });
 
 export const updateCard = (newCardData) => dispatch => {
-    console.log(newCardData)
     axios
         .put(`/api/private/board/member/card/${newCardData.id}`, newCardData )
         .then(res => dispatch(updateCardSuccessAction(res.data.card)))
