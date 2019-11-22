@@ -158,7 +158,6 @@ describe('PUT /api/private/team/admin/:teamId/update', () => {
                     .send({ email: userNotAdminData.email, password: userNotAdminData.password })
                     .end((err, response) => {
                         tokenNotAdmin = response.body.token;
-                        console.log(tokenNotAdmin);
                         done();
                     });
             });

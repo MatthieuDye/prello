@@ -31,9 +31,9 @@ export const deleteCardSuccessAction = card => ({
     },
 });
 
-export const deleteCard = (cardData) => dispatch => {
+export const deleteCard = (cardId, boardId) => dispatch => {
     axios
-        .delete(`/api/private/board/member/card/${cardData.id}`, cardData, {headers : {boardId : cardData.boardId}}  )
+        .delete(`/api/private/board/member/card/${cardId}`, {headers : {boardId : boardId}}  )
         .then(res => dispatch(deleteCardSuccessAction(res.data.card)))
         .catch(err =>
             dispatch({

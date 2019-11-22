@@ -107,7 +107,7 @@ class TeamView extends Component {
                                                 onChange={handleChange('teamName')}
                                                 error={errors.teamName && {content: errors.teamName}}
                                             />
-                                            : 'Team _ ' + this.props.currentTeam.name
+                                            : this.props.currentTeam.name
                                         }
                                     </Header.Content>
                                     {this.props.currentTeam.admins

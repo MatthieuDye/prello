@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Card, Modal, Checkbox } from 'semantic-ui-react'
+import { Card, Modal, Checkbox, Button } from 'semantic-ui-react'
 
 //______ACTIONS______
 
@@ -69,9 +69,7 @@ class UpdateCard extends Component {
     render() {
         return <Modal
             trigger={
-                <Card.Content extra>
-                    Update a card
-                </Card.Content>}>
+                <Button icon='edit' content='Update'/>}>
             <Modal.Header>Update a card</Modal.Header>
             <Modal.Content>
                 <Modal.Description>

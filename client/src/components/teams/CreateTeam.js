@@ -34,13 +34,11 @@ const CreateTeam = (props) => (
                     }}
                     validationSchema={CreateTeamSchema}
                     onSubmit={values => {
-                        console.log(props.auth.user._id);
                         const teamData = {
                             name: values.teamName,
                             description: values.description,
                             userId: props.auth.user._id
                         };
-                        console.log("before" + teamData);
 
                         props.createTeam(teamData, props.history);
                     }}
