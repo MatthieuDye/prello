@@ -365,7 +365,6 @@ describe('PUT /api/private/user/:userId/board/favorite/:boardId', () => {
             .set('Authorization', token)
             .expect('Content-Type', /json/)
             .expect(201, (err, res) => {
-                console.log(res.body);
                 expect(res.body.favoriteBoards).to.have.lengthOf(1);
                 done();
             });

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {Button, Card, Container, Divider, Form, Header, Input, Label, Modal, TextArea} from 'semantic-ui-react'
+import {Form, Input} from 'semantic-ui-react'
 
 //______ACTIONS______
 

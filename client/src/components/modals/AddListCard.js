@@ -1,85 +1,55 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
-import { Card, Modal} from 'semantic-ui-react'
+import { connect } from "react-redux";
+import { Card, Form, Input } from 'semantic-ui-react'
+import { Formik } from "formik";
 
 //______ACTIONS______
 
-import {fetchBoard} from "../../actions/boardActions";
-import {addListCard} from "../../actions/listActions";
+import { fetchBoard } from "../../actions/boardActions";
+import { addListCard } from "../../actions/listActions";
 
 class AddListCard extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            name: "",
-            errors: {}
-        };
     }
-
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.errors!==prevState.errors){
-            return { errors: nextProps.errors};
-        }
-        else return null;
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if(prevProps.errors!==this.props.errors){
-            //Perform some operation here
-            this.setState({errors: this.props.errors});
-        }
-    }
-
-    onChange = e => {
-        this.setState({ [e.target.id]: e.target.value });
-    };
-
-    onSubmit = e => {
-        e.preventDefault();
-
-        const newCardInfo = {
-            name: this.state.name,
-            listId: this.props.currentListId,
-            boardId: this.props.currentBoard._id
-        };
-
-        this.props.addListCard(newCardInfo)
-        this.props.fetchBoard(this.props.boardId);
-    };
 
     render() {
-       return <Modal
-            trigger={
-                <Card.Content extra>
-                    Add another card
-                </Card.Content>}>
-            <Modal.Header>Adding a new card</Modal.Header>
-            <Modal.Content>
-                <Modal.Description>
-                    <form onSubmit={this.onSubmit}>
+        return (
+            <Formik
+                initialValues={{
+                    name: ''
+                }}
+                onSubmit={(values, reset) => {
+                    const newCardInfo = {
+                        name: values.name,
+                        listId: this.props.currentListId,
+                        boardId: this.props.currentBoard._id
+                    };
 
-                        <div className="form-group">
-                            <label>Card Name:  </label>
-                            <input
-                                onChange={this.onChange}
-                                value = {this.state.name}
-                                id="name"
-                                type="text"
-                                className="form-control"
-                                required={true}
+                    this.props.addListCard(newCardInfo)
+                    this.props.fetchBoard(this.props.boardId);
+                    reset.resetForm();
+                }}
+            >
+
+                {({ handleChange, handleSubmit, values }) => (
+
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Field fluid>
+                            <Input
+                                compact
+                                action={{ icon: 'add' }}
+                                placeholder='New card name ...'
+                                value={values.name}
+                                onChange={handleChange('name')}
                             />
-                        </div>
-                        <div className="form-group">
-                            <input type="submit" value="Save" className="btn btn-primary"/>
-                        </div>
-                    </form>
-
-                </Modal.Description>
-            </Modal.Content>
-        </Modal>
+                        </Form.Field>
+                    </Form>
+                )}
+            </Formik>
+        )
     }
 }
 
@@ -101,5 +71,5 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    {addListCard, fetchBoard}
+    { addListCard, fetchBoard }
 )(AddListCard);
