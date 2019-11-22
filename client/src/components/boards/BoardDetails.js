@@ -20,6 +20,7 @@ import {
 import {fetchBoard, updateMemberRole, deleteBoardTeam, updateBoard, deleteBoardMember} from "../../actions/boardActions";
 import AddBoardMember from "./AddBoardMember";
 import AddBoardTeam from "./AddBoardTeam";
+import {Link} from "react-router-dom";
 
 const UpdateBoardSchema = Yup.object().shape({
     boardName: Yup.string()
@@ -101,6 +102,10 @@ class BoardDetails extends Component {
 
                         <Form>
                             <Divider hidden/>
+                            <Link to={"/board/:" + this.props.currentBoard._id}>
+                                <Button content='back' size='mini' icon='arrow circle left' labelPosition='left'/>
+                            </Link>
+
                             <Header as='h2'>
                                 <Segment.Inline>
                                     <Icon name='columns'/>

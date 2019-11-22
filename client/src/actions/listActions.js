@@ -73,9 +73,9 @@ export const deleteListSuccessAction = list => ({
     },
 });
 
-export const deleteList = (listData) => dispatch => {
+export const deleteList = (listId, boardId) => dispatch => {
     axios
-        .delete(`/api/private/board/member/list/${listData.id}`, listData, {headers : {boardId : listData.boardId}}  )
+        .delete(`/api/private/board/member/list/${listId}`, {headers : {boardId : boardId}}  )
         .then(res => dispatch(deleteListSuccessAction(res.data.list)))
         .catch(err =>
             dispatch({
