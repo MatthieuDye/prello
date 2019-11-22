@@ -17,7 +17,7 @@ export const createTeam = (teamData, history) => dispatch => {
   axios
     .post("/api/private/team/create", teamData)
     .then(res => dispatch(createTeamSuccessAction(res.data.team)))
-    .then(() => history.push("/:userName/teams"))
+    .then(() => history.push("/teams"))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
