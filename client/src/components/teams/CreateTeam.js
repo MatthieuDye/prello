@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 import {createTeam} from "../../actions/teamActions";
@@ -9,17 +9,21 @@ import * as Yup from 'yup'
 const CreateTeamSchema = Yup.object().shape({
     teamName: Yup.string()
         .required('Team name is required')
+        .max(50, 'Team name should not exceed 50 characters'),
+    description: Yup.string()
+        .max(1000, 'Description should not exceed 1000 characters')
 });
 
 const CreateTeam = (props) => (
 
     <Container>
-
+        <Divider hidden/>
         <Header as='h3'>
             <Icon name='users'/>
             <Header.Content>Create a Team</Header.Content>
         </Header>
         <Divider/>
+        <Divider hidden/>
 
         <Grid centered textAlign='center' verticalAlign='middle'>
             <Grid.Column style={{maxWidth: 500}}>
@@ -30,11 +34,13 @@ const CreateTeam = (props) => (
                     }}
                     validationSchema={CreateTeamSchema}
                     onSubmit={values => {
+                        console.log(props.auth.user._id);
                         const teamData = {
                             name: values.teamName,
                             description: values.description,
-                            userId: props.auth.user.id
+                            userId: props.auth.user._id
                         };
+                        console.log("before" + teamData);
 
                         props.createTeam(teamData, props.history);
                     }}
@@ -55,15 +61,19 @@ const CreateTeam = (props) => (
                                     {errors.teamName}
                                 </Label>}
                             </Form.Field>
-
+                            <Divider hidden/>
                             <Form.Field>
                                 <Header as='h4'>Description</Header>
                                 <TextArea
                                     placeholder='enter team description'
                                     value={values.description}
-                                    style={{minHeight: 100}}
+                                    rows={4}
                                     onChange={handleChange('description')}
                                 />
+                                {errors.description && touched.description &&
+                                <Label basic prompt pointing>
+                                    {errors.description}
+                                </Label>}
                             </Form.Field>
 
                             <Button primary onPress={handleSubmit}>

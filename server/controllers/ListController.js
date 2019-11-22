@@ -23,17 +23,16 @@ const ListController = () => {
     const createList = async (req, res) => {
         // Form validation
         const { errors, isValid } = validateCreateListInput(req.body);
-
         // Check validation
         if (!isValid) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: errors });
         }
 
         if (!req.body.boardId) {
-            return res.status(422).json({ message: "Invalid input" });
+            return res.status(422).json({ message: "Invalid board id" });
         }
 
-        //Serach if the board exists
+        //Search if the board exists
         Board.findById(req.body.boardId)
             .then(board => {
                 //If the board is not null
@@ -65,7 +64,7 @@ const ListController = () => {
     /**
      * Get a list
      * @param {string} id.param.required - the list's id
-     * @returns {List} 200 - List got
+     * @returns {List} 201 - List got
      */
     const getList = async (req, res) => {
         const id = req.params.id;
@@ -180,6 +179,48 @@ const ListController = () => {
     }
 
     /**
+     * Delete a list by id
+     * @param {string} id.path.required - list's id
+     * @returns {Card.model} 201 - List deleted
+     */
+    const deleteList = async (req, res) => {
+        const id = req.params.id;
+
+        // Card Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
+
+        //Search if the card exists
+        List.findById(id)
+            .then(existingList => {
+                if (existingList) {
+                    //Delete the list
+                    List
+                        .deleteOne({ _id: id })
+                        .then(deletedList => {
+                            //Delete the list to the board list array
+                            Board.update({}, {
+                                $pull: {
+                                    lists: id,
+                                }
+                            }, {
+                                multi: true
+                            })
+                                .then(end => {
+                                    res.status(201).send({ list: deletedList, message: 'List successfully deleted' })
+                                })
+                                .catch(err => res.status(404).json({ message: "This board does not exists - " + err }))
+                        })
+                        .catch(err => console.log(err));
+                } else {
+                    return res.status(404).json({ message: "This list does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This list does not exists - " + err }))
+    }
+
+    /**
      * Change the position of a list
      * @param {string} id.param.required - the list's id
      * @param {number} value.query.required - the position value
@@ -187,13 +228,14 @@ const ListController = () => {
      */
     const moveList = async (req, res) => {
 
-    }
+    };
 
     return {
         createList,
         getList,
         archiveList,
         renameList,
+        deleteList,
         moveList
     };
 };

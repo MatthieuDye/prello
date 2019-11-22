@@ -3,9 +3,7 @@ import Autosuggest from 'react-autosuggest';
 import axios from "axios";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Button, Input, Form } from 'semantic-ui-react'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
+import {Button, Container, Input} from 'semantic-ui-react'
 
 //______ACTIONS______
 
@@ -28,7 +26,6 @@ class AddBoardTeam extends Component {
             isLoading: false,
             value: "",
             teams: [],
-            board: this.props.currentBoard,
             errors: {}
         };
     }
@@ -48,7 +45,21 @@ class AddBoardTeam extends Component {
     }
 
     onSubmit = ()  => {
-        this.props.addTeam(this.state.value,this.state.board._id)
+        this.setState({value: ''});
+        this.props.addTeam(this.state.value,this.props.currentBoard._id)
+    };
+
+    renderInputComponent = inputProps => {
+        return (
+            <Input
+                fluid
+                action={{
+                    onClick: () => this.onSubmit(),
+                    icon: this.props.hasTeam ? 'edit' : 'add'
+                }}
+                {...inputProps}
+            />
+        )
     };
 
     //__________AUTOCOMPLETE_________
@@ -97,20 +108,13 @@ class AddBoardTeam extends Component {
         const { value, teams, isLoading } = this.state;
 
         const inputProps = {
-            placeholder: 'Choose team name',
+            placeholder: this.props.hasTeam ? 'Change team ...' : 'Add a team ...',
             value,
             onChange: this.onChange
         };
         const status = (isLoading ? 'Loading...' : 'Type to load teams');
         return (
-            <div style={{ marginTop: 40, marginLeft: 50 }}>
-                <div>
-                    Board : {this.state.board.name}
-                </div>
-                <div className="status">
-                    <strong>Status:</strong> {status}
-                </div>
-
+            <Container>
                 <Autosuggest
                     suggestions={teams}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -118,11 +122,9 @@ class AddBoardTeam extends Component {
                     getSuggestionValue={getSuggestionValue}
                     renderSuggestion={renderSuggestion}
                     inputProps={inputProps}
+                    renderInputComponent={this.renderInputComponent}
                 />
-
-                <Button className="ui button" onClick={() => this.onSubmit()}>Submit</Button>
-
-            </div>
+            </Container>
         );
     }
 }
@@ -130,7 +132,8 @@ class AddBoardTeam extends Component {
 AddBoardTeam.propTypes = {
     currentBoard: PropTypes.object.isRequired,
     addTeam: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired
+    errors: PropTypes.object.isRequired,
+    hasTeam: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({

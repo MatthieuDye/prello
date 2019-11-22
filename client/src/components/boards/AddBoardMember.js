@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import Autosuggest from  'react-autosuggest';
+import React, {Component} from 'react';
+import Autosuggest from 'react-autosuggest';
 import axios from "axios";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import { Button } from 'semantic-ui-react'
+import {Button, Container, Input} from 'semantic-ui-react'
 
 //______ACTIONS______
 
@@ -28,27 +28,39 @@ class AddBoardMember extends Component {
             isLoading: false,
             value: '',
             users: [],
-            board: this.props.currentBoard,
             errors: {}
         };
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.errors!==prevState.errors){
-            return { errors: nextProps.errors};
-        }
-        else return null;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.errors !== prevState.errors) {
+            return {errors: nextProps.errors};
+        } else return null;
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevProps.errors!==this.props.errors){
+        if (prevProps.errors !== this.props.errors) {
             //Perform some operation here
             this.setState({errors: this.props.errors});
         }
     }
 
-    onSubmit = ()  => {
-        this.props.addMember(this.state.value,this.state.board._id)
+    onSubmit = () => {
+        this.setState({value: ''});
+        this.props.addMember(this.state.value, this.props.currentBoard._id)
+    };
+
+    renderInputComponent = inputProps => {
+        return (
+            <Input
+                fluid
+                action={{
+                    onClick: () => this.onSubmit(),
+                    icon: 'add'
+                }}
+                {...inputProps}
+            />
+        )
     };
 
     //__________AUTOCOMPLETE_________
@@ -76,7 +88,7 @@ class AddBoardMember extends Component {
         });
     };
 
-    onChange = (event, { newValue }) => {
+    onChange = (event, {newValue}) => {
         this.setState({
             value: newValue
         });
@@ -96,7 +108,7 @@ class AddBoardMember extends Component {
 
     render() {
 
-        const { value, users, isLoading } = this.state;
+        const {value, users, isLoading} = this.state;
 
         const inputProps = {
             placeholder: 'Choose username',
@@ -105,13 +117,7 @@ class AddBoardMember extends Component {
         };
         const status = (isLoading ? 'Loading...' : 'Type to load users');
         return (
-            <div style = {{ marginTop: 40, marginLeft: 50 }}>
-                <div>
-                    Board : {this.state.board.name}
-                </div>
-                <div className="status">
-                    <strong>Status:</strong> {status}
-                </div>
+            <Container>
                 <Autosuggest
                     suggestions={users}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -119,10 +125,9 @@ class AddBoardMember extends Component {
                     getSuggestionValue={getSuggestionValue}
                     renderSuggestion={renderSuggestion}
                     inputProps={inputProps}
+                    renderInputComponent={this.renderInputComponent}
                 />
-
-                <Button className="ui button" onClick={() => this.onSubmit()}>Submit</Button>
-            </div>
+            </Container>
         );
     }
 }

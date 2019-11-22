@@ -131,6 +131,24 @@ const BoardController = () => {
                         .then(board => {
                             //Get the board to return
                             Board.findOne({ _id: Object(id) })
+                                .populate([{
+                                    path: 'lists',
+                                    select: ['name', 'isArchived', 'cards'],
+                                    populate: ({
+                                        path: 'cards',
+                                        select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                    })
+                                }, {
+                                    path: 'guestMembers',
+                                    select: ['firstName', 'lastName', 'userName']
+                                }, {
+                                    path: 'team',
+                                    select: ['name', 'members'],
+                                    populate: ({
+                                        path: 'members',
+                                        select: ['firstName', 'lastName', 'userName']
+                                    })
+                                }])
                                 .then(board => res.status(201).json({ board: board, message: "Board renamed" }))
                                 .catch(err => res.status(404).json({ message: "Board not found - " + err }))
                         })
@@ -180,6 +198,24 @@ const BoardController = () => {
                                             .then(e => {
                                                 //Get the board to return
                                                 Board.findById(boardId)
+                                                    .populate([{
+                                                        path: 'lists',
+                                                        select: ['name', 'isArchived', 'cards'],
+                                                        populate: ({
+                                                            path: 'cards',
+                                                            select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['firstName', 'lastName', 'userName']
+                                                        })
+                                                    }])
                                                     .then(board => {
                                                         res.status(201).send({ board: board, message: 'User successfully added to the board' })
                                                     })
@@ -245,6 +281,24 @@ const BoardController = () => {
                                         })
                                             .then(e => {
                                                 Board.findById(boardId)
+                                                    .populate([{
+                                                        path: 'lists',
+                                                        select: ['name', 'isArchived', 'cards'],
+                                                        populate: ({
+                                                            path: 'cards',
+                                                            select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['firstName', 'lastName', 'userName']
+                                                        })
+                                                    }])
                                                     .then(board => {
                                                         res.status(201).send({ board: board, message: 'User successfully deleted from the board' })
                                                     })
@@ -303,6 +357,24 @@ const BoardController = () => {
                                     Board.updateOne({ _id: boardId }, { $addToSet: { admins: memberId } })
                                         .then(board => {
                                             Board.findById(req.params.boardId)
+                                                .populate([{
+                                                    path: 'lists',
+                                                    select: ['name', 'isArchived', 'cards'],
+                                                    populate: ({
+                                                        path: 'cards',
+                                                        select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                    })
+                                                }, {
+                                                    path: 'guestMembers',
+                                                    select: ['firstName', 'lastName', 'userName']
+                                                }, {
+                                                    path: 'team',
+                                                    select: ['name', 'members'],
+                                                    populate: ({
+                                                        path: 'members',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    })
+                                                }])
                                                 .then(board => {
                                                     res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
                                                 })
@@ -313,6 +385,24 @@ const BoardController = () => {
                                     Board.updateOne({ _id: boardId }, { $pull: { admins: memberId } })
                                         .then(board => {
                                             Board.findById(req.params.boardId)
+                                                .populate([{
+                                                    path: 'lists',
+                                                    select: ['name', 'isArchived', 'cards'],
+                                                    populate: ({
+                                                        path: 'cards',
+                                                        select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                    })
+                                                }, {
+                                                    path: 'guestMembers',
+                                                    select: ['firstName', 'lastName', 'userName']
+                                                }, {
+                                                    path: 'team',
+                                                    select: ['name', 'members'],
+                                                    populate: ({
+                                                        path: 'members',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    })
+                                                }])
                                                 .then(board => {
                                                     res.status(201).send({ board: board, message: 'User role successfully updated in the board' });
                                                 })
@@ -371,6 +461,24 @@ const BoardController = () => {
                                             .then((a) => {
                                                 Board
                                                     .findById(boardId)
+                                                    .populate([{
+                                                        path: 'lists',
+                                                        select: ['name', 'isArchived', 'cards'],
+                                                        populate: ({
+                                                            path: 'cards',
+                                                            select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    }, {
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['firstName', 'lastName', 'userName']
+                                                        })
+                                                    }])
                                                     .then(board => { res.status(201).send({ board: board, message: 'Team successfully added to the board' }) })
                                                     .catch(err => res.status(404).json({ message: "This team does not exists - " + err }));
                                             })
@@ -431,6 +539,24 @@ const BoardController = () => {
                                         })
                                             .then(e =>
                                                 Board.findById(boardId)
+                                                    .populate([{
+                                                        path: 'lists',
+                                                        select: ['name', 'isArchived', 'cards'],
+                                                        populate: ({
+                                                            path: 'cards',
+                                                            select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                                                        })
+                                                    }, {
+                                                        path: 'guestMembers',
+                                                        select: ['firstName', 'lastName', 'userName']
+                                                    },{
+                                                        path: 'team',
+                                                        select: ['name', 'members'],
+                                                        populate: ({
+                                                            path: 'members',
+                                                            select: ['firstName', 'lastName', 'userName']
+                                                        })
+                                                    }])
                                                     .then(boardDone => {
                                                         res.status(201).send({
                                                             board: boardDone,
@@ -454,7 +580,60 @@ const BoardController = () => {
 
     };
 
+    /**
+     * Get all informations for a board
+     * @param {string} boardId.path.required - board's id.
+     * @returns {Board.model} 201 - Board object
+     */
+    const getAllBoardInfo = async (req, res) => {
+        const boardId = req.params.boardId;
 
+        // Board Id validation
+        const { errors, idIsValid } = validateIdParam(boardId);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
+        Board.findById(boardId)
+            .populate([{
+                path: 'lists',
+                select: ['name', 'isArchived', 'cards'],
+                populate: ({
+                    path: 'cards',
+                    select: ['name', 'description', 'dueDate', 'labels', 'members', 'isArchived']
+                })
+            }, {
+                path: 'guestMembers',
+                select: ['firstName', 'lastName', 'userName']
+            }, {
+                path: 'team',
+                select: ['name', 'members'],
+                populate: ({
+                    path: 'members',
+                    select: ['firstName', 'lastName', 'userName']
+                })
+            }])
+            .then(board => {
+                res.status(201).send({
+                    board: board,
+                    message: 'Boards information successfully fetched'
+                })
+            })
+            .catch(err => {
+                return res.status(404).json({ message: "This board does not exists - " + err });
+            })
+        /*
+                Board.findOne({ _id: Object(boardId) }).then(board => {
+                    if (board) {
+                        return res.status(201).json({ board: board, message: "Board found" })
+                    } else {
+                        return res.status(404).json({ message: "Board not found" });
+                    }
+                }).catch(err => {
+                    res.status(404).json({ message: "Board not found " + err });
+                });
+                */
+    };
 
     /**
      * Create a list on the board
@@ -470,17 +649,17 @@ const BoardController = () => {
      */
     const addList = async (req, res) => {
         /*req.body.idBoard = req.params.id;
- 
+
         Board.findById(req.params.id)
             .exec(function (err, board) {
                 if (err) debug('POST boards/:id/lists error : ' + err);
                 if (!board)
                     return res.status(404).json({ message: 'Board not found' });
- 
+
                 let newList = new List(req.body);
                 newList.validate(function (err) {
                     if (err) return res.status(400).json({ message: err });
- 
+
                     newList.save(function (err) {
                         if (err) {
                             debug('POST boards/:id/lists error : ' + err);
@@ -561,7 +740,8 @@ const BoardController = () => {
         deleteMember,
         updateMemberRole,
         addTeam,
-        deleteTeam
+        deleteTeam,
+        getAllBoardInfo
     };
 };
 

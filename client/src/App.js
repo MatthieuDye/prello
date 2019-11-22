@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import React, {Component} from "react";
+import {BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import './App.css';
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import { setCurrentUser, logoutUser } from "./actions/authActions";
-import { Provider } from "react-redux";
+import {logoutUser, setCurrentUser} from "./actions/authActions";
+import {Provider} from "react-redux";
 import store from "./store";
 
 import Login from "./components/auth/Login";
@@ -22,8 +22,10 @@ import AddBoardMember from "./components/boards/AddBoardMember";
 import BoardView from "./components/boards/BoardView";
 import TeamView from "./components/teams/TeamView";
 import AddBoardTeam from "./components/boards/AddBoardTeam";
+import BoardDetails from "./components/boards/BoardDetails";
 
-import { Menu, Dropdown, Icon } from 'semantic-ui-react'
+import {Dropdown, Icon, Menu} from 'semantic-ui-react'
+import LoaderAuth from "./components/auth/LoaderAuth";
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -46,9 +48,11 @@ if (localStorage.jwtToken) {
 }
 
 class App extends Component {
-    state = {}
+    state = {
+        activeItem: 'boards'
+    };
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleItemClick = (e, {name}) => this.setState({activeItem: name})
 
     onLogoutClick = e => {
         e.preventDefault();
@@ -56,77 +60,85 @@ class App extends Component {
     };
 
     render() {
-        const { activeItem } = this.state
+        const {activeItem} = this.state
         const DefaultContainer = () => (
             <React.Fragment>
-            <Menu inverted>
+                <Menu inverted>
                     <Menu.Item>
-                        <img src={require('./assets/prello_icon.png')} alt="Prello logo" />
+                        <img src={require('./assets/prello_icon.png')} alt="Prello logo"/>
                     </Menu.Item>
 
-                    <Menu.Item
-                        name='boards'
-                        active={activeItem === 'boards'}
-                        onClick={this.handleItemClick}
-                    >
-                        <Link to="/:userName/boards" className="nav-link">Boards</Link>
-                    </Menu.Item>
+                    <Link to="/boards" className="nav-link">
+                        <Menu.Item
+                            name='boards'
+                            active={activeItem === 'boards'}
+                            onClick={this.handleItemClick}
+                        />
+                    </Link>
 
-                    <Menu.Item
-                        name='teams'
-                        active={activeItem === 'teams'}
-                        onClick={this.handleItemClick}
-                    >
-                        <Link to="/:userName/teams" className="nav-link">Teams</Link>
-                    </Menu.Item>
+                    <Link to="/teams" className="nav-link">
+                        <Menu.Item
+                            name='teams'
+                            active={activeItem === 'teams'}
+                            onClick={this.handleItemClick}
+                        />
+                    </Link>
+
                     <Menu.Menu position='right'>
                         <Dropdown item icon='plus circle'>
                             <Dropdown.Menu className="dropDownMenu">
                                 <Dropdown.Item>
-                                    <Link to="/board/create" className="nav-link">Create a board</Link>
+                                    <Link to="/add/board" className="nav-link">
+                                        <Icon name='columns'/>
+                                        New Board
+                                    </Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
-                                    <Link to="/add/team" className="nav-link">Create a team</Link>
+                                    <Link to="/add/team" className="nav-link">
+                                        <Icon name='users'/>
+                                        New Team
+                                    </Link>
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                         <Dropdown item icon='user'>
                             <Dropdown.Menu className="dropDownMenu">
                                 <Dropdown.Item>
-                                    <Link to="/:userName" className="nav-link">My profile</Link>
+                                    <Link to="/profile" className="nav-link">My profile</Link>
                                 </Dropdown.Item>
                                 <Dropdown.Item>
-                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>Logout</Link>
+                                    <Link to="/login" className="nav-link" onClick={this.onLogoutClick}>
+                                        <Icon name='log out'/>
+                                        Logout
+                                    </Link>
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Menu>
                 </Menu>
-                
-                <PrivateRoute exact path="/:userName/boards" component={MyBoards} />
-                <PrivateRoute exact path="/board/create" component={CreateBoard} />
-                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember} />
-                <PrivateRoute exact path="/:userName" component={Profile} />
-                <PrivateRoute exact path="/add/team" component={CreateTeam} />
-                <PrivateRoute exact path="/add/board" component={CreateBoard} />
-                <PrivateRoute exact path="/:userName/teams" component={MyTeams} />
-                <PrivateRoute exact path='/team/:teamId' component={TeamView} />
-                <PrivateRoute exact path='/board/:boardId' component={BoardView} />
-                <PrivateRoute exact path='/team/:teamId/add/member' component={AddTeamMember} />
-                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam} />
-                </React.Fragment>
-        )
+
+                <PrivateRoute exact path="/boards" component={MyBoards}/>
+                <PrivateRoute exact path='/board/:boardId/add/member' component={AddBoardMember}/>
+                <PrivateRoute exact path="/profile" component={Profile}/>
+                <PrivateRoute exact path="/add/team" component={CreateTeam}/>
+                <PrivateRoute exact path="/add/board" component={CreateBoard}/>
+                <PrivateRoute exact path="/teams" component={MyTeams}/>
+                <PrivateRoute exact path='/team/:teamId' component={TeamView}/>
+                <PrivateRoute exact path='/board/:boardId' component={BoardView}/>
+                <PrivateRoute exact path='/board/:boardId/details' component={BoardDetails}/>
+                <PrivateRoute exact path='/board/:boardId/add/team' component={AddBoardTeam}/>
+            </React.Fragment>
+        );
+
         return (
             <Provider store={store}>
                 <Router>
-                    
-                    <div className="container">
-                        <Route path="/login" component={Login} />
-                        <Route exact path="/" component={Login} />
-                        <Route exact path="/register" component={Register} />
-                    </div>
                     <Switch>
-                        <PrivateRoute component={DefaultContainer} />
+                        <Route path="/loader" component={LoaderAuth}/>
+                        <Route path="/login" component={Login}/>
+                        <Route exact path="/" component={Login}/>
+                        <Route exact path="/register" component={Register}/>
+                        <PrivateRoute component={DefaultContainer}/>
                     </Switch>
 
                 </Router>

@@ -98,7 +98,7 @@ const UserController = () => {
           // User matched
           // Create JWT Payload
           const payload = {
-            id: user.id,
+            _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,
@@ -131,10 +131,15 @@ const UserController = () => {
 
   const loginPolytech = async (req, res) => {
 
+     const verify = jwt.verify(req.body.token, process.env.AUTH_POLYTECH_SECRET);
+
+     if (!verify) {
+         return res.status(401).json({ message: "Unauthorized request"});
+     }
+
 
     const user = req.body.user ;
-    const username = user.firstname + "." + user.lastname;
-    console.log(username);
+    const username = user.firstname.toLowerCase() + user.lastname.toLowerCase() + "UM";
 
     let userId = new ObjectID();
 
@@ -180,7 +185,7 @@ const UserController = () => {
           } else {
             // Create JWT Payload
             const payload = {
-              id: existingUser._id,
+              _id: existingUser._id,
               firstName: existingUser.firstName,
               lastName: existingUser.lastName,
               userName: existingUser.userName,
@@ -260,20 +265,28 @@ const UserController = () => {
                   }).then(() =>
                       User
                           .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 } else {
-                  User.updateOne({_id: user.userId}, {
+                  User.updateOne({_id: user._id}, {
                     $pull: {
                       favoriteBoards: board._id
                     }
                   }).then(() =>
                       User
-                          .findOne({_id: userId})
+                          .findOne({_id: user._id})
+                          .populate({
+                            path: 'favoriteBoards',
+                            select: ['name', 'description']
+                          })
                           .then(userFounded => {
-                                return res.status(201).send({user: userFounded, message: 'User successfully updated'})
+                                return res.status(201).send({favoriteBoards : userFounded.favoriteBoards, message: 'User successfully updated'})
                               }
                           ))
                 }
@@ -310,7 +323,7 @@ const UserController = () => {
 
     // Check validation
     if (!isValid) {
-      return res.status(422).json({ message: "Invalid input" });
+      return res.status(422).json({ message: errors });
     }
 
     User.findOne({ email: req.body.email, userName: { $ne: req.params.userName } }).then(user => {
@@ -356,7 +369,13 @@ const UserController = () => {
       .populate([{
         path: 'guestBoards',
         select: ['name', 'description']
-      }, {
+      },
+        {
+        path: 'favoriteBoards',
+        select: ['name', 'description']
+      },
+
+        {
         path: 'teams',
         select: ['name'],
         populate: ({
@@ -366,7 +385,7 @@ const UserController = () => {
       }
       ])
       .then(user => res.status(201).send({
-        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams },
+        boards: { guestBoards: user.guestBoards, teamsBoards: user.teams, favoriteBoards: user.favoriteBoards },
         message: 'Boards successfully fetched'
       }))
       .catch(err => {

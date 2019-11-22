@@ -7,7 +7,13 @@ let mongoose = require('mongoose');
 
 // Load models
 const Card = require("../models/Card");
+const List = require("../models/List");
 let Label = require('../models/Label');
+
+// Load input validation
+const validateCreateCardInput = require("../validation/createCard");
+const validateIdParam = require("../validation/idParam");
+const validateUpdateCard = require("../validation/updateCard");
 
 router.use(cors());
 
@@ -16,20 +22,139 @@ const CardController = () => {
     /**
      * Create a card
      * @param {Card.model} card.body.required - card's information.
+     * @param {string} listId.body.required - the list's id
      * @returns {Card.model} 201 - Card created
      */
     const createCard = async (req, res) => {
-        
+        const { listId, name } = req.body
+
+        // Form validation
+        const { errors, isValid } = validateCreateCardInput(req.body);
+
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: errors });
+        }
+
+        // List Id validation
+        if (!listId) {
+            return res.status(422).json({ message: "Invalid team id" });
+        }
+
+        //Search if the list exists
+        List.findById(listId)
+            .then(existingList => {
+                //If the list is not null
+                if (existingList) {
+                    //Create the new card
+                    const newCard = new Card({
+                        name: name
+                    });
+                    newCard
+                        .save()
+                        .then(createdCard => {
+                            //Add the card to the cards array in the list
+                            List.updateOne({ _id: listId }, {
+                                $addToSet: {
+                                    cards: createdCard._id,
+                                }
+                            })
+                                .then(listWithCard => res.status(201).send({ card: createdCard, message: 'Card successfully created' }))
+                                .catch(err => res.status(404).json({ message: "List not found - " + err }))
+                        })
+                        .catch(err => res.status(500).json({ message: "Server error - " + err }));
+                } else {
+
+                }
+            })
+            .catch(err => res.status(404).json({ message: "List not found - " + err }))
     }
 
     /**
-     * Get a card by id
-     * @param {string} id.path.required - card's id
-     * @param {string} checklists.query - card's checklist (value on "open" to display)
-     * @returns {Card.model} 201 - Card
+     * Get a card
+     * @param {string} id.param.required - the card's id
+     * @returns {Card.model} 201 - Card got
      */
     const getCard = async (req, res) => {
-        
+        const id = req.params.id;
+
+        // Card Id validation
+        const { errors, idIsValid } = validateIdParam(id);
+        if (!idIsValid) {
+            return res.status(422).json({ message: errors.name });
+        }
+
+        Card.findOne({ _id: Object(id) }).then(card => {
+            if (card) {
+                return res.status(201).json({ card: card, message: "Card found" })
+            } else {
+                return res.status(404).json({ message: "Card not found" });
+            }
+        }).catch(err => {
+            res.status(404).json({ message: "Card not found - " + err });
+        });
+    }
+
+    /**
+     * Update a card
+     * @param {string} id.param.required - card's id
+     * @param {string} newName.body - new card's name
+     * @param {string} newDescription.body - new card's description
+     * @param {date} newDueDate.body - new card's due date
+     * @param {boolean} newDueDateIsDone.body - new card's due date status
+     * @param {boolean} newIsArchived.body - new card's archived status
+     * @returns {code} 201 - Card updated
+     */
+    const updateCard = async (req, res) => {
+        const id = req.params.id;
+
+        // Card Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
+
+        //Check all attributes given
+        const { errors, isValid } = validateUpdateCard(req.body);
+        // Check validation
+        if (!isValid) {
+            return res.status(422).json({ message: errors });
+        }
+
+        const { newName, newDescription, newDueDate, newDueDateIsDone, newIsArchived } = req.body;
+
+        //Search the card
+        Card.findOne({ _id: Object(id) })
+            .then(cardToUpdate => {
+                //If the card exists
+                if (cardToUpdate) {
+                    //Update the card
+                    Card.updateOne(
+                        { _id: Object(id) },
+                        {
+                            $set: {
+                                "name": newName,
+                                "description": newDescription,
+                                "dueDate": {
+                                    "date": newDueDate,
+                                    "isDone": newDueDateIsDone
+                                },
+                                "isArchived": newIsArchived,
+                            }
+                        },
+                    )
+                        .then(card => {
+                            //Get the card to return
+                            Card.findOne({ _id: Object(id) })
+                                .then(cardUpdated => {
+                                    res.status(201).json({ card: cardUpdated, message: "Card updated" })})
+                                .catch(err => res.status(404).json({ message: "Card not found - " + err }))
+                        })
+                        .catch(err => res.status(404).json({ message: "Card not found - " + err }))
+                } else {
+                    return res.status(404).json({ message: "Card not found" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "Card not found - " + err }));
     }
 
     /**
@@ -38,26 +163,40 @@ const CardController = () => {
      * @returns {Card.model} 201 - Card deleted
      */
     const deleteCard = async (req, res) => {
-       /* req.card.remove();
-        req.card.save((err) => {
-            if (err) return res.status(500).json({ message: 'Unexpected internal error' })
-            return res.status(200).json({ message: 'Card successfully deleted' })
-        });*/
-    }
+        const id = req.params.id;
 
-    /**
-     * Update a card
-     * @param {string} id.path.required - card's id
-     * @param {string} name.query - card's name
-     * @param {string} desc.query - card's description
-     * @param {boolean} closed.query - card's closed state
-     * @param {string} due.query - card's due date
-     * @param {date} dueComplete.query - card's due date completed
-     * @param {number} pos.query - card's position
-     * @param {string} idList.query - card's list attached
-     */
-    const updateCard = async (req, res) => {
-       
+        // Card Id validation
+        if (!validateIdParam(id).idIsValid) {
+            return res.status(422).json({ message: validateIdParam(id).errors.name });
+        }
+
+        //Search if the card exists
+        Card.findById(id)
+            .then(existingCard => {
+                if (existingCard) {
+                    //Delete the card
+                    Card
+                        .deleteOne({ _id: id })
+                        .then(deletedCard => {
+                            //Delete the card to the list card array
+                            List.update({}, {
+                                $pull: {
+                                    cards: id,
+                                }
+                            }, {
+                                multi: true
+                            })
+                                .then(end => {
+                                    res.status(201).send({ card: deletedCard, message: 'Card successfully deleted' })
+                                })
+                                .catch(err => res.status(404).json({ message: "This list does not exists - " + err }))
+                        })
+                        .catch(err => console.log(err));
+                } else {
+                    return res.status(404).json({ message: "This card does not exists" })
+                }
+            })
+            .catch(err => res.status(404).json({ message: "This card does not exists - " + err }))
     }
 
     /**
@@ -67,7 +206,7 @@ const CardController = () => {
      * @returns {Code} 201 - Label added
      */
     const addLabel = async (req, res) => {
-       
+
     }
 
     /**
@@ -77,7 +216,7 @@ const CardController = () => {
      * @returns {Code} 201 - Label removed
      */
     const deleteLabel = async (req, res) => {
-       
+
     }
 
     return {
